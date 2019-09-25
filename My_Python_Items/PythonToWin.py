@@ -1,4 +1,5 @@
 # Author:Zhang Yuan
+# 注意：转换时不要放在同步目录里。
 # *.Py 转成 win的 *.exe文件
 # 安装pyinstaller
     # 打开：View-Tool Windows-Terminal
