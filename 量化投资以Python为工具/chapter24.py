@@ -128,6 +128,7 @@ LjungBox=stattools.q_stat(stattools.acf(stdresid)[1:13],len(stdresid))
 LjungBox[1][-1]
 
 pd.Series(model2.forecast(10)[0]).plot()
+pd.Series(model2.forecast(10)[0]).plot()
 
 
 
