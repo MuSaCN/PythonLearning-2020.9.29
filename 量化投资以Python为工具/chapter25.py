@@ -22,12 +22,21 @@ mytime = MyPackage.MyClass_Time.MyClass_Time()  #时间类
 myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 #MyPackage.MyClass_ToDefault.DefaultMatplotlibBackend()       #恢复默认设置(仅main主界面)
 #------------------------------------------------------------
+Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\025"
+Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
 
 
+SHret=pd.read_table(Path+'\\TRD_IndexSum.txt',index_col='Trddt',sep='\t')
+SHret.index=pd.to_datetime(SHret.index)
 
+myDA.tsa_autoARCH(SHret)
 
-
-
+# 5.
+from arch.univariate import ARX, GARCH
+model = ARX(SHret, lags=1)
+model.volatility = GARCH()
+res = model.fit()
+print(res.summary())
 
 
 
