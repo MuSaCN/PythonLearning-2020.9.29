@@ -20,9 +20,15 @@ mypd = MyPackage.MyClass_Array.MyClass_Pandas()  #矩阵数组类(整合Pandas)
 mypdpro = MyPackage.MyClass_ArrayPro.MyClass_PandasPro()  #高级矩阵数组类
 mytime = MyPackage.MyClass_Time.MyClass_Time()  #时间类
 myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
+myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()      #百度网盘交互类
 #MyPackage.MyClass_ToDefault.DefaultMatplotlibBackend()       #恢复默认设置(仅main主界面)
 #------------------------------------------------------------
 
+filePath = __mypath__.GetDesktopPath() + "\\!!!自动压缩且备份MyPython到(OneDrive和桌面).cmd"
+
+remotePath = "\\Test\\item1"
+
+myBaidu.upload(localpath="", remotepath=remotePath, ondup="overwrite")
 
 
 
