@@ -23,7 +23,7 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()      #百度网盘交互类
 #MyPackage.MyClass_ToDefault.DefaultMatplotlibBackend()       #恢复默认设置(仅main主界面)
 #------------------------------------------------------------
-Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\025"
+Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\026"
 Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
 
 
