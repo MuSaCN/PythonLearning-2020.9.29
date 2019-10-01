@@ -26,99 +26,62 @@ myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()      #百度网盘交�
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\026"
 Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
 
-
-
-import re
 import statsmodels.api as sm
-from statsmodels.tsa.stattools import adfuller
 
-
-sh = pd.read_csv('sh50p.csv', index_col='Trddt')
+sh = pd.read_csv(Path+'\\sh50p.csv', index_col='Trddt')
 sh.index = pd.to_datetime(sh.index)
-
 formStart = '2014-01-01'
 formEnd = '2015-01-01'
 shform = sh[formStart:formEnd]
-shform.head(n=2)
 
 # 中国银行和浦发银行
 PAf = shform['601988']
 PBf = shform['600000']
 pairf = pd.concat([PAf, PBf], axis=1)
-len(pairf)
-# pairf.plot()
-'''
-plt.plot(PAf,'g',label='601988（中国银行）')
-plt.plot(PBf,'b--',label='600000（浦发银行）')
-plt.title('2014-2015年中国银行与浦发银行价格走势图')
-plt.legend()
-plt.show()
-'''
-
-
-def SSD(priceX, priceY):
-    if priceX is None or priceY is None:
-        print('缺少价格序列.')
-    returnX = (priceX - priceX.shift(1)) / priceX.shift(1)[1:]
-    returnY = (priceY - priceY.shift(1)) / priceY.shift(1)[1:]
-    standardX = (returnX + 1).cumprod()
-    standardY = (returnY + 1).cumprod()
-    SSD = np.sum((standardX - standardY) ** 2)
-    return (SSD)
-
-
-dis = SSD(PAf, PBf)
-dis
+myDA.SSD(PAf,PBf,isPrice=True)
 
 PAflog = np.log(PAf)
-adfA = ADF(PAflog)
-
-print(adfA.summary().as_text())
-
 retA = PAflog.diff()[1:]
-
-adfretA = ADF(retA)
-print(adfretA.summary().as_text())
+adf1= myDA.ADF(PAflog,summary=False)
+adf1.pvalue
+adf2= myDA.ADF(retA,summary=False)
+adf2.pvalue
+type(PAflog)
 
 PBflog = np.log(PBf)
-
-adfB = ADF(PBflog)
-
-print(adfB.summary().as_text())
-
 retB = PBflog.diff()[1:]
+myDA.ADF(PBflog,summary=True)
+myDA.ADF(retB,summary=True)
 
-adfretB = ADF(retB)
-
-print(adfretB.summary().as_text())
 
 PAflog.plot(label='601988', style='--')
 PBflog.plot(label='600000', style='-')
 plt.legend(loc='upper left')
 plt.title('中国银行与浦发银行的对数价格时序图')
+plt.show()
 
 retA.plot(label='601988', style='--')
 retB.plot(label='600000', style='-')
 plt.legend(loc='lower left')
 plt.title('中国银行与浦发银行对数价格差分(收益率)')
+plt.show()
 
-# 回归分析
+
+# 协整方程：回归分析
 model = sm.OLS(PBflog, sm.add_constant(PAflog))
-
 results = model.fit()
-
 print(results.summary())
 
-alpha = results.params[0]
-beta = results.params[1]
-spread = PBflog - beta * PAflog - alpha
-spread.head()
 
+
+
+# 协整方程：残差平稳性检验
+spread =results.resid
 spread.plot()
 plt.title('价差序列')
+plt.show()
+myDA.ADF(spread, summary=True)
 
-adfSpread = ADF(spread, trend='c')
-print(adfSpread.summary().as_text())
 
 # 最小距离法交易策略
 # 中国银行标准化价格
