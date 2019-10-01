@@ -54,6 +54,7 @@ myDA.PairTrading(pairf,pairt,isPrice=True,method="SSD",width=1.2)
 
 
 
+# --------------------------------------------------------------
 model.summary()
 alpha = model.params[0]
 beta = model.params[1]
