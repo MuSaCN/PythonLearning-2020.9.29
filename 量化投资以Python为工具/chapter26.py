@@ -26,115 +26,37 @@ myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()      #百度网盘交�
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\026"
 Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
 
-import statsmodels.api as sm
-
 sh = pd.read_csv(Path+'\\sh50p.csv', index_col='Trddt')
 sh.index = pd.to_datetime(sh.index)
 formStart = '2014-01-01'
 formEnd = '2015-01-01'
 shform = sh[formStart:formEnd]
-
 # 中国银行和浦发银行
 PAf = shform['601988']
 PBf = shform['600000']
 pairf = pd.concat([PAf, PBf], axis=1)
-myDA.SSD(PAf,PBf,isPrice=True)
-
+# ---
 PAflog = np.log(PAf)
 retA = PAflog.diff()[1:]
-adf1= myDA.ADF(PAflog,summary=False)
-adf1.pvalue
-adf2= myDA.ADF(retA,summary=False)
-adf2.pvalue
-type(PAflog)
-
 PBflog = np.log(PBf)
 retB = PBflog.diff()[1:]
-myDA.ADF(PBflog,summary=True)
-myDA.ADF(retB,summary=True)
-
-
-PAflog.plot(label='601988', style='--')
-PBflog.plot(label='600000', style='-')
-plt.legend(loc='upper left')
-plt.title('中国银行与浦发银行的对数价格时序图')
-plt.show()
-
-retA.plot(label='601988', style='--')
-retB.plot(label='600000', style='-')
-plt.legend(loc='lower left')
-plt.title('中国银行与浦发银行对数价格差分(收益率)')
-plt.show()
-
-
-# 协整方程：回归分析
-model = sm.OLS(PBflog, sm.add_constant(PAflog))
-results = model.fit()
-print(results.summary())
-
-
-
-
-# 协整方程：残差平稳性检验
-spread =results.resid
-spread.plot()
-plt.title('价差序列')
-plt.show()
-myDA.ADF(spread, summary=True)
-
-
-# 最小距离法交易策略
-# 中国银行标准化价格
-standardA = (1 + retA).cumprod()
-
-# 浦发标准化价格
-standardB = (1 + retB).cumprod()
-
-# 求浦发银行与中国银行标准化价格序列的价差
-SSD_pair = standardB - standardA
-
-SSD_pair.head()
-
-meanSSD_pair = np.mean(SSD_pair)
-
-sdSSD_pair = np.std(SSD_pair)
-
-thresholdUp = meanSSD_pair + 1.2 * sdSSD_pair
-
-thresholdDown = meanSSD_pair - 1.2 * sdSSD_pair
-
-SSD_pair.plot()
-plt.title('中国银行与浦发银行标准化价差序列(形成期)')
-plt.axhline(y=meanSSD_pair, color='black')
-plt.axhline(y=thresholdUp, color='green')
-plt.axhline(y=thresholdDown, color='green')
-
+# ---
+data = pd.concat((PAflog,PBflog),1)
+data.columns = ["PAf","PBf"]
+model = myDA.Cointegration(var=["PBf","PAf"],data=data)
 tradStart = '2015-01-01'
 tradEnd = '2015-06-30'
-
 PAt = sh.loc[tradStart:tradEnd, '601988']
-
 PBt = sh.loc[tradStart:tradEnd, '600000']
+pairt = pd.concat([PAt, PBt], axis=1)
+# ---
+myDA.PairTrading(pairf,pairt,isPrice=True,method="SSD",width=1.2)
 
 
-def spreadCal(x, y):
-    retx = (x - x.shift(1)) / x.shift(1)[1:]
-    rety = (y - y.shift(1)) / y.shift(1)[1:]
-    standardX = (1 + retx).cumprod()
-    standardY = (1 + rety).cumprod()
-    spread = standardX - standardY
-    return (spread)
 
-
-TradSpread = spreadCal(PBt, PAt).dropna()
-
-TradSpread.describe()
-
-TradSpread.plot()
-plt.title('交易期价差序列')
-plt.axhline(y=meanSSD_pair, color='black')
-plt.axhline(y=thresholdUp, color='green')
-plt.axhline(y=thresholdDown, color='green')
+model.summary()
+alpha = model.params[0]
+beta = model.params[1]
 
 spreadf = PBflog - beta * PAflog - alpha
 mu = np.mean(spreadf)
@@ -149,6 +71,9 @@ plt.title('交易期价差序列(协整配对)')
 plt.axhline(y=mu, color='black')
 plt.axhline(y=mu + 1.2 * sd, color='green')
 plt.axhline(y=mu - 1.2 * sd, color='green')
+plt.show()
+
+
 
 import re
 import pandas as pd
