@@ -34,45 +34,30 @@ shform = sh[formStart:formEnd]
 # 中国银行和浦发银行
 PAf = shform['601988']
 PBf = shform['600000']
-pairf = pd.concat([PAf, PBf], axis=1)
+# pairf = pd.concat([PAf, PBf], axis=1)
+pairf = pd.concat([PBf, PAf], axis=1)
+
+
 # ---
-PAflog = np.log(PAf)
-retA = PAflog.diff()[1:]
-PBflog = np.log(PBf)
-retB = PBflog.diff()[1:]
-# ---
-data = pd.concat((PAflog,PBflog),1)
-data.columns = ["PAf","PBf"]
-model = myDA.Cointegration(var=["PBf","PAf"],data=data)
 tradStart = '2015-01-01'
 tradEnd = '2015-06-30'
 PAt = sh.loc[tradStart:tradEnd, '601988']
 PBt = sh.loc[tradStart:tradEnd, '600000']
-pairt = pd.concat([PAt, PBt], axis=1)
+# pairt = pd.concat([PAt, PBt], axis=1)
+pairt = pd.concat([PBt, PAt], axis=1)
+
 # ---
+# pairf.columns = ["PAf","PBf"]
+# pairt.columns = ["PAf","PBf"]
+pairf.columns = ["PBf","PAf"]
+pairt.columns = ["PBf","PAf"]
+
+
 myDA.PairTrading(pairf,pairt,isPrice=True,method="SSD",width=1.2)
+model = myDA.PairTrading(pairf,pairt,isPrice=True,method="Cointegration",width=1.2)
 
 
 
-# --------------------------------------------------------------
-model.summary()
-alpha = model.params[0]
-beta = model.params[1]
-
-spreadf = PBflog - beta * PAflog - alpha
-mu = np.mean(spreadf)
-sd = np.std(spreadf)
-
-# 形成期
-CoSpreadT = np.log(PBt) - beta * np.log(PAt) - alpha
-CoSpreadT.describe()
-
-CoSpreadT.plot()
-plt.title('交易期价差序列(协整配对)')
-plt.axhline(y=mu, color='black')
-plt.axhline(y=mu + 1.2 * sd, color='green')
-plt.axhline(y=mu - 1.2 * sd, color='green')
-plt.show()
 
 
 
