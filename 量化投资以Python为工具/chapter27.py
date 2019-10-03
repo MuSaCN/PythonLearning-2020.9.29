@@ -25,39 +25,15 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\027"
 Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
 
-
 from matplotlib.dates import DateFormatter, WeekdayLocator, DayLocator, MONDAY, date2num
 from datetime import datetime
 from mpl_finance import candlestick_ohlc
 
-
 ssec2015 = pd.read_csv(Path+'\\ssec2015.csv')
+ssec2015 = myfile.read_pd(Path+'\\ssec2015.csv',index="Date",parse_dates=True)
 ssec2015 = ssec2015.iloc[:, 1:]
+myfigpro.candlePlot_ohlc(ssec2015)
 
-
-
-# 字符串转时间
-# 时间转成matplotlib的浮点型数据
-ssec2015.Date = [date2num(datetime.strptime(date, "%Y-%m-%d")) for date in ssec2015.Date]
-
-type(ssec2015)
-
-ssec15list = list()
-for i in range(len(ssec2015)):
-    ssec15list.append(ssec2015.iloc[i, :])
-
-ax = plt.subplot()
-mondays = WeekdayLocator(MONDAY)
-weekFormatter = DateFormatter('%y %b %d')
-ax.xaxis.set_major_locator(mondays)
-ax.xaxis.set_minor_locator(DayLocator())
-ax.xaxis.set_major_formatter(weekFormatter)
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['axes.unicode_minus'] = False
-ax.set_title("上证综指2015年3月份K线图")
-candlestick_ohlc(ax, ssec15list, width=0.7, colorup='r', colordown='g')
-plt.setp(plt.gca().get_xticklabels(), rotation=50, horizontalalignment='center')
-plt.show()
 
 # morning star
 ssec2012 = pd.read_csv('ssec2012.csv')
