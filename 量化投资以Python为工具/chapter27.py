@@ -25,18 +25,15 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\027"
 Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
 
-from matplotlib.dates import DateFormatter, WeekdayLocator, DayLocator, MONDAY, date2num
-from datetime import datetime
-from mpl_finance import candlestick_ohlc
 
 ssec2015 = pd.read_csv(Path+'\\ssec2015.csv')
 ssec2015 = myfile.read_pd(Path+'\\ssec2015.csv',index="Date",parse_dates=True)
 ssec2015 = ssec2015.iloc[:, 1:]
-myfigpro.candlePlot_ohlc(ssec2015)
+myDA.candlePlot_ohlc(ssec2015)
 
 
 # morning star
-ssec2012 = pd.read_csv('ssec2012.csv')
+ssec2012 = pd.read_csv(Path+'\\ssec2012.csv')
 ssec2012.index = ssec2012.iloc[:, 1]
 ssec2012.index = pd.to_datetime(ssec2012.index, format='%Y-%m-%d')
 ssec2012 = ssec2012.iloc[:, 2:]
@@ -95,15 +92,13 @@ for i in range(len(StarSig)):
 ssec201209 = ssec2012['2012-08-21':'2012-09-30']
 
 # Need to specify path before import
-import candle
-
-candle.candlePlot(ssec201209, title=' 上 证 综 指 2012 年9 月 份 的 日 K 线图 ')
+myDA.candlePlot_ohlc(ssec201209, title=' 上 证 综 指 2012 年9 月 份 的 日 K 线图 ')
 
 # Dark Cloud Cover
 # 提 取 读 入 上 证 综 指 年 的 日 交 易 数 据
 import pandas as pd
 
-ssec2011 = pd.read_csv('ssec2011.csv')
+ssec2011 = pd.read_csv(Path+'\\ssec2011.csv')
 ssec2011.index = ssec2011.iloc[:, 1]
 ssec2011.index = pd.to_datetime(ssec2011.index, format='%Y-%m-%d')
 ssec2011 = ssec2011.iloc[:, 2:]
@@ -135,12 +130,12 @@ darkCloud[darkCloud == 2]
 
 # 绘 制 上 证 综 指 2011 年5月 19 日 附 近 的 K 线图
 ssec201105 = ssec2011['2011-05-01':'2011-05-30']
-candle.candlePlot(ssec201105, \
+myDA.candlePlot_ohlc(ssec201105, \
                   title=' 上 证 综 指 2011 年5 月 份 的 日 K 线图 ')
 
 # 绘 制 上 证 综 指 2011 年8月 16 日 附 近 的 K 线图
 ssec201108 = ssec2011['2011-08-01':'2011-08-30']
-candle.candlePlot(ssec201108, \
+myDA.candlePlot_ohlc(ssec201108, \
                   title=' 上 证 综 指 2011 年8 月 份 的 日 K 线图 ')
 
 
