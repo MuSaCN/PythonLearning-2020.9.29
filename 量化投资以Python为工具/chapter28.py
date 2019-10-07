@@ -193,3 +193,4 @@ performance = pd.DataFrame({"win": win.describe(), \
                             "loss": loss.describe()})
 performance
 plt.show()
+
