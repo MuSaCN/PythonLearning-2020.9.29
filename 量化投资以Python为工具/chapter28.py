@@ -32,13 +32,15 @@ Vanke = Vanke.iloc[:, 2:]
 Vanke.head(2)
 
 myDA.myfigpro.ReSetFigureAxes(2,1)
-myDA.candlePlot_ohlc(Vanke,axesindex=1)
+myDA.candlePlot_ohlc(Vanke,axesindex=0)
+Vanke.Close.plot()
 
+lags= 55
+LagsVanke=Vanke.shift(lags)
 
-Vanke.shift(1)
-
-
-
+delta = Vanke - LagsVanke
+delta.Close.plot()
+plt.show()
 
 Close = Vanke.Close
 Close.describe()
