@@ -31,6 +31,15 @@ Vanke.index = pd.to_datetime(Vanke.index, format='%Y-%m-%d')
 Vanke = Vanke.iloc[:, 2:]
 Vanke.head(2)
 
+myDA.myfigpro.ReSetFigureAxes(2,1)
+myDA.candlePlot_ohlc(Vanke,axesindex=1)
+
+
+Vanke.shift(1)
+
+
+
+
 Close = Vanke.Close
 Close.describe()
 lag5Close = Close.shift(5)
