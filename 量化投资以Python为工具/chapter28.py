@@ -29,18 +29,6 @@ Vanke = pd.read_csv(Path+'\\Vanke.csv')
 Vanke.index = Vanke.iloc[:, 1]
 Vanke.index = pd.to_datetime(Vanke.index, format='%Y-%m-%d')
 Vanke = Vanke.iloc[:, 2:]
-Vanke.head(2)
-
-myDA.myfigpro.ReSetFigureAxes(2,1)
-myDA.candlePlot_ohlc(Vanke,axesindex=0)
-Vanke.Close.plot()
-
-lags= 55
-LagsVanke=Vanke.shift(lags)
-
-delta = Vanke - LagsVanke
-delta.Close.plot()
-plt.show()
 
 Close = Vanke.Close
 Close.describe()
@@ -48,19 +36,6 @@ lag5Close = Close.shift(5)
 
 momentum5 = Close - lag5Close
 momentum5.tail()
-
-# plot
-plt.subplot(211)
-plt.plot(Close, 'b*')
-plt.xlabel('date')
-plt.ylabel('Close')
-plt.title('万科股价5日动量图')
-
-plt.subplot(212)
-plt.plot(momentum5, 'r-*')
-plt.xlabel('date')
-plt.ylabel('Momentum5')
-plt.show()
 
 # divide
 Momen5 = Close / lag5Close - 1
@@ -80,13 +55,9 @@ momentum(Close, 5).tail(n=5)
 
 momen35 = momentum(Close, 35)
 
-import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter, WeekdayLocator, DayLocator, MONDAY, date2num
-from matplotlib.finance import candlestick_ohlc
 
-plt.rcParams['font.sans-serif'] = ['SimHei']
-plt.rcParams['axes.unicode_minus'] = False
+from matplotlib.dates import DateFormatter, WeekdayLocator, DayLocator, MONDAY, date2num
+from mpl_finance import candlestick_ohlc
 
 
 # 定义 candleLinePlots 函数
@@ -160,13 +131,10 @@ def candleLinePlots(candleData, candleTitle='a', **kwargs):
 
 
 # Candle 模组是本书自己编的模组，里面有绘制K线函数Candleplot
-import candle
 
 Vanke15 = Vanke['2015']
-candle.candleLinePlots(Vanke['2015'], \
-                       candleTitle='万科股票2015年日K线图', \
-                       splitFigures=True, Data=momen35['2015'], \
-                       title='35日动量', ylabel='35日动量')
+myDA.myfigpro.ReSetFigureAxes()
+myDA.candlePlot_ohlc(Vanke['2015'])
 
 # 使用上面定义的函数
 candleLinePlots(Vanke['2015'], \
@@ -206,6 +174,7 @@ plt.subplot(2, 1, 2)
 plt.plot(Mom35Ret, 'r')
 plt.ylabel('Mom35Ret')
 plt.title('万科动量交易收益率时序图')
+plt.show()
 
 win = Mom35Ret[Mom35Ret > 0]
 winrate = len(win) / len(Mom35Ret)
@@ -223,9 +192,4 @@ plt.title("损失直方图")
 performance = pd.DataFrame({"win": win.describe(), \
                             "loss": loss.describe()})
 performance
-
-
-
-
-
-
+plt.show()
