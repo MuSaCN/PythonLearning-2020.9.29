@@ -60,9 +60,6 @@ signal=Signal1+Signal2
 signal[signal>=1]=1
 signal[signal<=-1]=-1
 signal=signal.dropna()
-price = BOCMclp
 
-myBT.SignalQuality(signal,price,holding=1,lag_trade=3,plotRet=False,plotStrat=False)
-
-
+myBT.SignalQuality(signal,BOCM,holding=1,lag_trade=1,plotRet=True,plotStrat=True)
 
