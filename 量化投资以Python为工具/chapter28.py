@@ -29,6 +29,7 @@ Vanke = pd.read_csv(Path+'\\Vanke.csv')
 Vanke.index = Vanke.iloc[:, 1]
 Vanke.index = pd.to_datetime(Vanke.index, format='%Y-%m-%d')
 Vanke = Vanke.iloc[:, 2:]
+myDA.momentum(Vanke)
 
 Close = Vanke.Close
 Close.describe()
