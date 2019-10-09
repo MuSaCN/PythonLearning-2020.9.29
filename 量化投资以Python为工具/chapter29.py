@@ -61,5 +61,5 @@ signal[signal>=1]=1
 signal[signal<=-1]=-1
 signal=signal.dropna()
 
-myBT.SignalQuality(signal,BOCM,holding=1,lag_trade=1,plotRet=True,plotStrat=True)
+myBT.SignalQuality(signal,BOCM,holding=1,lag_trade=3,plotRet=True,plotStrat=True)
 
