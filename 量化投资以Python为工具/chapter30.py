@@ -47,6 +47,8 @@ for i in range(1, len(Lsma30)):
 
 # MACD
 a=myDA.macd_Indi(CBClose,plot=False)
+myDA.ema_Indi(CBClose)
+myDA.bias_Indi(CBClose,38)
 
 DIF = a[0]
 DEA = a[1]
