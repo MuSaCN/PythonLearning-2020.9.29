@@ -160,7 +160,17 @@ Performance2= perform(Close,tradSignal2)
 Performance2
 
 
+#2.
+PB = myDA.bbandsDerive_Indi(Close,mode="PB")
+PB.plot()
+plt.show()
 
+#3.
+BW = myDA.bbandsDerive_Indi(Close,mode="BW")
+BW.plot()
+plt.show()
 
-
-
+#4.
+b = myDA.bbandsDerive_Indi(Close,mode="BBIB")
+b.iloc[:,0:3].plot()
+plt.show()
