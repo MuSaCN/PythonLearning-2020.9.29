@@ -20,8 +20,6 @@ mypdpro = MyPackage.MyClass_ArrayPro.MyClass_PandasPro()  #高级矩阵数组类
 mytime = MyPackage.MyClass_Time.MyClass_Time()  #时间类
 myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
-mydefault_plt = MyPackage.__Default_Matplotlib__      #指向Matplotlib库默认设置类
-mydefault_plt.SetDefaultMatplotlibBackend()           #恢复默认设置
 #------------------------------------------------------------
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\032"
 Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\习题解答"
@@ -39,7 +37,7 @@ KSignal=KDJ.KValue.apply(lambda x:-1 if x>85 else 1 if x<20 else 0)
 DSignal=KDJ.DValue.apply(lambda x:-1 if x>80 else 1 if x<20 else 0)
 KDSignal=KSignal+DSignal
 KDSignal.name='KDSignal'
-myBT.SignalQuality(KDSignal,price_Series=close,plotStrat=False,plotRet=False)
+myBT.SignalQuality(KDSignal,price_Series=close,plotStrat=True,plotRet=True)
 
 
 KDSignal[KDSignal>=1]==1
