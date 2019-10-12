@@ -28,7 +28,9 @@ Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col='Date')
 CJSecurities=CJSecurities.iloc[:,1:]
 CJSecurities.index=pd.to_datetime(CJSecurities.index)
-myDA.candlePlot_ohlc(CJSecurities)
+K = CJSecurities['2015-04-01':'2015-04-30']
+
+myDA.candlePlot_ohlcm(K)
 
 
 from candle import candleVolume
