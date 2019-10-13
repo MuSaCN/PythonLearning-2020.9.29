@@ -28,65 +28,12 @@ Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col='Date')
 CJSecurities=CJSecurities.iloc[:,1:]
 CJSecurities.index=pd.to_datetime(CJSecurities.index)
-K = CJSecurities['2015-04-01':'2015-04-30']
-
-myDA.candlePlot_ohlcm(K)
 
 
-from candle import candleVolume
-CJSecurities1=CJSecurities['2015-04-01':'2015-04-30']
-candleVolume(CJSecurities1,candletitle='长江证券2015年4月份蜡烛图',\
-             bartitle='长江证券2015年4月份日成交量')
+myDA.myfigpro.ReSetFigureAxes()
+myDA.candlePlot_ohlcV(CJSecurities,False)
+myDA.candlePlot_ohlcV(CJSecurities,True)
 
-CJSecurities2=CJSecurities['2015-01-15':'2015-02-15']
-candleVolume(CJSecurities2,candletitle='长江证券2015年1月和2月份蜡烛图',\
-            bartitle='长江证券2015年1月和2月份日成交量')
-
-CJSecurities3=CJSecurities['2015-03-01':'2015-03-31']
-candleVolume(CJSecurities3,candletitle='长江证券2015年3月份蜡烛图',\
-             bartitle='长江证券2015年3月份日成交量')
-
-CJSecurities4=CJSecurities['2014-01-02':'2014-03-31']
-candleVolume(CJSecurities4,candletitle='长江证券2014年前3个月份蜡烛图',\
-            bartitle='长江证券2014年前3个月份日成交量')
-
-
-close=CJSecurities.Close
-close.describe()
-BreakClose=np.ceil(close/2)*2
-BreakClose.name='BreakClose'
-pd.DataFrame({'BreakClose':BreakClose,\
-            'Close':close}).head(n=2)
-
-volume=CJSecurities.Volume
-
-PrcChange=close.diff()
-
-UpVol=volume.replace(volume[PrcChange>0],0)
-UpVol[0]=0
-DownVol=volume.replace(volume[PrcChange<=0],0)
-DownVol[0]=0
-
-def VOblock(vol):
-    return([np.sum(vol[BreakClose==x]) for x in range(6,22,2)])
-
-cumUpVol=VOblock(UpVol)
-cumDownVol=VOblock(DownVol)
-ALLVol=np.array([cumUpVol,cumDownVol]).transpose()
-
-import matplotlib.pyplot as plt
-fig,ax=plt.subplots()
-ax1=ax.twiny()
-ax.plot(close)
-ax.set_title('不同价格区间的累积成交量图')
-ax.set_ylim(4,20)
-ax.set_xlabel('时间')
-plt.setp(ax.get_xticklabels(), rotation=20,horizontalalignment='center')
-ax1.barh(bottom=range(4,20,2),width=ALLVol[:,0],\
-         height=2,color='g',alpha=0.2)
-ax1.barh(bottom=range(4,20,2),width=ALLVol[:,1],height=2,left=ALLVol[:,0],\
-        color='r',alpha=0.2)
-plt.show()
 
 volume=CJSecurities.Volume
 VolSMA5=pd.rolling_apply(volume,5,np.mean).dropna()
