@@ -24,10 +24,9 @@ myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
 
-import tushare as ts
-ts.set_token('3f932532f37859fa2f4289fe06866b18a32f6c6e2e05ab89b8a8c328')
-pro = ts.pro_api()
+myWebQD.__init__(True)
 
+myWebQD.pro.news()
 
 
 
