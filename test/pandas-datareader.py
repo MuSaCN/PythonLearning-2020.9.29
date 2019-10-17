@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\量化投资以Python为工具")  #路径类
+__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\test")  #路径类
 myfile = MyPackage.MyClass_File.MyClass_File()  #文件操作类
 myplt = MyPackage.MyClass_Plot.MyClass_Plot()  #直接绘图类(单个图窗)
 myfig = MyPackage.MyClass_Plot.MyClass_Figure()  #对象式绘图类(可多个图窗)
@@ -21,9 +21,17 @@ mypdpro = MyPackage.MyClass_ArrayPro.MyClass_PandasPro()  #高级矩阵数组类
 mytime = MyPackage.MyClass_Time.MyClass_Time()  #时间类
 myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
+myWebQD= MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
+__mypath__.CurrentWorkPath()
 
+stock_info = myWebQD.get_data_yahoo()
+stock_info
+mypd.DisplayAll(stock_info,None,0)
 
+# 输出图表
+plt.plot(stock_info['Close'])
+plt.show()
 
 
 
