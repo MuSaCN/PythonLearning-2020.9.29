@@ -48,17 +48,16 @@ class SmaCross(bt.Strategy):
         elif self.crossover < 0:  # in the market & cross to the downside
             self.close()  # close long position
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
-
 # Create a data feed
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
 CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col=1, parse_dates=True)
 CJSecurities = CJSecurities.iloc[:,1:]
 CJSecurities['openinterest'] = 0
-
 data = bt.feeds.PandasData(dataname=CJSecurities)
-
 cerebro.adddata(data)  # Add the data feed
 cerebro.addstrategy(SmaCross)  # Add the trading strategy
 cerebro.run()  # run it all
-cerebro.plot()  # and plot it with a single command
+# ---需要单独run才可以画图
+cerebro.plot(iplot= False)  # and plot it with a single command
+
 
