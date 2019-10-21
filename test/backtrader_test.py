@@ -23,7 +23,7 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
-
+plt.show()
 
 import backtrader as bt
 # Create a subclass of Strategy to define the indicators and logic
