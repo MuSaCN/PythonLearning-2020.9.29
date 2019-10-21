@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\test")  #路径类
+__mypath__ = MyPackage.MyClass_Path.MyClass_Path("")  #路径类
 myfile = MyPackage.MyClass_File.MyClass_File()  #文件操作类
 myplt = MyPackage.MyClass_Plot.MyClass_Plot()  #直接绘图类(单个图窗)
 myfig = MyPackage.MyClass_Plot.MyClass_Figure()  #对象式绘图类(可多个图窗)
@@ -24,11 +24,9 @@ myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
 
-from datetime import datetime
+
 import backtrader as bt
-
 # Create a subclass of Strategy to define the indicators and logic
-
 class SmaCross(bt.Strategy):
     # list of parameters which are configurable for the strategy
     params = dict(
@@ -41,6 +39,7 @@ class SmaCross(bt.Strategy):
         sma2 = bt.ind.SMA(period=self.p.pslow)  # slow moving average
         self.crossover = bt.ind.CrossOver(sma1, sma2)  # crossover signal
 
+
     def next(self):
         if not self.position:  # not in the market
             if self.crossover > 0:  # if fast crosses slow to the upside
@@ -48,18 +47,17 @@ class SmaCross(bt.Strategy):
 
         elif self.crossover < 0:  # in the market & cross to the downside
             self.close()  # close long position
-
-
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
 
 # Create a data feed
-data = bt.feeds.YahooFinanceData(dataname='MSFT',
-                                 fromdate=datetime(2011, 1, 1),
-                                 todate=datetime(2012, 12, 31))
+Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
+CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col=1, parse_dates=True)
+CJSecurities = CJSecurities.iloc[:,1:]
+CJSecurities['openinterest'] = 0
 
+data = bt.feeds.PandasData(dataname=CJSecurities)
 
 cerebro.adddata(data)  # Add the data feed
-
 cerebro.addstrategy(SmaCross)  # Add the trading strategy
 cerebro.run()  # run it all
 cerebro.plot()  # and plot it with a single command
