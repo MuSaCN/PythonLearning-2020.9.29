@@ -24,7 +24,9 @@ myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
 
+path = __mypath__.GetDesktopPath()+"\\test"
 
+myfile.removeDirOrFile(path,onlyContent=True,ProtectiveCheck=True)
 
 
 
