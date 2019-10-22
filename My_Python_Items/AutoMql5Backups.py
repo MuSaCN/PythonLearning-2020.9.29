@@ -1,7 +1,7 @@
 # Author:Zhang Yuan
 import MyPackage
 __mypath__ = MyPackage.MyClass_Path.MyClass_Path()  #路径类
-myfile = MyPackage.MyClass_File.MyClass_File()              #文件操作类
+myfile = MyPackage.MyClass_File.MyClass_File()      #文件操作类
 
 # ---客户端文件夹
 terminalPath="C:\\Users\\i2011\\AppData\\Roaming\\MetaQuotes\\Terminal\\6E8A5B613BD795EE57C550F7EF90598D"
