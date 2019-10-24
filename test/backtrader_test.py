@@ -57,6 +57,6 @@ cerebro.adddata(data)  # Add the data feed
 cerebro.addstrategy(SmaCross)  # Add the trading strategy
 cerebro.run()  # run it all
 # ---需要单独run才可以画图
-cerebro.plot(iplot= False)  # and plot it with a single command
+cerebro.plot(iplot= False)
 
 
