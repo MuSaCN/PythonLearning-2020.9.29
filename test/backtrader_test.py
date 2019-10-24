@@ -9,12 +9,12 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPackage.MyClass_Path.MyClass_Path("")  #路径类
+__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\test")  #路径类
 myfile = MyPackage.MyClass_File.MyClass_File()  #文件操作类
 myplt = MyPackage.MyClass_Plot.MyClass_Plot()  #直接绘图类(单个图窗)
-myfig = MyPackage.MyClass_Plot.MyClass_Figure()  #对象式绘图类(可多个图窗)
+myfig = MyPackage.MyClass_Plot.MyClass_Figure(AddFigure=False)  #对象式绘图类(可多个图窗)
 mypltpro = MyPackage.MyClass_PlotPro.MyClass_PlotPro()  #Plot高级图系列
-myfigpro = MyPackage.MyClass_PlotPro.MyClass_FigurePro()  #Figure高级图系列
+myfigpro = MyPackage.MyClass_PlotPro.MyClass_FigurePro(AddFigure=False)  #Figure高级图系列
 mynp = MyPackage.MyClass_Array.MyClass_NumPy()  #多维数组类(整合Numpy)
 mypd = MyPackage.MyClass_Array.MyClass_Pandas()  #矩阵数组类(整合Pandas)
 mypdpro = MyPackage.MyClass_ArrayPro.MyClass_PandasPro()  #高级矩阵数组类
@@ -57,6 +57,6 @@ cerebro.adddata(data)  # Add the data feed
 cerebro.addstrategy(SmaCross)  # Add the trading strategy
 cerebro.run()  # run it all
 # ---需要单独run才可以画图
-cerebro.plot(iplot= True)  # and plot it with a single command
+cerebro.plot(iplot= False)  # and plot it with a single command
 
 
