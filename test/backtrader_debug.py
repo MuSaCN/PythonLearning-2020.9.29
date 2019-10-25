@@ -23,37 +23,37 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
+
+# ---获得数据
 Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
 CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
 CJSecurities = CJSecurities.iloc[:, 1:]
 data = CJSecurities["2015"]
 
+# ---基础设置
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myBT.Cash(9999)
 myBT.AddBarsData(data,fromdate=None,todate=None)
-myBT.cerebro.datas[0].close
 
+# ---策略函数
+@myBT.OnInit
+def __init__():
+    print(myBT.close(0), "init")  # 此时没有递归，表示数据的最后一个
 
-class TestStrategy(myBT.bt.Strategy):
-    # 只最初运行依次
-    def __init__(self):
-        # 此时没有递归，表示数据的最后一个
-        print(myBT.close(0), "init")
-    # 表示从data的开始进行加载，0表示每次递归的最新位置。
-    def next(self):
-        print("当前0",myBT.close(0)," 过去1", myBT.close(1))
+# ---增加策略1
+@myBT.OnNext
+def next():
+    print("当前0", myBT.close(0), " 过去1", myBT.close(1))
+myBT.addstrategy()
 
+# ---增加策略2
+@myBT.OnNext
+def next():
+    print("当前0", myBT.close(0), " 过去2", myBT.close(2))
+myBT.addstrategy()
 
-myBT.cerebro.addstrategy(TestStrategy) #返回策略序数，可多次添加策略
-myBT.run()
-myBT.PlotResult(iplot=False)
-
-
-
-
-
-
-
+# ---运行
+myBT.run(plot = True)
 
 
 
