@@ -23,17 +23,45 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
-
+from datetime import datetime
 import backtrader as bt
 
-if __name__ == '__main__':
-    cerebro = bt.Cerebro()
+# Create a subclass of Strategy to define the indicators and logic
 
-    print('Starting Portfolio Value: %.2f' % cerebro.broker.getvalue())
+class SmaCross(bt.Strategy):
+    # list of parameters which are configurable for the strategy
+    params = dict(
+        pfast=10,  # period for the fast moving average
+        pslow=30   # period for the slow moving average
+    )
 
-    cerebro.run()
+    def __init__(self):
+        sma1 = bt.ind.SMA(period=self.p.pfast)  # fast moving average
+        sma2 = bt.ind.SMA(period=self.p.pslow)  # slow moving average
+        self.crossover = bt.ind.CrossOver(sma1, sma2)  # crossover signal
 
-    print('Final Portfolio Value: %.2f' % cerebro.broker.getvalue())
+    def next(self):
+        if not self.position:  # not in the market
+            if self.crossover > 0:  # if fast crosses slow to the upside
+                self.order_target_size(target=1)  # enter long
 
+        elif self.crossover < 0:  # in the market & cross to the downside
+            self.order_target_size(target=0)  # close long position
+
+
+cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
+
+# Create a data feed
+Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
+CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col=1, parse_dates=True)
+CJSecurities = CJSecurities.iloc[:,1:]
+CJSecurities['openinterest'] = 0
+data = bt.feeds.PandasData(dataname=CJSecurities)
+
+cerebro.adddata(data)  # Add the data feed
+
+cerebro.addstrategy(SmaCross)  # Add the trading strategy
+cerebro.run()  # run it all
+cerebro.plot(iplot=False)  # and plot it with a single command
 
 

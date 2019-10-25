@@ -38,20 +38,20 @@ class SmaCross(bt.Strategy):
         sma2 = bt.ind.SMA(period=self.p.pslow)  # slow moving average
         self.crossover = bt.ind.CrossOver(sma1, sma2)  # crossover signal
 
-
     def next(self):
         if not self.position:  # not in the market
             if self.crossover > 0:  # if fast crosses slow to the upside
                 self.buy()  # enter long
-
         elif self.crossover < 0:  # in the market & cross to the downside
             self.close()  # close long position
+
 cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
 # Create a data feed
 Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
 CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col=1, parse_dates=True)
 CJSecurities = CJSecurities.iloc[:,1:]
 CJSecurities['openinterest'] = 0
+
 data = bt.feeds.PandasData(dataname=CJSecurities)
 cerebro.adddata(data)  # Add the data feed
 cerebro.addstrategy(SmaCross)  # Add the trading strategy
