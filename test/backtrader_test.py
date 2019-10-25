@@ -59,4 +59,10 @@ cerebro.run()  # run it all
 # ---需要单独run才可以画图
 cerebro.plot(iplot= False)
 
+from MyPackage.MyClass_ToDefault import MyClass_Default_Matplotlib
+mydf = MyClass_Default_Matplotlib()
+mydf.Backend
+mydf.GetMatplotlibBackend()
+mydf.SetDefaultMatplotlibBackend()
+cerebro.plot(iplot= False)
 
