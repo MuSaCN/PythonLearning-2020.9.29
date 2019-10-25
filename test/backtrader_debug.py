@@ -23,45 +23,38 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
-from datetime import datetime
-import backtrader as bt
+Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
+CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
+CJSecurities = CJSecurities.iloc[:, 1:]
+data = CJSecurities["2015"]
 
-# Create a subclass of Strategy to define the indicators and logic
+myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
+myBT.Cash(9999)
+myBT.AddBarsData(data,fromdate=None,todate=None)
+myBT.cerebro.datas[0].close
 
-class SmaCross(bt.Strategy):
-    # list of parameters which are configurable for the strategy
-    params = dict(
-        pfast=10,  # period for the fast moving average
-        pslow=30   # period for the slow moving average
-    )
 
+class TestStrategy(myBT.bt.Strategy):
+    # 只最初运行依次
     def __init__(self):
-        sma1 = bt.ind.SMA(period=self.p.pfast)  # fast moving average
-        sma2 = bt.ind.SMA(period=self.p.pslow)  # slow moving average
-        self.crossover = bt.ind.CrossOver(sma1, sma2)  # crossover signal
-
+        # 此时没有递归，表示数据的最后一个
+        print(myBT.close(0), "init")
+    # 表示从data的开始进行加载，0表示每次递归的最新位置。
     def next(self):
-        if not self.position:  # not in the market
-            if self.crossover > 0:  # if fast crosses slow to the upside
-                self.order_target_size(target=1)  # enter long
-
-        elif self.crossover < 0:  # in the market & cross to the downside
-            self.order_target_size(target=0)  # close long position
+        print("当前0",myBT.close(0)," 过去1", myBT.close(1))
 
 
-cerebro = bt.Cerebro()  # create a "Cerebro" engine instance
+myBT.cerebro.addstrategy(TestStrategy) #返回策略序数，可多次添加策略
+myBT.run()
+myBT.PlotResult(iplot=False)
 
-# Create a data feed
-Path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
-CJSecurities=pd.read_csv(Path+'\\CJSecurities.csv',index_col=1, parse_dates=True)
-CJSecurities = CJSecurities.iloc[:,1:]
-CJSecurities['openinterest'] = 0
-data = bt.feeds.PandasData(dataname=CJSecurities)
 
-cerebro.adddata(data)  # Add the data feed
 
-cerebro.addstrategy(SmaCross)  # Add the trading strategy
-cerebro.run()  # run it all
-cerebro.plot(iplot=False)  # and plot it with a single command
+
+
+
+
+
+
 
 
