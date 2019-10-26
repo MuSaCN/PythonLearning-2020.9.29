@@ -38,20 +38,19 @@ myBT.AddBarsData(data,fromdate=None,todate=None)
 
 # ---策略函数
 @myBT.OnInit
-def __init__():
+def __init__(self):
     print(myBT.close(0), "init")  # 此时没有递归，表示数据的最后一个
 
-# ---增加策略1
+# ---增加策略
 @myBT.OnNext
-def next():
-    # Simply log the closing price of the series from the reference
-    if myBT.close(0) < myBT.close(1):
-        # current close less than previous close
-        if myBT.close(1) < myBT.close(2):
-            myBT.bt.Strategy.buy()
+def next(self):
+    myBT.buy(self)
+
+
 myBT.addstrategy()
 # ---运行
 myBT.run(plot = True)
+
 
 
 import datetime  # For datetime objects
@@ -65,27 +64,13 @@ import backtrader as bt
 # Create a Stratey
 class TestStrategy(bt.Strategy):
 
-    def log(self, txt, dt=None):
-        ''' Logging function fot this strategy'''
-        dt = dt or self.datas[0].datetime.date(0)
-        print('%s, %s' % (dt.isoformat(), txt))
-
     def __init__(self):
         # Keep a reference to the "close" line in the data[0] dataseries
         self.dataclose = self.datas[0].close
 
     def next(self):
-        # Simply log the closing price of the series from the reference
-        self.log('Close, %.2f' % self.dataclose[0])
-
         if self.dataclose[0] < self.dataclose[-1]:
-            # current close less than previous close
-
             if self.dataclose[-1] < self.dataclose[-2]:
-                # previous close less than the previous close
-
-                # BUY, BUY, BUY!!! (with all possible default parameters)
-                self.log('BUY CREATE, %.2f' % self.dataclose[0])
                 self.buy()
 
 
