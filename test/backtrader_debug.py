@@ -32,7 +32,7 @@ data = CJSecurities["2015"]
 
 # ---基础设置
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
-myBT.Cash(9999)
+myBT.ValueCash(9999)
 myBT.AddBarsData(data,fromdate=None,todate=None)
 
 # ---策略函数
