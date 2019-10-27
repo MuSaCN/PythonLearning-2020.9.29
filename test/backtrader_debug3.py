@@ -35,9 +35,14 @@ myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myBT.ValueCash(2000)
 myBT.AddBarsData(data0,fromdate=None,todate=None)
 
+# ---修改库中函数，兼容所有
 class iStrategy(myBT.bt.Strategy):
     def __init__(self):
-        print("init检测无仓位 = ", not myBT.position())
+        print(123)
+        myBT.bt.Strategy.position
+        print(self.position)
+        print(self.getposition)
+        print(self.getposition())
         self.order = []
 
     def next(self):
@@ -71,6 +76,7 @@ class iStrategy(myBT.bt.Strategy):
         elif order.status in [order.Canceled, order.Margin, order.Rejected]:
             print('Order Canceled/Margin/Rejected')
         print("notify_order 执行OK")
+
 
 
 myBT.addstrategy(iStrategy)
