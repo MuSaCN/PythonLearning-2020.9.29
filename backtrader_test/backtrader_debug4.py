@@ -69,10 +69,10 @@ def notify_order():
 def notify_trade():
     myBT.tradeStatus(myBT.trade_noti,isclosed=False)
 
-
 myBT.addstrategy()
 # ---运行
 myBT.run(plot = False)
+
 
 
 
