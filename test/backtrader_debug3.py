@@ -20,7 +20,8 @@ mypd = MyPackage.MyClass_Array.MyClass_Pandas()  #矩阵数组类(整合Pandas)
 mypdpro = MyPackage.MyClass_ArrayPro.MyClass_PandasPro()  #高级矩阵数组类
 mytime = MyPackage.MyClass_Time.MyClass_Time()  #时间类
 myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
-myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
+myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  # 事件驱动型回测
+myvBT = MyPackage.MyClass_vBackTest.MyClass_vBackTest() # 向量化回测
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
 
@@ -38,46 +39,21 @@ myBT.AddBarsData(data0,fromdate=None,todate=None)
 # ---修改库中函数，兼容所有
 class iStrategy(myBT.bt.Strategy):
     def __init__(self):
-        print(123)
-        myBT.bt.Strategy.position
-        print(self.position)
-        print(self.getposition)
-        print(self.getposition())
         self.order = []
+        print("start", len(self))
 
     def next(self):
-        global order
-        if myBT.bars_executed == 2:
-            print(myBT.bars_executed, "start buy")
-            order.append(myBT.buy())
-        if myBT.bars_executed == 3:
-            print(myBT.bars_executed, "start sell")
-            order.append(myBT.sell())
-        if myBT.bars_executed == 4:
-            print(myBT.bars_executed, "start buy and sell")
-            order.append(myBT.buy())
-            order.append(myBT.sell())
+        print(len(self))
+        if len(self) == 5:
+            self.buy()
+            self.sell()
 
-    def notify_order(self):
+    def notify_order(self,order):
         print("notify_order 开始递交")
-        print(myBT.bars_executed, "这是bar执行数量")
-        order = myBT.order_noti
-        if order.status in [order.Submitted, order.Accepted]:
-            print("Buy/Sell order submitted/accepted to/by broker - Nothing to do")
+        print(len(self), "这是bar执行数量")
+        if myBT.orderStatusCheck(order) == False:
             return
-        print("notify_order 开始执行")
-        # ---Check if an order has been completed
-        if order.status in [order.Completed]:
-            if order.isbuy():
-                print('BUY 执行, %.2f' % order.executed.price)
-            elif order.issell():
-                print('SELL 执行, %.2f' % order.executed.price)
-        # ---Attention: broker could reject order if not enough cash
-        elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-            print('Order Canceled/Margin/Rejected')
         print("notify_order 执行OK")
-
-
 
 myBT.addstrategy(iStrategy)
 # ---运行

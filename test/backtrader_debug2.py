@@ -61,22 +61,9 @@ def next():
 def notify_order():
     print("notify_order 开始递交")
     print(myBT.bars_executed, "这是bar执行数量")
-    order = myBT.order_noti
-    if order.status in [order.Submitted, order.Accepted]:
-        print("Buy/Sell order submitted/accepted to/by broker - Nothing to do")
+    if myBT.orderStatusCheck(myBT.order_noti) == False:
         return
-    print("notify_order 开始执行")
-    # ---Check if an order has been completed
-    if order.status in [order.Completed]:
-        if order.isbuy():
-            print('BUY 执行, %.2f' % order.executed.price)
-        elif order.issell():
-            print('SELL 执行, %.2f' % order.executed.price)
-    # ---Attention: broker could reject order if not enough cash
-    elif order.status in [order.Canceled, order.Margin, order.Rejected]:
-        print('Order Canceled/Margin/Rejected')
     print("notify_order 执行OK")
-
 
 myBT.addstrategy()
 # ---运行
