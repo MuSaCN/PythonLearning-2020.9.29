@@ -25,7 +25,6 @@ myvBT = MyPackage.MyClass_vBackTest.MyClass_vBackTest()  # 向量化回测
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
 
-
 # ---获得数据
 Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
 CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
@@ -44,29 +43,24 @@ def __init__():
     print("init检测无仓位 = ", not myBT.position())
 
 # ---策略递归
-order = []
+order = []; barscount = [0]
 @myBT.OnNext
 def next():
-    global order
-    if myBT.bars_executed == 2:
-        print(myBT.bars_executed ,"start buy")
-        order.append(myBT.buy())
-    if myBT.bars_executed == 3:
-        print(myBT.bars_executed, "start sell")
-        order.append(myBT.sell())
-    if myBT.bars_executed == 4:
-        print(myBT.bars_executed, "start buy and sell")
-        order.append(myBT.buy())
-        order.append(myBT.sell())
+    print(myBT.bars_executed)
+    if not myBT.position():
+        if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)):
+            order.append(myBT.buy())
+            barscount[0] = myBT.bars_executed
+    else:
+        if myBT.bars_executed >= barscount[0]+5:
+            order.append(myBT.sell())
 
 # ---策略订单触发订单通知，会在下一个bar的next()之前执行
 @myBT.OnNotify_Order
 def notify_order():
-    print("notify_order 开始递交")
-    print(myBT.bars_executed, "这是bar执行数量")
-    if myBT.orderStatusCheck(myBT.order_noti) == False:
+    if myBT.orderStatusCheck(myBT.order_noti,True) == False:
         return
-    print("notify_order 执行OK")
+
 
 myBT.addstrategy()
 # ---运行

@@ -1,4 +1,5 @@
 # Author:Zhang Yuan
+#Python中用list、dict或class实例变量，可以不需要global声明，就可作为全局变量；其他需要global声明才可以。
 
 #Python中的字符串不能被修改，它们是 immutable 的
 
