@@ -50,12 +50,5 @@ def decorated_function_with_arguments(self,d):
 decorated_function_with_arguments( "ABC","DEF")
 
 
-class A:
-    def __init__(self):
-        global v
-        v = self
-    def aaa(self):
-        print(123)
-    def bbb(self):
-        v.aaa()
+
 
