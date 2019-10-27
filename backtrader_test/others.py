@@ -50,5 +50,14 @@ def decorated_function_with_arguments(self,d):
 decorated_function_with_arguments( "ABC","DEF")
 
 
+class A:
+    def __init__(self):
+        self.a1 = [0]
+        self.a2 = 2
 
-
+    def produce(self):
+        b = self.a1
+        class AA:
+            def __init__(self):
+                b[0] = self
+        AA()
