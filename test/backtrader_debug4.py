@@ -48,9 +48,8 @@ order = []; barscount = [0]
 def next():
     print(myBT.bars_executed)
     if not myBT.position():
-        if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)):
+        if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)) and myBT.bars_executed>=3:
             order.append(myBT.buy())
-            barscount[0] = myBT.bars_executed
     else:
         if myBT.bars_executed >= barscount[0]+5:
             order.append(myBT.sell())
@@ -60,9 +59,61 @@ def next():
 def notify_order():
     if myBT.orderStatusCheck(myBT.order_noti,True) == False:
         return
+    else:
+        # 必须记录在这里，因为执行在这里
+        barscount[0] = myBT.bars_executed
 
 
 myBT.addstrategy()
 # ---运行
-myBT.run(plot = False)
-print(order[0])
+myBT.run(plot = True)
+
+
+
+
+
+import backtrader as bt
+
+class TestStrategy(bt.Strategy):
+    def __init__(self):
+        self.dataclose = self.datas[0].close
+
+    def notify_order(self, order):
+        print(len(self),"  notify_order start")
+        if order.status in [order.Submitted, order.Accepted]:
+            return
+        if order.status in [order.Completed]:
+            self.bar_executed = len(self)
+        print(len(self),"  notify_order end")
+
+    # ---在每次notify_order()中order成功后，会触发这个函数，用于处理每笔trade交易行为的信息。比如是否交易关闭、交易利润、交易净利润...
+    def notify_trade(self, trade):
+        print(len(self),"  notify_trade start")
+        if not trade.isclosed:
+            return
+        print('OPERATION PROFIT, GROSS %.2f, NET %.2f' % (trade.pnl, trade.pnlcomm))
+        print(len(self), "  notify_trade end")
+
+    def next(self):
+        if not self.position:
+            if self.dataclose[0] < self.dataclose[-1]:
+                    if self.dataclose[-1] < self.dataclose[-2]:
+                        self.buy()
+                        print('BUY CREATE, %.2f' % self.dataclose[0])
+        else:
+            if len(self) >= (self.bar_executed + 5):
+                self.sell()
+                print('SELL CREATE, %.2f' % self.dataclose[0])
+
+cerebro = bt.Cerebro()
+cerebro.addstrategy(TestStrategy)
+if "openinterest" not in data0.columns:  # 检测是否需要增加'openinterest'列
+    data0['openinterest'] = 0
+data = bt.feeds.PandasData(dataname=data0)
+cerebro.adddata(data)
+cerebro.broker.setcash(100000.0)
+cerebro.broker.setcommission(commission=0.001)
+cerebro.run()
+
+
+
