@@ -24,7 +24,7 @@ myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
 
-import backtrader as bt
+import backtrader_test as bt
 # Create a subclass of Strategy to define the indicators and logic
 class SmaCross(bt.Strategy):
     # list of parameters which are configurable for the strategy
