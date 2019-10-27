@@ -47,7 +47,7 @@ def __init__():
 order = []; barscount = [0]
 @myBT.OnNext
 def next():
-    print(myBT.bars_executed)
+    print(myBT.bars_executed,myBT.__open__(0),myBT.__high__(0),myBT.__low__(0),myBT.__close__(0))
     if not myBT.position():
         if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)) and myBT.bars_executed>=3:
             order.append(myBT.buy())
