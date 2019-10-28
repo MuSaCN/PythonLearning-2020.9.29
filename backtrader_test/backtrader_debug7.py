@@ -30,43 +30,47 @@ CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates
 CJSecurities = CJSecurities.iloc[:, 1:]
 data0 = CJSecurities["2015"]
 
-# ---基础设置
-myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
-myBT.ValueCash(2000)
-myBT.addsizer(10)
-myBT.setcommission(0.001)
-myBT.AddBarsData(data0,fromdate=None,todate=None)
+# ---优化
+for i in range(5,20):
+    # ---基础设置
+    myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
+    myBT.ValueCash(2000)
+    myBT.addsizer(10)
+    myBT.setcommission(0.001)
+    myBT.AddBarsData(data0,fromdate=None,todate=None)
 
-# ---策略开始
-@myBT.OnInit
-def __init__():
-    print("Num1 : init检测无仓位 = ", not myBT.position())
-    myBT.Indi_MovingAverageSimple(0,12,None,True)
+    # ---策略开始
+    @myBT.OnInit
+    def __init__():
+        myBT.Indi_MovingAverageSimple(0,i)
 
-# ---策略递归，next()执行完就进入下一个bar
-barscount = [0]
-@myBT.OnNext
-def next():
-    print("Num1 : next()", myBT.bars_executed, myBT.datetime(0), barscount[0], myBT.SMA[0])
-    if not myBT.position():
-        if myBT.close(0) > myBT.SMA[0]:
-            myBT.buy()
-    else:
-        if myBT.bars_executed >= barscount[0]+5:
-            myBT.sell()
+    # ---策略递归，next()执行完就进入下一个bar
+    barscount = [0]
+    @myBT.OnNext
+    def next():
+        if not myBT.position():
+            if myBT.close(0) > myBT.SMA[0]:
+                myBT.buy()
+        else:
+            if myBT.bars_executed >= barscount[0]+5:
+                myBT.sell()
 
-# ---策略订单通知，已经进入下一个bar，且在next()之前执行
-@myBT.OnNotify_Order
-def notify_order():
-    barscount[0] = myBT.bars_executed
+    # ---策略订单通知，已经进入下一个bar，且在next()之前执行
+    @myBT.OnNotify_Order
+    def notify_order():
+        barscount[0] = myBT.bars_executed
 
-# ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
-@myBT.OnNotify_Trade
-def notify_trade():pass
-    # print("notify_trade", myBT.bars_executed)
-    # myBT.tradeStatus(myBT.trade_noti,isclosed=True)
+    # ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
+    @myBT.OnNotify_Trade
+    def notify_trade():pass
 
-myBT.addstrategy()
-# ---运行
-myBT.run(plot = True)
+    @myBT.OnStop
+    def stop():
+        print("stop(): ",i,myBT.ValueCash())
+    # ---
+    myBT.addstrategy()
+    # ---运行
+    myBT.run(plot = False)
+
+
 
