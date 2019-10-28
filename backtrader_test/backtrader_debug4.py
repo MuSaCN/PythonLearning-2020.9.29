@@ -40,22 +40,23 @@ myBT.AddBarsData(data0,fromdate=None,todate=None)
 # ---策略开始
 @myBT.OnInit
 def __init__():
-    print("init")
     print("init检测无仓位 = ", not myBT.position())
 
-# ---策略递归
+# ---策略递归，next()执行完就进入下一个bar
 order = []; barscount = [0]
 @myBT.OnNext
 def next():
-    print(myBT.bars_executed,myBT.__open__(0),myBT.__high__(0),myBT.__low__(0),myBT.__close__(0))
+    print("next() start", myBT.bars_executed, myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
     if not myBT.position():
         if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)) and myBT.bars_executed>=3:
             order.append(myBT.buy())
+            print("next()发出buy信号", myBT.bars_executed)
     else:
         if myBT.bars_executed >= barscount[0]+5:
             order.append(myBT.sell())
+            print("next()发出sell信号", myBT.bars_executed)
 
-# ---策略订单通知，会在下一个bar的next()之前执行
+# ---策略订单通知，已经进入下一个bar，且在next()之前执行
 @myBT.OnNotify_Order
 def notify_order():
     if myBT.orderStatusCheck(myBT.order_noti,feedback=True) == False:
@@ -63,15 +64,20 @@ def notify_order():
     else:
         # 必须记录在这里，因为执行在这里
         barscount[0] = myBT.bars_executed
+    print("notify_order() finished",myBT.bars_executed,myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
 
-# ---策略交易通知，会在notify_order()之后，next()之前执行
+# ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
 @myBT.OnNotify_Trade
 def notify_trade():
     myBT.tradeStatus(myBT.trade_noti,isclosed=False)
+    print("notify_trade() finished",myBT.bars_executed,myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
 
 myBT.addstrategy()
 # ---运行
 myBT.run(plot = False)
+
+
+
 
 
 
