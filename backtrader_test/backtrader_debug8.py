@@ -57,10 +57,7 @@ class TestStrategy(bt.Strategy):
     def stop(self):
         print(self.params.maperiod, self.broker.getvalue())
 
-
-# cerebro.addstrategy(TestStrategy)
-
-cerebro.optstrategy(TestStrategy,maperiod=range(5, 20)) # *************
+cerebro.optstrategy(TestStrategy,maperiod=range(5, 10)) # *************
 cerebro.run(maxcpus=1)
 
 cerebro.plot(iplot=False)

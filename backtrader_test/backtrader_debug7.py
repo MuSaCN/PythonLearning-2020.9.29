@@ -31,7 +31,7 @@ CJSecurities = CJSecurities.iloc[:, 1:]
 data0 = CJSecurities
 
 # ---优化
-for i in range(5,20):
+for i in range(5,10):
     # ---基础设置
     myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
     myBT.ValueCash(100000)
@@ -64,7 +64,7 @@ for i in range(5,20):
     # ---
     myBT.addstrategy()
     # ---运行
-    myBT.run(maxcpus=8,plot = False)
+    myBT.run(maxcpus=1,plot = False)
 
 
 
