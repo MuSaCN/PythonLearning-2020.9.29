@@ -46,7 +46,7 @@ def __init__():
 order = []; barscount = [0]
 @myBT.OnNext
 def next():
-    print("next() start", myBT.bars_executed, myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
+    print("next()", myBT.bars_executed)
     if not myBT.position():
         if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)) and myBT.bars_executed>=3:
             order.append(myBT.buy())
@@ -64,13 +64,11 @@ def notify_order():
     else:
         # 必须记录在这里，因为执行在这里
         barscount[0] = myBT.bars_executed
-    print("notify_order() finished",myBT.bars_executed,myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
 
 # ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
 @myBT.OnNotify_Trade
 def notify_trade():
     myBT.tradeStatus(myBT.trade_noti,isclosed=False)
-    print("notify_trade() finished",myBT.bars_executed,myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
 
 myBT.addstrategy()
 # ---运行
