@@ -37,10 +37,7 @@ if "openinterest" not in data0.columns:
 data = bt.feeds.PandasData(dataname=data0)
 
 cerebro.adddata(data)
-cerebro.broker.setcash(1000.0)
-cerebro.addsizer(bt.sizers.FixedSize, stake=10)
-cerebro.broker.setcommission(commission=0.0)
-
+cerebro.broker.setcash(100000.0)
 
 class TestStrategy(bt.Strategy):
     params = ( ('maperiod', 15), )
@@ -60,10 +57,11 @@ class TestStrategy(bt.Strategy):
     def stop(self):
         print(self.params.maperiod, self.broker.getvalue())
 
-# cerebro.addstrategy(TestStrategy)
-cerebro.optstrategy(TestStrategy,maperiod=range(5, 10)) # *************
 
-cerebro.run()
+# cerebro.addstrategy(TestStrategy)
+
+cerebro.optstrategy(TestStrategy,maperiod=range(5, 20)) # *************
+cerebro.run(maxcpus=1)
 
 cerebro.plot(iplot=False)
 

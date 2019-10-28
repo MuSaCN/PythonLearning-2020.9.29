@@ -28,15 +28,13 @@ myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行�
 Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
 CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
 CJSecurities = CJSecurities.iloc[:, 1:]
-data0 = CJSecurities["2015"]
+data0 = CJSecurities
 
 # ---优化
 for i in range(5,20):
     # ---基础设置
     myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
-    myBT.ValueCash(2000)
-    myBT.addsizer(10)
-    myBT.setcommission(0.001)
+    myBT.ValueCash(100000)
     myBT.AddBarsData(data0,fromdate=None,todate=None)
 
     # ---策略开始
@@ -60,17 +58,13 @@ for i in range(5,20):
     def notify_order():
         barscount[0] = myBT.bars_executed
 
-    # ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
-    @myBT.OnNotify_Trade
-    def notify_trade():pass
-
     @myBT.OnStop
     def stop():
         print("stop(): ",i,myBT.ValueCash())
     # ---
     myBT.addstrategy()
     # ---运行
-    myBT.run(plot = False)
+    myBT.run(maxcpus=8,plot = False)
 
 
 
