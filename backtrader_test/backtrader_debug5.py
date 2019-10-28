@@ -34,7 +34,7 @@ data0 = CJSecurities["2015"]
 # ---基础设置
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myBT.ValueCash(2000)
-myBT.addsizer(100)
+myBT.addsizer(10)
 myBT.setcommission(0.001)
 myBT.AddBarsData(data0,fromdate=None,todate=None)
 
@@ -42,7 +42,7 @@ myBT.AddBarsData(data0,fromdate=None,todate=None)
 @myBT.OnInit
 def __init__():
     print("init检测无仓位 = ", not myBT.position())
-    myBT.Indi_MovingAverageSimple(0,5)
+    myBT.Indi_MovingAverageSimple(0,5,None,True)
 
 # ---策略递归，next()执行完就进入下一个bar
 order = []; barscount = [0]
@@ -51,6 +51,7 @@ def next():
     print("next()", myBT.bars_executed, myBT.datetime(0))
     if not myBT.position():
         if myBT.close(0) > myBT.SMA[0]:
+            order.append(myBT.buy())
             print("next()发出buy信号", myBT.bars_executed, myBT.datetime(0))
     else:
         if myBT.bars_executed >= barscount[0]+5:
@@ -60,6 +61,7 @@ def next():
 # ---策略订单通知，已经进入下一个bar，且在next()之前执行
 @myBT.OnNotify_Order
 def notify_order():
+    print("notify_order", myBT.bars_executed)
     if myBT.orderStatusCheck(myBT.order_noti,feedback=True) == False:
         return
     else:
@@ -69,7 +71,8 @@ def notify_order():
 # ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
 @myBT.OnNotify_Trade
 def notify_trade():
-    myBT.tradeStatus(myBT.trade_noti,isclosed=False)
+    print("notify_trade", myBT.bars_executed)
+    myBT.tradeStatus(myBT.trade_noti,isclosed=True)
 
 myBT.addstrategy()
 # ---运行
@@ -79,12 +82,16 @@ myBT.run(plot = True)
 
 import backtrader as bt
 class TestStrategy(bt.Strategy):
-    params = (
-        ('maperiod', 15),
-    )
     def __init__(self):
         self.dataclose = self.datas[0].close
-        self.sma = bt.indicators.MovingAverageSimple(self.datas[0], period=self.params.maperiod)
+        bt.indicators.MovingAverageSimple(self.datas[0], period=5).subplot = True
+        bt.indicators.ExponentialMovingAverage(self.datas[0], period=25).subplot = True
+        bt.indicators.WeightedMovingAverage(self.datas[0], period=25).subplot = True
+        bt.indicators.StochasticSlow(self.datas[0])
+        bt.indicators.MACDHisto(self.datas[0])
+        rsi = bt.indicators.RSI(self.datas[0])
+        bt.indicators.SmoothedMovingAverage(rsi, period=10).subplot = True
+        bt.indicators.ATR(self.datas[0]).subplot = True
     def notify_order(self, order):
         if myBT.orderStatusCheck(order) == True:
             self.bar_executed = len(self)
@@ -92,15 +99,10 @@ class TestStrategy(bt.Strategy):
         myBT.tradeStatus(trade,isclosed=True)
     def next(self):
         print('Close, %.2f' % self.dataclose[0])
-        if not self.position:
-            if self.dataclose[0] > self.sma[0]:
-                self.buy()
-                print("Buy" ,len(self), self.sma[0])
-        else:
-            if self.dataclose[0] < self.sma[0]:
-                self.sell()
-                print("Sell", len(self), self.sma[0])
 
+
+# myBT.addstrategy(TestStrategy)
+# myBT.run()
 
 cerebro = bt.Cerebro()
 cerebro.addstrategy(TestStrategy)
@@ -112,5 +114,5 @@ cerebro.broker.setcash(100000.0)
 cerebro.addsizer(bt.sizers.FixedSize, stake=1)
 cerebro.broker.setcommission(commission=0.001)
 cerebro.run()
-
+cerebro.plot(iplot=False)
 
