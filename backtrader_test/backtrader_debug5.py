@@ -77,6 +77,43 @@ myBT.run(plot = False)
 
 
 
+import backtrader as bt
+class TestStrategy(bt.Strategy):
+    params = (
+        ('exitbars', 5),
+    )
+    def __init__(self):
+        self.dataclose = self.datas[0].close
+    def notify_order(self, order):
+        if myBT.orderStatusCheck(order) == True:
+            self.bar_executed = len(self)
+    def notify_trade(self, trade):
+        myBT.tradeStatus(trade,isclosed=True)
+    def next(self):
+        print('Close, %.2f' % self.dataclose[0])
+        if not self.position:
+            if self.dataclose[0] < self.dataclose[-1]:
+                    if self.dataclose[-1] < self.dataclose[-2]:
+                        print('BUY CREATE, %.2f' % self.dataclose[0])
+                        self.buy(size=None)
+        else:
+            if len(self) >= (self.bar_executed + self.params.exitbars):
+                print('SELL CREATE, %.2f' % self.dataclose[0])
+                self.sell(size=None)
+
+cerebro = bt.Cerebro()
+cerebro.addstrategy(TestStrategy)
+
+if "openinterest" not in data0.columns:  # 检测是否需要增加'openinterest'列
+    data0['openinterest'] = 0
+data = bt.feeds.PandasData(dataname=data0)
+
+cerebro.adddata(data)
+cerebro.broker.setcash(100000.0)
+cerebro.addsizer(bt.sizers.FixedSize, stake=10)
+cerebro.broker.setcommission(commission=0.001)
+cerebro.run()
+
 
 
 
