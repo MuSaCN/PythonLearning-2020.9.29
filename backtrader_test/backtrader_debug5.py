@@ -34,6 +34,7 @@ data0 = CJSecurities["2015"]
 # ---基础设置
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myBT.ValueCash(2000)
+myBT.addsizer(100)
 myBT.setcommission(0.001)
 myBT.AddBarsData(data0,fromdate=None,todate=None)
 
@@ -41,16 +42,16 @@ myBT.AddBarsData(data0,fromdate=None,todate=None)
 @myBT.OnInit
 def __init__():
     print("init检测无仓位 = ", not myBT.position())
+    myBT.Indi_MovingAverageSimple(0,5)
 
 # ---策略递归，next()执行完就进入下一个bar
 order = []; barscount = [0]
 @myBT.OnNext
 def next():
-    print("next()", myBT.bars_executed)
+    print("next()", myBT.bars_executed, myBT.datetime(0))
     if not myBT.position():
-        if (myBT.close(0) < myBT.close(1)) and (myBT.close(1)< myBT.close(2)) and myBT.bars_executed>=3:
-            order.append(myBT.buy())
-            print("next()发出buy信号", myBT.bars_executed)
+        if myBT.close(0) > myBT.SMA[0]:
+            print("next()发出buy信号", myBT.bars_executed, myBT.datetime(0))
     else:
         if myBT.bars_executed >= barscount[0]+5:
             order.append(myBT.sell())
@@ -72,18 +73,18 @@ def notify_trade():
 
 myBT.addstrategy()
 # ---运行
-myBT.run(plot = False)
-
+myBT.run(plot = True)
 
 
 
 import backtrader as bt
 class TestStrategy(bt.Strategy):
     params = (
-        ('exitbars', 5),
+        ('maperiod', 15),
     )
     def __init__(self):
         self.dataclose = self.datas[0].close
+        self.sma = bt.indicators.MovingAverageSimple(self.datas[0], period=self.params.maperiod)
     def notify_order(self, order):
         if myBT.orderStatusCheck(order) == True:
             self.bar_executed = len(self)
@@ -92,28 +93,24 @@ class TestStrategy(bt.Strategy):
     def next(self):
         print('Close, %.2f' % self.dataclose[0])
         if not self.position:
-            if self.dataclose[0] < self.dataclose[-1]:
-                    if self.dataclose[-1] < self.dataclose[-2]:
-                        print('BUY CREATE, %.2f' % self.dataclose[0])
-                        self.buy(size=None)
+            if self.dataclose[0] > self.sma[0]:
+                self.buy()
+                print("Buy" ,len(self), self.sma[0])
         else:
-            if len(self) >= (self.bar_executed + self.params.exitbars):
-                print('SELL CREATE, %.2f' % self.dataclose[0])
-                self.sell(size=None)
+            if self.dataclose[0] < self.sma[0]:
+                self.sell()
+                print("Sell", len(self), self.sma[0])
+
 
 cerebro = bt.Cerebro()
 cerebro.addstrategy(TestStrategy)
-
 if "openinterest" not in data0.columns:  # 检测是否需要增加'openinterest'列
     data0['openinterest'] = 0
 data = bt.feeds.PandasData(dataname=data0)
-
 cerebro.adddata(data)
 cerebro.broker.setcash(100000.0)
-cerebro.addsizer(bt.sizers.FixedSize, stake=10)
+cerebro.addsizer(bt.sizers.FixedSize, stake=1)
 cerebro.broker.setcommission(commission=0.001)
 cerebro.run()
-
-
 
 
