@@ -80,39 +80,42 @@ myBT.run(plot = True)
 
 
 
+
 import backtrader as bt
 class TestStrategy(bt.Strategy):
+    params = (
+        ('maperiod', 15),
+    )
     def __init__(self):
         self.dataclose = self.datas[0].close
-        bt.indicators.MovingAverageSimple(self.datas[0], period=5).subplot = True
-        bt.indicators.ExponentialMovingAverage(self.datas[0], period=25).subplot = True
-        bt.indicators.WeightedMovingAverage(self.datas[0], period=25).subplot = True
-        bt.indicators.StochasticSlow(self.datas[0])
-        bt.indicators.MACDHisto(self.datas[0])
-        rsi = bt.indicators.RSI(self.datas[0])
-        bt.indicators.SmoothedMovingAverage(rsi, period=10).subplot = True
-        bt.indicators.ATR(self.datas[0]).subplot = True
-    def notify_order(self, order):
-        if myBT.orderStatusCheck(order) == True:
-            self.bar_executed = len(self)
-    def notify_trade(self, trade):
-        myBT.tradeStatus(trade,isclosed=True)
+        self.sma = bt.indicators.SimpleMovingAverage(self.datas[0], period=self.params.maperiod)
     def next(self):
-        print('Close, %.2f' % self.dataclose[0])
-
-
-# myBT.addstrategy(TestStrategy)
-# myBT.run()
+        if not self.position:
+            if self.dataclose[0] > self.sma[0]:
+                self.buy()
+        else:
+            if self.dataclose[0] < self.sma[0]:
+                self.sell()
+    def stop(self):
+        print(self.params.maperiod, self.broker.getvalue())
 
 cerebro = bt.Cerebro()
 cerebro.addstrategy(TestStrategy)
-if "openinterest" not in data0.columns:  # 检测是否需要增加'openinterest'列
+
+# cerebro.optstrategy(TestStrategy,maperiod=range(5, 10)) # *************
+
+Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
+CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
+CJSecurities = CJSecurities.iloc[:, 1:]
+data0 = CJSecurities["2015"]
+if "openinterest" not in data0.columns:
     data0['openinterest'] = 0
 data = bt.feeds.PandasData(dataname=data0)
 cerebro.adddata(data)
-cerebro.broker.setcash(100000.0)
-cerebro.addsizer(bt.sizers.FixedSize, stake=1)
-cerebro.broker.setcommission(commission=0.001)
+cerebro.broker.setcash(1000.0)
+cerebro.addsizer(bt.sizers.FixedSize, stake=10)
+cerebro.broker.setcommission(commission=0.0)
 cerebro.run()
 cerebro.plot(iplot=False)
+
 
