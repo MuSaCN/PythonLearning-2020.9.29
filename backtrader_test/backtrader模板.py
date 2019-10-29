@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\backtrader_test")  #路径类
+__mypath__ = MyPackage.MyClass_Path.MyClass_Path()  #路径类
 myfile = MyPackage.MyClass_File.MyClass_File()  #文件操作类
 myplt = MyPackage.MyClass_Plot.MyClass_Plot()  #直接绘图类(单个图窗)
 myfig = MyPackage.MyClass_Plot.MyClass_Figure(AddFigure=False)  #对象式绘图类(可多个图窗)
@@ -30,13 +30,6 @@ Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
 CJSecurities = CJSecurities.iloc[:, 1:]
 data0 = CJSecurities
-
-# ---基础设置
-myBTE = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  #回测类
-myBTE.ValueCash(100000)
-myBTE.setcommission(0.001)
-myBTE.AddBarsData(data0,fromdate=None,todate=None)
-
 
 class GeneralStrategy(myBTE.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
@@ -73,12 +66,20 @@ class GeneralStrategy(myBTE.bt.Strategy):
         print("stop(): " , myBTE.ValueCash(), self.sma(0), self.sma(1), self.sma(2))
 
 # ---run
-myBTE.addstrategy(GeneralStrategy)
-myBTE.run(plot = True)
-
+# myBTE.addstrategy(GeneralStrategy)
+# myBTE.run(plot = True)
+from multiprocessing import freeze_support
 # ---opt
-myBTE.optstrategy(GeneralStrategy,Para0=range(5,10))
-myBTE.run(maxcpus=1,plot = False)
+if __name__ == '__main__':
+    freeze_support()
+    # ---基础设置
+    myBTE = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  # 回测类
+    myBTE.ValueCash(100000)
+    myBTE.setcommission(0.001)
+    myBTE.AddBarsData(data0, fromdate=None, todate=None)
+
+    myBTE.optstrategy(GeneralStrategy,Para0=range(5,100))
+    myBTE.run(maxcpus=8,plot = False)
 
 
 
