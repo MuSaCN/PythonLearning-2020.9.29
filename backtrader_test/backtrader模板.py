@@ -78,7 +78,7 @@ myBTE.run(plot = True)
 
 # ---opt
 myBTE.optstrategy(GeneralStrategy,Para0=range(5,10))
-myBTE.run(plot = False)
+myBTE.run(maxcpus=1,plot = False)
 
 
 
