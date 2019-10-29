@@ -82,8 +82,7 @@ if __name__ == '__main__':
     # myBTE.run(plot=True)
 
     myBTE.optstrategy(ABCStrategy,Para0=range(5,100))
-    myBTE.cerebro.run(maxcpus=None)
-    # myBTE.run(maxcpus=None,plot = False)
+    myBTE.run(maxcpus=None,plot = False)
 
 
 
