@@ -35,7 +35,7 @@ myBT.ValueCash(100000)
 myBT.AddBarsData(data0,fromdate=None,todate=None)
 
 # ---优化
-for j in range(5,10):
+for j in range(5,20):
     myBT.setPara(j)
     # ---策略开始
     @myBT.OnInit
@@ -43,16 +43,12 @@ for j in range(5,10):
         print("init", myBT.Self(i) )
         myBT.addIndi_SMA(i,0,period=myBT.Para[i][0])
         myBT.Self(i).barscount = 0
-        print("init", myBT.bars_executed(i))
 
     # ---策略递归，next()执行完就进入下一个bar
     @myBT.OnNext
     def next(i):
-        print("next", i, myBT.bars_executed(i))
-        if myBT.bars_executed(i) == 30:
-            print("next", myBT.Self(i), myBT.Self(i).SMA[0])
         if not myBT.position(i):
-            if myBT.close(0) > myBT.close(1) and myBT.close(1) > myBT.close(2):
+            if myBT.close(0) > myBT.Self(i).SMA[0]:
                 myBT.buy(i)
         else:
             if myBT.bars_executed(i) >= myBT.Self(i).barscount + 5:
