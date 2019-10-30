@@ -67,10 +67,10 @@ class ABCStrategy(myBTE.bt.Strategy):
         print("stop(): ", myBTE.ValueCash(), self.sma(0), self.sma(1), self.sma(2))
 
 # ---run
-from multiprocessing import freeze_support
+# from multiprocessing import freeze_support
 # ---opt
 if __name__ == '__main__':
-    freeze_support()
+    # freeze_support()
 
     # ---基础设置
     myBTE = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  # 回测类
@@ -82,7 +82,7 @@ if __name__ == '__main__':
     # myBTE.run(plot=True)
 
     myBTE.optstrategy(ABCStrategy,Para0=range(5,100))
-    myBTE.run(maxcpus=None,plot = False)
+    myBTE.run(maxcpus=8,plot = False)
 
 
 
