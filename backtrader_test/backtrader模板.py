@@ -38,7 +38,8 @@ class ABCStrategy(myBTE.bt.Strategy):
     # ---只开头执行一次
     def __init__(self):
         print("init", len(self))
-        self.smahandle = myBTE.addIndi_SMA(0, period=self.params.Para0)
+        self.smahandle = myBTE.bt.indicators.MovingAverageSimple(self.datas[0],period=self.params.Para0)
+        # self.smahandle = myBTE.addIndi_SMA(0, period=self.params.Para0)
         self.sma = lambda x: self.smahandle[-x]
         self.barscount = 0
         self.close = self.datas[0].close
@@ -66,6 +67,7 @@ class ABCStrategy(myBTE.bt.Strategy):
     def stop(self):
         print("stop(): ", myBTE.ValueCash(), self.sma(0), self.sma(1), self.sma(2))
 
+
 # ---run
 # from multiprocessing import freeze_support
 # ---opt
@@ -78,11 +80,11 @@ if __name__ == '__main__':
     myBTE.setcommission(0.001)
     myBTE.AddBarsData(data0, fromdate=None, todate=None)
 
-    # myBTE.addstrategy(GeneralStrategy)
+    # myBTE.addstrategy(ABCStrategy)
     # myBTE.run(plot=True)
 
     myBTE.optstrategy(ABCStrategy,Para0=range(5,100))
-    myBTE.run(maxcpus=8,plot = False)
+    myBTE.run(maxcpus=12,plot = False)
 
 
 
