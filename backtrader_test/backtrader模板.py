@@ -20,7 +20,7 @@ mypd = MyPackage.MyClass_Array.MyClass_Pandas()  #矩阵数组类(整合Pandas)
 mypdpro = MyPackage.MyClass_ArrayPro.MyClass_PandasPro()  #高级矩阵数组类
 mytime = MyPackage.MyClass_Time.MyClass_Time()  #时间类
 myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
-myBTE = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  # 事件驱动型回测类
+myBT = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyPackage.MyClass_BackTestVector.MyClass_BackTestVector() # 向量型回测类
 myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
@@ -31,24 +31,36 @@ CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates
 CJSecurities = CJSecurities.iloc[:, 1:]
 data0 = CJSecurities
 
-class ABCStrategy(myBTE.bt.Strategy):
+class ABCStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
     params = (('Para0', 15),)
 
     # ---只开头执行一次
     def __init__(self):
-        print("init", len(self))
-        self.smahandle = myBTE.bt.indicators.MovingAverageSimple(self.datas[0],period=self.params.Para0)
-        # self.smahandle = myBTE.addIndi_SMA(0, period=self.params.Para0)
-        self.sma = lambda x: self.smahandle[-x]
+        # print("init", self)
         self.barscount = 0
-        self.close = self.datas[0].close
+        self.smahandle = myBT.addIndi_SMA(self.datas[0], period=self.params.Para0)
+        self.sma = lambda x: self.smahandle[-x]
+        # open索引
+        self.openTemp = self.datas[0].open
+        self.open = lambda x: self.openTemp[-x]
+        # high索引
+        self.highTemp = self.datas[0].high
+        self.high = lambda x: self.highTemp[-x]
+        # low索引
+        self.lowTemp = self.datas[0].low
+        self.low = lambda x: self.lowTemp[-x]
+        # close索引
+        self.closeTemp = self.datas[0].close
+        self.close = lambda x: self.closeTemp[-x]
+        # datetime.date索引
+        # self.timeTemp = self.datas[0].datetime.date
+        # self.datetime = lambda x: self.timeTemp[-x]
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        print("next sma:", self.sma(0), self.sma(1), self.sma(2))
         if not self.position:
-            if self.close[0] > self.sma(0):
+            if self.close(0) > self.sma(0):
                 self.buy()
         else:
             if len(self) >= self.barscount + 5:
@@ -56,35 +68,30 @@ class ABCStrategy(myBTE.bt.Strategy):
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
-        if myBTE.orderStatusCheck(order, True) == True:
+        if myBT.orderStatusCheck(order, False) == True:
             self.barscount = len(self)
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
-        myBTE.tradeStatus(trade, isclosed=False)
+        pass
+        # myBT.tradeStatus(trade, isclosed=False)
 
     # ---策略加载完会触发此语句
     def stop(self):
-        print("stop(): ", myBTE.ValueCash(), self.sma(0), self.sma(1), self.sma(2))
+        print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
 
 
-# ---run
-# from multiprocessing import freeze_support
-# ---opt
-if __name__ == '__main__':
-    # freeze_support()
+# ---基础设置
+myBT = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  # 回测类
+myBT.setcash(100000)
+myBT.setcommission(0.001)
+myBT.AddBarsData(data0, fromdate=None, todate=None)
 
-    # ---基础设置
-    myBTE = MyPackage.MyClass_BackTestEvent.MyClass_BackTestEvent()  # 回测类
-    myBTE.ValueCash(100000)
-    myBTE.setcommission(0.001)
-    myBTE.AddBarsData(data0, fromdate=None, todate=None)
+# myBT.addstrategy(ABCStrategy)
+myBT.optstrategy(ABCStrategy,Para0=range(5,100))
 
-    # myBTE.addstrategy(ABCStrategy)
-    # myBTE.run(plot=True)
-
-    myBTE.optstrategy(ABCStrategy,Para0=range(5,100))
-    myBTE.run(maxcpus=12,plot = False)
+if __name__ == '__main__':  # 这句必须要有
+    myBT.run(plot = True)
 
 
 
