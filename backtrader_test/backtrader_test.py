@@ -86,6 +86,7 @@ class ABCStrategy(myBT.bt.Strategy):
 # ---基础设置
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
+
 myBT.setcommission(0.001)
 myBT.AddBarsData(data0, fromdate=None, todate=None)
 

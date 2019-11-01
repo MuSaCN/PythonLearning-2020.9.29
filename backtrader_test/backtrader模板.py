@@ -33,16 +33,44 @@ CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates
 CJSecurities = CJSecurities.iloc[:, 1:]
 data0 = CJSecurities
 
+class CustomIndicator(myBT.bt.Indicator):
+    lines = ("MuSa",) # lines是必须的，一个indicator至少要有一个lines，里面是变量名称.
+
+    # ---初始化(必须)，只需要指定计算参数，数据源、画图会通过继承指定。
+    def __init__(self, minPeriod): # minPeriod相当于参数
+        self.params.minPeriod = minPeriod
+        # 设置指标需要最小的周期
+        self.addminperiod(self.params.minPeriod)
+
+    # ---迭代(必须)
+    def next(self):
+        # ---每次迭代获得的数据序列大小，可以不等于最小周期.
+        # 注意，获得的数据类型类似 list 或numpy的 array.
+        # 获得的数据按时间序列排序，但是索引是根据list，0为时间最后，-1为时间最前。
+        data_serial = self.data.get(size=self.params.minPeriod)
+        # ---每次迭代会计算此
+        self.lines.MuSa[0] = self.calculation(data_serial)
+
+    # ---自定义函数用于计算，这里是计算滞后n期的数据。
+    # 获得的数据按时间序列排序，但是索引是根据list，0为时间最后，-1为时间最前。
+    def calculation(self, data):
+        # print("calculation",type(data)) # 类型类似 list 或numpy的 array.
+        return data[0]
+
 class ABCStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
-    params = (('Para0', 15),)
+    params = (("Para0", 15),("Para1",100),)
 
     # ---只开头执行一次
     def __init__(self):
-        # print("init", self)
+        print("init", len(self))
         self.barscount = 0
+        # ---指标输入传入，不输入或者不指定，默认close
         self.smahandle = myBT.addIndi_SMA(self.datas[0], period=self.params.Para0)
         self.sma = lambda x: self.smahandle[-x]
+        # 自定义指标
+        self.customhandle = CustomIndicator(self.datas[0],minPeriod=self.params.Para1,subplot = True)
+        self.custom = lambda x: self.customhandle[-x]
         # open索引
         self.openTemp = self.datas[0].open
         self.open = lambda x: self.openTemp[-x]
@@ -59,10 +87,16 @@ class ABCStrategy(myBT.bt.Strategy):
         # self.timeTemp = self.datas[0].datetime.date
         # self.datetime = lambda x: self.timeTemp[-x]
 
+    # ---策略激活的时候被调用，类似__init__，此时len(self) = 0.
+    def start(self): print("start , ",len(self))
+
+    # ---技术指标(需要n天的数据才能产生指标)预载时自动调用.
+    def prenext(self): print("prenext, ", len(self))
+
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
         if not self.position:
-            if self.close(0) > self.sma(0):
+            if len(self) == 20:
                 self.buy()
         else:
             if len(self) >= self.barscount + 5:
@@ -75,23 +109,22 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
-        pass
-        # myBT.tradeStatus(trade, isclosed=False)
+        myBT.tradeStatus(trade, isclosed=False)
+        # myBT.tradeShow(trade)
 
     # ---策略加载完会触发此语句
     def stop(self):
         print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
 
 
-# ---基础设置
-myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
-myBT.setcash(100000)
-myBT.setcommission(0.001)
-myBT.AddBarsData(data0, fromdate=None, todate=None)
-
-# myBT.addstrategy(ABCStrategy)
-myBT.optstrategy(ABCStrategy,Para0=range(5,100))
-
 if __name__ == '__main__':  # 这句必须要有
-    myBT.run(plot = False)
+    # ---基础设置
+    myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
+    myBT.setcash(100000)
+    myBT.setcommission(0.001)
+    myBT.addsizer(10)
+    myBT.AddBarsData(data0, fromdate=None, todate=None)
+    myBT.StrategyRun(ABCStrategy,plot=True,iplot=False)
+    # myBT.OptRun(ABCStrategy,Para0=range(5,100))
+
 
