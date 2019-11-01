@@ -1,9 +1,9 @@
 # Author:Zhang Yuan
-import MyPackage
+from MyPackage.MyMql import MyClass_MqlBackups
 
 Mql4Path = "C:\\Users\\i2011\\AppData\\Roaming\\MetaQuotes\\Terminal\\F7DC4A11FD305E0AA6ED39F4697586F7\\MQL4"
 
-myMql4 = MyPackage.MyClass_Mql.MyClass_MqlBackups(Mql4Path,isPrint=True)
+myMql4 = MyClass_MqlBackups(Mql4Path,isPrint=True)
 
 # ---MyExperts_MQL4, MyClass_MQL4, MyIndicators_MQL4, MyScripts_MQL4的复制操作
 myMql4.MqlDirCopy(myMql4.ExpertsPath,"MyExperts_MQL4")
@@ -24,7 +24,8 @@ print("MQL4压缩文件保存完成，{}".format(OneDrive_Mql4))
 
 # ---上传到Baidu云
 print("------开始上传压缩文件到Baidu云盘------")
-myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()    #百度网盘交互类
+from MyPackage.MyWebCrawler import MyClass_BaiduPan
+myBaidu= MyClass_BaiduPan()    #百度网盘交互类
 needUpload = OneDrive_Mql4
 remotePath = "\\MyMql4Backups\\"
 # 开始批量上传

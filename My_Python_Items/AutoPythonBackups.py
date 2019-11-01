@@ -1,8 +1,8 @@
 # Author:Zhang Yuan
-import MyPackage
-__mypath__ = MyPackage.MyClass_Path.MyClass_Path()  #路径类
-myfile = MyPackage.MyClass_File.MyClass_File()  #文件操作类
-
+from MyPackage.MyPath import MyClass_Path
+from MyPackage.MyFile import MyClass_File
+__mypath__ = MyClass_Path()  #路径类
+myfile = MyClass_File()  #文件操作类
 
 # ------MyPackage备份系列
 print("------开始压缩MyPackage文件夹------")
@@ -36,7 +36,8 @@ locallist.append(OneDrive_MyPackage)
 locallist.append(OneDrive_PycharmProjects)
 
 # ---引入类和设定网盘目录
-myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()      #百度网盘交互类
+from MyPackage.MyWebCrawler import MyClass_BaiduPan
+myBaidu= MyClass_BaiduPan()      #百度网盘交互类
 remotePath = "\\MyPythonBackups\\"
 # ---开始批量上传
 for i in range(len(locallist)):

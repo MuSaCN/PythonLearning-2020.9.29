@@ -1,9 +1,9 @@
 # Author:Zhang Yuan
-import MyPackage
+from MyPackage.MyMql import MyClass_MqlBackups
 
 Mql5Path = "C:\\Users\\i2011\\AppData\\Roaming\\MetaQuotes\\Terminal\\6E8A5B613BD795EE57C550F7EF90598D\\MQL5"
 
-myMql5 = MyPackage.MyClass_Mql.MyClass_MqlBackups(Mql5Path,isPrint=True)
+myMql5 = MyClass_MqlBackups(Mql5Path,isPrint=True)
 
 # ---My_Experts, My_Include, My_Indicators, My_Scripts复制备份操作
 myMql5.MqlDirCopy(myMql5.ExpertsPath,"My_Experts")
@@ -23,7 +23,8 @@ print("MQL5压缩文件保存完成，{}".format(OneDrive_Mql5))
 
 # ---上传到Baidu云
 print("------开始上传压缩文件到Baidu云盘------")
-myBaidu= MyPackage.MyClass_WebCrawler.MyClass_BaiduPan()    # 百度网盘交互类
+from MyPackage.MyWebCrawler import MyClass_BaiduPan
+myBaidu= MyClass_BaiduPan()    # 百度网盘交互类
 needUpload = OneDrive_Mql5
 remotePath = "\\MyMql5Backups\\"
 # 开始批量上传
