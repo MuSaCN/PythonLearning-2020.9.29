@@ -63,7 +63,6 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---只开头执行一次
     def __init__(self):
-        print("init", len(self))
         self.barscount = 0
         # ---指标输入传入，不输入或者不指定，默认close
         self.smahandle = myBT.addIndi_SMA(self.datas[0], period=self.params.Para0)
@@ -88,10 +87,14 @@ class ABCStrategy(myBT.bt.Strategy):
         # self.datetime = lambda x: self.timeTemp[-x]
 
     # ---策略激活的时候被调用，类似__init__，此时len(self) = 0.
-    def start(self): print("start , ",len(self))
+    def start(self):
+        pass
+        # print("start , ",len(self))
 
     # ---技术指标(需要n天的数据才能产生指标)预载时自动调用.
-    def prenext(self): print("prenext, ", len(self))
+    def prenext(self):
+        pass
+        # print("prenext, ", len(self))
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
@@ -109,22 +112,26 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
-        myBT.tradeStatus(trade, isclosed=False)
+        pass
+        # myBT.tradeStatus(trade, isclosed=False)
         # myBT.tradeShow(trade)
 
     # ---策略加载完会触发此语句
     def stop(self):
         print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
 
+myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
+myBT.setcash(100000)
+myBT.setcommission(0.001)
+myBT.addsizer(10)
+myBT.AddBarsData(data0, fromdate=None, todate=None)
+myBT.addAllAnalyzer()
 
 if __name__ == '__main__':  # 这句必须要有
     # ---基础设置
-    myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
-    myBT.setcash(100000)
-    myBT.setcommission(0.001)
-    myBT.addsizer(10)
-    myBT.AddBarsData(data0, fromdate=None, todate=None)
-    myBT.StrategyRun(ABCStrategy,plot=True,iplot=False)
+
+    myBT.StrategyRun(ABCStrategy,plot=False,iplot=False)
     # myBT.OptRun(ABCStrategy,Para0=range(5,100))
 
+all_analyzer = myBT.getAllAnalyzer()
 
