@@ -125,13 +125,19 @@ myBT.setcash(100000)
 myBT.setcommission(0.001)
 myBT.addsizer(10)
 myBT.AddBarsData(data0, fromdate=None, todate=None)
-myBT.addAllAnalyzer()
+
+# myBT.addanalyzer(myBT.bt.analyzers.AnnualReturn,_name="AnnualReturn")
+# myBT.addanalyzer(myBT.bt.analyzers.DrawDown,_name="DrawDown")
+
 
 if __name__ == '__main__':  # 这句必须要有
-    # ---基础设置
+    myBT.addAllAnalyzer()  # 多核时不能用
+    # myBT.StrategyRun(ABCStrategy,plot=False,iplot=False)
+    myBT.OptRun(ABCStrategy,maxcpus=1,Para0=range(5,10))
 
-    myBT.StrategyRun(ABCStrategy,plot=False,iplot=False)
-    # myBT.OptRun(ABCStrategy,Para0=range(5,100))
-
-all_analyzer = myBT.getAllAnalyzer()
+    all_analyzer = myBT.getAllAnalyzer()
+    print(len(all_analyzer))
+    for key in all_analyzer[0]:
+        print("--- ",key," :")
+        print(all_analyzer[0][key])
 
