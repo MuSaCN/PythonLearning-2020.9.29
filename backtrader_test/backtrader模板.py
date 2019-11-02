@@ -98,12 +98,13 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        if not self.position:
-            if len(self) == 20:
-                self.buy()
-        else:
-            if len(self) >= self.barscount + 5:
-                self.sell()
+        self.buy(exectype=myBT.bt.Order.StopTrail, trailpercent=0.02)
+        # if not self.position:
+        #     if len(self) == 120:
+        #         self.buy(exectype=myBT.bt.Order.StopTrail, trailamount=25)
+        # else:
+        #     if len(self) >= self.barscount + 5:
+        #         self.sell()
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
@@ -123,17 +124,14 @@ class ABCStrategy(myBT.bt.Strategy):
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
 myBT.setcommission(0.001)
-myBT.addsizer(10)
+myBT.addsizer(1)
 myBT.AddBarsData(data0, fromdate=None, todate=None)
-
-# myBT.addanalyzer(myBT.bt.analyzers.AnnualReturn,_name="AnnualReturn")
-# myBT.addanalyzer(myBT.bt.analyzers.DrawDown,_name="DrawDown")
 
 
 if __name__ == '__main__':  # 这句必须要有
     myBT.addAllAnalyzer()  # 多核时不能用
-    # myBT.StrategyRun(ABCStrategy,plot=False,iplot=False)
-    myBT.OptRun(ABCStrategy,maxcpus=1,Para0=range(5,10))
+    myBT.StrategyRun(ABCStrategy,plot=True,iplot=False)
+    # myBT.OptRun(ABCStrategy,maxcpus=1,Para0=range(5,10))
 
     all_analyzer = myBT.getAllAnalyzer()
     print(len(all_analyzer))
