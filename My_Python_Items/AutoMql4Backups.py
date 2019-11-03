@@ -24,9 +24,11 @@ print("MQL4压缩文件保存完成，{}".format(OneDrive_Mql4))
 
 # ---上传到Baidu云
 print("------开始上传压缩文件到Baidu云盘------")
+
 from MyPackage.MyWebCrawler import MyClass_BaiduPan
 myBaidu= MyClass_BaiduPan()    #百度网盘交互类
-needUpload = OneDrive_Mql4
+# needUpload = OneDrive_Mql4
+needUpload = "C:\\Users\\i2011\\OneDrive\\Work-Mql备份\\MQL4 2019-11-03-1.zip"
 remotePath = "\\MyMql4Backups\\"
 # 开始批量上传
 print("{} 开始上传.".format(needUpload))
