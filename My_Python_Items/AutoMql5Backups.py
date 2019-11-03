@@ -29,7 +29,8 @@ needUpload = OneDrive_Mql5
 remotePath = "\\MyMql5Backups\\"
 # 开始批量上传
 print("{} 开始上传.".format(needUpload))
-myBaidu.upload(localpath=needUpload, remotepath=remotePath, ondup="overwrite")
+out = myBaidu.upload(localpath=needUpload, remotepath=remotePath, ondup="overwrite")
+myBaidu.FeedbackUpload(out = out)
 print("{} 上传完成.".format(needUpload))
 
 print("全部完成！")

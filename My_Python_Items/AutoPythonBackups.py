@@ -42,7 +42,8 @@ remotePath = "\\MyPythonBackups\\"
 # ---开始批量上传
 for i in range(len(locallist)):
     print("{} 开始上传.".format(locallist[i]))
-    myBaidu.upload(localpath=locallist[i], remotepath=remotePath, ondup="overwrite")
+    out = myBaidu.upload(localpath=locallist[i], remotepath=remotePath, ondup="overwrite")
+    myBaidu.FeedbackUpload(out=out)
     print("{} 上传完成.".format(locallist[i]))
 print("全部完成！")
 
