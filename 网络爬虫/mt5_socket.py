@@ -35,6 +35,6 @@ mySMT5 = MyMql.MyClass_SocketMT5()
 while True:
     msg = mySMT5.ReceiveMessage()
     print("接收到的信息为：",msg)
-    mySMT5.Send()
+    mySMT5.Send(input("input your message to send: "))
 
 
