@@ -26,7 +26,6 @@ print("MQL4压缩文件保存完成，{}".format(DesktopPath_Mql4))
 print("------开始上传压缩文件到Baidu云盘------")
 from MyPackage.MyWebCrawler import MyClass_BaiduPan
 myBaidu= MyClass_BaiduPan()    #百度网盘交互类
-print("myBaidu", myBaidu)
 needUpload = DesktopPath_Mql4
 remotePath = "\\MyTest\\"
 # 开始批量上传
