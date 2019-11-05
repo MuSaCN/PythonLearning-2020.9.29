@@ -30,7 +30,7 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 #------------------------------------------------------------
 
-mySMT5 = MyMql.MyClass_SocketMT5()
+mySMT5 = MyMql.MyClass_SocketMT5(address='127.0.0.1', port=9090)
 
 while True:
     msg = mySMT5.ReceiveMessage()
