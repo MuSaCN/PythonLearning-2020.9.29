@@ -27,5 +27,23 @@ myWebQD = MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行�
 
 from MyPackage.thinkbayes2 import Pmf
 
+pmf = Pmf()
+for x in [1,2,3,4,5,6]:
+    pmf.Set(x, 1/6.0)
+pmf.Print()
+
+i=60
+value=[]
+while(i<=2000):
+    value.append(1/i)
+    i+=1
+mean = np.mean(value)
+for j in range(len(value)-1):
+    if value[j]>mean and value[j+1]<mean:
+        print(j+60)
+
+
+print("OK")
+
 
 
