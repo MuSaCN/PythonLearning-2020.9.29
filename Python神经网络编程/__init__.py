@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\ThinkBayes")  #路径类
+__mypath__ = MyPackage.MyClass_Path.MyClass_Path("\\Python神经网络编程")  #路径类
 myfile = MyPackage.MyClass_File.MyClass_File()  #文件操作类
 myplt = MyPackage.MyClass_Plot.MyClass_Plot()  #直接绘图类(单个图窗)
 myfig = MyPackage.MyClass_Plot.MyClass_Figure(AddFigure=False)  #对象式绘图类(可多个图窗)
