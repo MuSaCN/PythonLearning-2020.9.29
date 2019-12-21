@@ -51,7 +51,7 @@ class My_BPNeuralNetwork:
 
         pass
 
-    # ---train the neural network，BP算法
+    # ---train the neural network，BP算法，调整权重
     def train(self, inputs_list, targets_list):
         # convert inputs list to 2d array
         inputs = np.array(inputs_list, ndmin=2).T
@@ -101,27 +101,21 @@ n = My_BPNeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 filepath = __mypath__.CurrentWorkPath()+"\\mnist_dataset\\mnist_train_100.csv"
 
 # load the mnist training data CSV file into a list
-training_data_list = myfile.read_lib(filepath)
-
 training_data_file = open(filepath, 'r')
 training_data_list = training_data_file.readlines()
 training_data_file.close()
 
-# %%
-
 # train the neural network
-# epochs is the number of times the training data set is used for training
-epochs = 5
-
-for e in range(epochs):
+times = 5
+for e in range(times):
     # go through all records in the training data set
     for record in training_data_list:
         # split the record by the ',' commas
         all_values = record.split(',')
         # scale and shift the inputs
-        inputs = (numpy.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+        inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
         # create the target output values (all 0.01, except the desired label which is 0.99)
-        targets = numpy.zeros(output_nodes) + 0.01
+        targets = np.zeros(output_nodes) + 0.01
         # all_values[0] is the target label for this record
         targets[int(all_values[0])] = 0.99
         n.train(inputs, targets)
@@ -129,9 +123,9 @@ for e in range(epochs):
     pass
 
 # %%
-
+filepath1 = __mypath__.CurrentWorkPath() + "\\mnist_dataset\\mnist_test_10.csv"
 # load the mnist test data CSV file into a list
-test_data_file = open("mnist_dataset/mnist_test.csv", 'r')
+test_data_file = open(filepath1, 'r')
 test_data_list = test_data_file.readlines()
 test_data_file.close()
 
@@ -149,11 +143,11 @@ for record in test_data_list:
     # correct answer is first value
     correct_label = int(all_values[0])
     # scale and shift the inputs
-    inputs = (numpy.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+    inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
     # query the network
     outputs = n.query(inputs)
     # the index of the highest value corresponds to the label
-    label = numpy.argmax(outputs)
+    label = np.argmax(outputs)
     # append correct or incorrect to list
     if (label == correct_label):
         # network's answer matches correct answer, add 1 to scorecard
@@ -168,12 +162,8 @@ for record in test_data_list:
 # %%
 
 # calculate the performance score, the fraction of correct answers
-scorecard_array = numpy.asarray(scorecard)
+scorecard_array = np.asarray(scorecard)
 print("performance = ", scorecard_array.sum() / scorecard_array.size)
-
-# %%
-
-
 
 
 
