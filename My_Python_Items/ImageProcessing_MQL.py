@@ -33,20 +33,20 @@ for image in imagelist:
         file_out = filepath + "\\logo\\" + name[0] + "." + name[1]
         # 获取修改大小后的内存
         myImage.resizeImage(width, height, file_out, save=True)
-        # logo处理方案！！！！！！！！！！！！！
-        IndicatorName = ["Momentum","MACD"]
+        # ！！！！！！logo处理方案！！！！！！！！！！！！！
+        IndicatorName = ["Momentum","MACD"]  # ***每次需修改***
         for i in IndicatorName:
             # 生成logo_DEMO
             myImage.__init__(file_in = file_out, draw = True)
             file_demo = filepath + "\\logo\\" + name[0] + "_" +i + "_DEMO." + name[1]
             myImage.textOnImage(i, -1, -1, 30, file_demo, save=False)
-            myImage.textOnImage("MoreTimeFrame", -1, 120, 25, file_demo, save=False)
+            myImage.textOnImage("MoreTimeFrame", -1, 120, 25, file_demo, save=False) # ***每次需修改***
             myImage.textOnImage("DEMO", -1, 150, 30, file_demo, save=True)
             # 生成logo_Paid
             myImage.__init__(file_in=file_out, draw=True)
             file_paid = filepath + "\\logo\\" + name[0] + "_" +i + "_Paid." + name[1]
             myImage.textOnImage(i, -1, -1, 30, file_paid, save=True)
-            myImage.textOnImage("MoreTimeFrame", -1, 120, 25, file_paid, save=True)
+            myImage.textOnImage("MoreTimeFrame", -1, 120, 25, file_paid, save=True)  # ***每次需修改***
     else:
         # 不是logo文件，则转成640*480
         width = 640; height = 480
