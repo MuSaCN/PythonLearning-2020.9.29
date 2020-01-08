@@ -34,14 +34,14 @@ for image in imagelist:
         # 获取修改大小后的内存
         myImage.resizeImage(width, height, file_out, save=True)
         # ！！！！！！logo处理方案！！！！！！！！！！！！！
-        IndicatorName = ["Momentum","MACD"]  # ***每次需修改***
+        IndicatorName = ["AC","Alligator","AO","BWMFI","Fractals","Gator","ATR","BearsPower","BullsPower","CCI","Chaikin","DeMarker","Force","MACD","Momentum","OsMA","RSI","RSV","Stochastic","TriX","WPR","AD","MFI","OBV","Volumes","ADX","ADXWilder","AMA","Bands","DEMA","Envelopes","FrAMA","Ichimoku","MA","SAR","StdDev","TEMA","VIDyA"]  # ***每次需修改***
         for i in IndicatorName:
             # 生成logo_DEMO
             myImage.__init__(file_in = file_out, draw = True)
             file_demo = filepath + "\\logo\\" + name[0] + "_" +i + "_DEMO." + name[1]
             myImage.textOnImage(i, -1, -1, 35, file_demo, save=False)
             #myImage.textOnImage("MoreTimeFrame", -1, 120, 25, file_demo, save=False) # ***每次需修改***
-            myImage.textOnImage("DEMO", -1, 155, 30, file_demo, save=True)
+            myImage.textOnImage("DEMO", -1, 158, 30, file_demo, save=True)
             # 生成logo_Paid
             myImage.__init__(file_in=file_out, draw=True)
             file_paid = filepath + "\\logo\\" + name[0] + "_" +i + "_Paid." + name[1]
