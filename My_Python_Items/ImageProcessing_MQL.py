@@ -2,7 +2,7 @@
 # ------------------使用说明------------------------------------------------
 # 文件命名规则：
 #   logo原始文件命名规则：abc_logo.png --> abc_logo_*_DEMO.png / abc_logo_*_Paid.png
-#   screenshot原始文件命名规则：abc.png --> abc_640_480.png
+#   screenshot原始文件(无_logo标识符)命名规则：abc.png --> abc_640_480.png
 # logo图片添加文字：
 #   IndicatorName = [*] / myImage.textOnImage() 为logo核心文本输入内容，每次使用都不同，需要修改。
 
@@ -17,8 +17,9 @@ myImage = MyClass_ImageProcess()  # 图片处理类
 
 # ---获得指定目录下的所有image文件
 filepath = __mypath__.GetDesktopPath()+"\\MoreTimeFrame"
-imagelist = myImage.search_image(filepath)
 
+
+imagelist = myImage.search_image(filepath)
 # ---处理image
 for image in imagelist:
     file_in = filepath + "\\" + image
@@ -31,7 +32,7 @@ for image in imagelist:
         width = 200 ; height = 200
         # 以 *_logo_200_200.* 方式命名，存入logo文件夹
         file_out = filepath + "\\logo\\" + name[0] + "." + name[1]
-        # 获取修改大小后的内存
+        # 修改大小
         myImage.resizeImage(width, height, file_out, save=True)
         # ！！！！！！logo处理方案！！！！！！！！！！！！！
         IndicatorName = ["AC","Alligator","AO","BWMFI","Fractals","Gator","ATR","BearsPower","BullsPower","CCI","Chaikin","DeMarker","Force","MACD","Momentum","OsMA","RSI","RSV","Stochastic","TriX","WPR","AD","MFI","OBV","Volumes","ADX","ADXWilder","AMA","Bands","DEMA","Envelopes","FrAMA","Ichimoku","MA","SAR","StdDev","TEMA","VIDyA"]  # ***每次需修改***
