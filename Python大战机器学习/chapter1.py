@@ -51,6 +51,7 @@ def load_data():
     '''
     diabetes = datasets.load_diabetes()#使用 scikit-learn 自带的一个糖尿病病人的数据集
     return model_selection.train_test_split(diabetes.data,diabetes.target,test_size=0.25,random_state=0) # 拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
+
 def test_LinearRegression(*data):
     '''
     测试 LinearRegression 的用法
