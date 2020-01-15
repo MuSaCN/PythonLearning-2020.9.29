@@ -100,6 +100,30 @@ from sklearn import  linear_model
 # 有多少个分类，就有多少个优化函数
 regr = linear_model.LogisticRegression().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
+# 测试 LogisticRegression 的预测性能随 multi_class 参数的影响
+regr = linear_model.LogisticRegression(multi_class='multinomial',solver='lbfgs').fit(X_train, Y_train)
+myML.LinearModel.showModelTest(regr, X_test, Y_test)
+# 测试 LogisticRegression 的预测性能随  C  参数的影响
+Cs=np.logspace(-2,4,num=100)
+scores=[]
+for C in Cs:
+    regr = linear_model.LogisticRegression(C=C).fit(X_train, Y_train)
+    scores.append(regr.score(X_test, Y_test))
+## 绘图
+logC = [np.log(i) for i in Cs]
+myplt.plot(logC,scores)
+
+
+# ---线性判别分析
+data = myML.DataPre.load_datasets(mode="iris")
+X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.target,test_size=0.25,random_state=0)
+#
+from sklearn import discriminant_analysis
+lda = discriminant_analysis.LinearDiscriminantAnalysis().fit(X_train, Y_train)
+myML.LinearModel.showModelTest(lda, X_test, Y_test)
+# 绘制经过 LDA 转换后的数据(4维降到3维)
+myML.LinearModel.plot_LDA(X_train, Y_train)
+
 
 
 
