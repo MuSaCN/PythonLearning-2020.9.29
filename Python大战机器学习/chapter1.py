@@ -48,7 +48,7 @@ from sklearn import  linear_model
 regr = linear_model.LinearRegression().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 
-# ---岭回归
+# ---岭回归 Ridge
 regr = linear_model.Ridge().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # 测试alpha
@@ -58,14 +58,13 @@ for i,alpha in enumerate(alphas):
     regr = linear_model.Ridge(alpha=alpha).fit(X_test, Y_test)
     scores.append(regr.score(X_test, Y_test))
 ## 绘图
-fig=plt.figure()
-ax=fig.add_subplot(1,1,1)
-ax.plot(alphas,scores)
-ax.set_xlabel(r"$\alpha$")
-ax.set_ylabel(r"score")
-ax.set_xscale('log')
-ax.set_title("Ridge")
-plt.show()
+logA = [np.log(i) for i in alphas]
+myplt.plot(logA,scores)
+
+
+# ---Lasso
+
+
 
 
 
