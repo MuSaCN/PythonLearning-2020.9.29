@@ -28,44 +28,25 @@ myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 myWebQD = MyWebCrawler.MyClass_WebQuotesDownload()  # 金融行情下载类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
+myML = MyMachineLearning.MyClass_MachineLearning() # 机器学习综合类
 #------------------------------------------------------------
-
 
 """
     广义线性模型
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     LinearRegression
-
     :copyright: (c) 2016 by the huaxz1986.
     :license: lgpl-3.0, see LICENSE for more details.
 """
+data = myML.DataPre.load_datasets(mode="diabetes")
+X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.target,test_size=0.25,random_state=0)
 
-from sklearn import datasets, linear_model,model_selection
+from sklearn import  linear_model
+regr = linear_model.LinearRegression().fit(X_train, Y_train)
 
-def load_data():
-    '''
-    加载用于回归问题的数据集
+myML.LinearModel.showModelTest(regr, X_test, Y_test)
 
-    :return: 一个元组，用于回归问题。元组元素依次为：训练样本集、测试样本集、训练样本集对应的值、测试样本集对应的值
-    '''
-    diabetes = datasets.load_diabetes()#使用 scikit-learn 自带的一个糖尿病病人的数据集
-    return model_selection.train_test_split(diabetes.data,diabetes.target,test_size=0.25,random_state=0) # 拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
 
-def test_LinearRegression(*data):
-    '''
-    测试 LinearRegression 的用法
 
-    :param data: 可变参数。它是一个元组，这里要求其元素依次为：训练样本集、测试样本集、训练样本的值、测试样本的值
-    :return: None
-    '''
-    X_train,X_test,y_train,y_test=data
-    regr = linear_model.LinearRegression()
-    regr.fit(X_train, y_train)
-    print('Coefficients:%s, intercept %.2f'%(regr.coef_,regr.intercept_))
-    print("Residual sum of squares: %.2f"% np.mean((regr.predict(X_test) - y_test) ** 2))
-    print('Score: %.2f' % regr.score(X_test, y_test))
 
-if __name__=='__main__':
-    X_train,X_test,y_train,y_test=load_data() # 产生用于回归问题的数据集
-    test_LinearRegression(X_train,X_test,y_train,y_test) # 调用 test_LinearRegression
+
