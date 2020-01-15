@@ -39,14 +39,33 @@ myML = MyMachineLearning.MyClass_MachineLearning() # 机器学习综合类
     :license: lgpl-3.0, see LICENSE for more details.
 """
 data = myML.DataPre.load_datasets(mode="diabetes")
+
 X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.target,test_size=0.25,random_state=0)
 
 from sklearn import  linear_model
-regr = linear_model.LinearRegression().fit(X_train, Y_train)
 
+# ---LinearRegression线性回归
+regr = linear_model.LinearRegression().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 
-
+# ---岭回归
+regr = linear_model.Ridge().fit(X_train, Y_train)
+myML.LinearModel.showModelTest(regr, X_test, Y_test)
+# 测试alpha
+alphas=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000]
+scores=[]
+for i,alpha in enumerate(alphas):
+    regr = linear_model.Ridge(alpha=alpha).fit(X_test, Y_test)
+    scores.append(regr.score(X_test, Y_test))
+## 绘图
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+ax.plot(alphas,scores)
+ax.set_xlabel(r"$\alpha$")
+ax.set_ylabel(r"score")
+ax.set_xscale('log')
+ax.set_title("Ridge")
+plt.show()
 
 
 
