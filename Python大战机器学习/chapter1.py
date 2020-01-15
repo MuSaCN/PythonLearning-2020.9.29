@@ -63,6 +63,38 @@ myplt.plot(logA,scores)
 
 
 # ---Lasso
+regr = linear_model.Lasso().fit(X_train, Y_train)
+myML.LinearModel.showModelTest(regr, X_test, Y_test)
+# test alpha
+alphas=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000]
+scores=[]
+for i,alpha in enumerate(alphas):
+    regr = linear_model.Lasso(alpha=alpha).fit(X_train, Y_train)
+    scores.append(regr.score(X_test, Y_test))
+## 绘图
+logA = [np.log(i) for i in alphas]
+myplt.plot(logA,scores)
+
+
+# ---ElasticNet
+regr = linear_model.ElasticNet().fit(X_train, Y_train)
+myML.LinearModel.showModelTest(regr, X_test, Y_test)
+# test alpha and rhos
+alphas=np.logspace(-2,2)
+rhos=np.linspace(0.01,1)
+scores=[]
+for alpha in alphas:
+    for rho in rhos:
+        regr = linear_model.ElasticNet(alpha=alpha,l1_ratio=rho).fit(X_train, Y_train)
+        scores.append(regr.score(X_test, Y_test))
+## 绘图
+myfig.__init__(1,1)
+myfig.SetAxes_3D2D()
+scores1=np.array(scores).reshape((alphas.size,rhos.size))
+myfig.PlotGrid3D(alphas,rhos,z = scores1)
+
+
+
 
 
 
