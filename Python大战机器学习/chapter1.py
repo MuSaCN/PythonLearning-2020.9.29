@@ -39,7 +39,6 @@ myML = MyMachineLearning.MyClass_MachineLearning() # 机器学习综合类
     :license: lgpl-3.0, see LICENSE for more details.
 """
 data = myML.DataPre.load_datasets(mode="diabetes")
-
 X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.target,test_size=0.25,random_state=0)
 
 from sklearn import  linear_model
@@ -94,9 +93,13 @@ scores1=np.array(scores).reshape((alphas.size,rhos.size))
 myfig.PlotGrid3D(alphas,rhos,z = scores1)
 
 
-
-
-
+# ---logistic 回归
+data = myML.DataPre.load_datasets(mode="iris")
+X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.target,test_size=0.25,random_state=0)
+from sklearn import  linear_model
+# 有多少个分类，就有多少个优化函数
+regr = linear_model.LogisticRegression().fit(X_train, Y_train)
+myML.LinearModel.showModelTest(regr, X_test, Y_test)
 
 
 
