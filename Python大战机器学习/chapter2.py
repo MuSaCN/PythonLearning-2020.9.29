@@ -134,15 +134,5 @@ ax.set_title("Decision Tree Classification")
 ax.legend(framealpha=0.5,loc='best')
 plt.show()
 
-# ---
-from sklearn.datasets import load_iris
-from sklearn import tree
-X, y = load_iris(return_X_y=True)
-iris = load_iris()
-clf = tree.DecisionTreeClassifier()
-clf = clf.fit(X, y)
-tree.plot_tree(clf.fit(X, y))
-
-
 
 
