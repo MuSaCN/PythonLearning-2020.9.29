@@ -10,7 +10,7 @@
 """
 import numpy as np
 from sklearn.tree import DecisionTreeRegressor
-from sklearn import cross_validation
+from sklearn import model_selection
 import matplotlib.pyplot as plt
 def creat_data(n):
     '''
@@ -24,7 +24,7 @@ def creat_data(n):
     y = np.sin(X).ravel()
     noise_num=(int)(n/5)
     y[::5] += 3 * (0.5 - np.random.rand(noise_num)) # 每第5个样本，就在该样本的值上添加噪音
-    return cross_validation.train_test_split(X, y,
+    return model_selection.train_test_split(X, y,
 		test_size=0.25,random_state=1) # 拆分原始数据集为训练集和测试集，其中测试集大小为元素数据集大小的 1/4
 def test_DecisionTreeRegressor(*data):
     '''

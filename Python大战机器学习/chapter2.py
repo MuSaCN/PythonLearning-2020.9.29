@@ -33,3 +33,61 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 
 
 
+from sklearn.tree import DecisionTreeRegressor
+
+# --- random data
+n=1000
+np.random.seed(0)
+X = 5 * np.random.rand(n, 1)
+y = np.sin(X).ravel()
+noise_num=(int)(n/5)
+y[::5] += 3 * (0.5 - np.random.rand(noise_num)) # 每第5个样本，就在该样本的值上添加噪音
+X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(X,y,test_size=0.25,random_state=1)
+
+# 计算决策树
+regr = DecisionTreeRegressor()
+regr.fit(X_train, y_train)
+myML.TreeModel.showModelTest(regr,X_train,y_train)
+myML.TreeModel.showModelTest(regr,X_test,y_test)
+
+##绘图
+myML.TreeModel.DecisionTree_PlotPredict(regr,X_train,y_train,"train sample",show=False)
+myML.TreeModel.DecisionTree_PlotPredict(regr,X_test,y_test,"test sample",show=True)
+
+# 测试 DecisionTreeRegressor 预测性能随划分类型的影响
+splitters=['best','random']
+for splitter in splitters:
+    regr = DecisionTreeRegressor(splitter=splitter)
+    regr.fit(X_train, y_train)
+    print("Splitter %s"%splitter)
+    print("Training score:%f"%(regr.score(X_train,y_train)))
+    print("Testing score:%f"%(regr.score(X_test,y_test)))
+
+# 测试 DecisionTreeRegressor 预测性能随  max_depth 的影响
+depths=np.arange(1,20)
+training_scores=[]
+testing_scores=[]
+for depth in depths:
+    regr = DecisionTreeRegressor(max_depth=depth)
+    regr.fit(X_train, y_train)
+    training_scores.append(regr.score(X_train,y_train))
+    testing_scores.append(regr.score(X_test,y_test))
+## 绘图
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+ax.plot(depths,training_scores,label="traing score")
+ax.plot(depths,testing_scores,label="testing score")
+ax.set_xlabel("maxdepth")
+ax.set_ylabel("score")
+ax.set_title("Decision Tree Regression")
+ax.legend(framealpha=0.5)
+plt.show()
+
+
+
+
+
+
+
+
+
