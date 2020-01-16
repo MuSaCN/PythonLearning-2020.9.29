@@ -44,7 +44,7 @@ noise_num=(int)(n/5)
 y[::5] += 3 * (0.5 - np.random.rand(noise_num)) # 每第5个样本，就在该样本的值上添加噪音
 X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(X,y,test_size=0.25,random_state=1)
 
-# 计算决策树
+# 决策树回归-------------------------------------------------
 regr = DecisionTreeRegressor()
 regr.fit(X_train, y_train)
 myML.TreeModel.showModelTest(regr,X_train,y_train)
@@ -82,6 +82,58 @@ ax.set_ylabel("score")
 ax.set_title("Decision Tree Regression")
 ax.legend(framealpha=0.5)
 plt.show()
+
+# 决策树分类---------------------------------------------------
+from sklearn.tree import DecisionTreeClassifier
+
+iris = myML.DataPre.load_datasets("iris")
+# 根据数据的特点，需要设置分层采样
+X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(iris.data,iris.target,test_size=0.25, random_state=0, stratify=iris.target)
+
+# DecisionTreeClassifier 的用法
+clf = DecisionTreeClassifier()
+clf.fit(X_train, Y_train)
+myML.TreeModel.showModelTest(clf,X_train,Y_train)
+myML.TreeModel.showModelTest(clf,X_test,Y_test)
+
+# 测试 DecisionTreeClassifier 的预测性能随 criterion 参数的影响
+criterions=['gini','entropy']
+for criterion in criterions:
+    clf = DecisionTreeClassifier(criterion=criterion)
+    clf.fit(X_train, Y_train)
+    print("criterion:%s"%criterion)
+    print("Training score:%f"%(clf.score(X_train,Y_train)))
+    print("Testing score:%f"%(clf.score(X_test,Y_test)))
+
+# 测试 DecisionTreeClassifier 的预测性能随划分类型的影响
+splitters=['best','random']
+for splitter in splitters:
+    clf = DecisionTreeClassifier(splitter=splitter)
+    clf.fit(X_train, Y_train)
+    print("splitter:%s"%splitter)
+    print("Training score:%f"%(clf.score(X_train,Y_train)))
+    print("Testing score:%f"%(clf.score(X_test,Y_test)))
+
+# 测试 DecisionTreeClassifier 的预测性能随 max_depth 参数的影响
+depths=np.arange(1,20)
+training_scores=[]
+testing_scores=[]
+for depth in depths:
+    clf = DecisionTreeClassifier(max_depth=depth)
+    clf.fit(X_train, Y_train)
+    training_scores.append(clf.score(X_train,Y_train))
+    testing_scores.append(clf.score(X_test,Y_test))
+## 绘图
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+ax.plot(depths,training_scores,label="traing score",marker='o')
+ax.plot(depths,testing_scores,label="testing score",marker='*')
+ax.set_xlabel("maxdepth")
+ax.set_ylabel("score")
+ax.set_title("Decision Tree Classification")
+ax.legend(framealpha=0.5,loc='best')
+plt.show()
+
 
 
 
