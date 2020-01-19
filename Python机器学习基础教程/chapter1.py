@@ -57,7 +57,6 @@ X_train, X_test, y_train, y_test = train_test_split(iris_dataset['data'], iris_d
 iris_dataframe = pd.DataFrame(X_train, columns=iris_dataset.feature_names)
 pd.plotting.scatter_matrix(iris_dataframe, c=y_train, figsize=(15, 15),marker='o', hist_kwds={'bins': 20}, s=60,alpha=.8)
 
-
 from sklearn.neighbors import KNeighborsClassifier
 knn = KNeighborsClassifier(n_neighbors=1)
 
@@ -68,8 +67,7 @@ print("X_new.shape:", X_new.shape)
 
 prediction = knn.predict(X_new)
 print("Prediction:", prediction)
-print("Predicted target name:",
-       iris_dataset['target_names'][prediction])
+print("Predicted target name:",iris_dataset['target_names'][prediction])
 
 y_pred = knn.predict(X_test)
 print("Test set predictions:\n", y_pred)
@@ -77,8 +75,7 @@ print("Test set score: {:.2f}".format(np.mean(y_pred == y_test)))
 print("Test set score: {:.2f}".format(knn.score(X_test, y_test)))
 
 ### Summary and Outlook
-X_train, X_test, y_train, y_test = train_test_split(
-    iris_dataset['data'], iris_dataset['target'], random_state=0)
+X_train, X_test, y_train, y_test = train_test_split( iris_dataset['data'], iris_dataset['target'], random_state=0)
 knn = KNeighborsClassifier(n_neighbors=1)
 knn.fit(X_train, y_train)
 print("Test set score: {:.2f}".format(knn.score(X_test, y_test)))
