@@ -30,25 +30,24 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
-
+# %%
 from MyPackage.bookcode.preamble import *
 
 # %%
 # 生成(小斑点)聚类算法的测试数据；
 X, y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
 # plot dataset
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
-plt.legend(["Class 0", "Class 1"], loc=4)
-plt.xlabel("First feature")
-plt.ylabel("Second feature")
+mypltpro.discrete_scatter(X[:, 0], X[:, 1], y)
 print("X.shape:", X.shape)
 
 # %%
-X, y = mglearn.datasets.make_wave(n_samples=40)
-plt.plot(X, y, 'o')
-plt.ylim(-3, 3)
-plt.xlabel("Feature")
-plt.ylabel("Target")
+n_samples=40
+rnd = np.random.RandomState(42)
+x = rnd.uniform(-3, 3, size=n_samples)
+y_no_noise = (np.sin(4 * x) + x)
+y = (y_no_noise + rnd.normal(size=len(x))) / 2
+X = x.reshape(-1, 1)
+plt.plot(X, y, 'o'); plt.ylim(-3, 3); plt.xlabel("Feature"); plt.ylabel("Target");
 
 # %%
 cancer = myML.DataPre.load_datasets("breast_cancer")
@@ -72,49 +71,24 @@ print("X.shape:", X.shape)
 
 # %%
 # k-Nearest Neighbors
-##### k-Neighbors classification
-# %%
-
-mglearn.plots.plot_knn_classification(n_neighbors=1)
-
-# %%
-
-mglearn.plots.plot_knn_classification(n_neighbors=3)
+# 生成(小斑点)聚类算法的测试数据；
+X, Y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
+X_test = np.array([[8.2, 3.66214339], [9.9, 3.2], [11.2, .5]])
+mypltpro.plot_knn_classification(X,Y,X_test,n_neighbors=5,show=True)
 
 # %%
-
-from sklearn.model_selection import train_test_split
-
 X, y = mglearn.datasets.make_forge()
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
-
-# %%
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X, y, random_state=0)
 
 from sklearn.neighbors import KNeighborsClassifier
-
 clf = KNeighborsClassifier(n_neighbors=3)
-
-# %%
-
 clf.fit(X_train, y_train)
-
-# %%
-
 print("Test set predictions:", clf.predict(X_test))
-
-# %%
-
 print("Test set accuracy: {:.2f}".format(clf.score(X_test, y_test)))
 
 # %% md
-
 ##### Analyzing KNeighborsClassifier
-
-# %%
-
 fig, axes = plt.subplots(1, 3, figsize=(10, 3))
-
 for n_neighbors, ax in zip([1, 3, 9], axes):
     # the fit method returns the object self, so we can instantiate
     # and fit in one line
