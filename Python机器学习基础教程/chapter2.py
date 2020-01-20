@@ -31,37 +31,11 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
 
+from MyPackage.bookcode.preamble import *
 
-from preamble import *
-
-# %% md
-
-## Supervised Learning
-### Classification and Regression
-
-# %% md
-
-### Generalization, Overfitting, and Underfitting
-
-# %% md
-
-![model_complexity](images / overfitting_underfitting_cartoon.png)
-
-# %% md
-
-#### Relation of Model Complexity to Dataset Size
-
-# %% md
-
-### Supervised Machine Learning Algorithms
-#### Some Sample Datasets
-
-# %% raw
-mglearn.plots.plot_grid_search_overview()
 # %%
-
-# generate dataset
-X, y = mglearn.datasets.make_forge()
+# 生成(小斑点)聚类算法的测试数据；
+X, y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
 # plot dataset
 mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
 plt.legend(["Class 0", "Class 1"], loc=4)
@@ -70,7 +44,6 @@ plt.ylabel("Second feature")
 print("X.shape:", X.shape)
 
 # %%
-
 X, y = mglearn.datasets.make_wave(n_samples=40)
 plt.plot(X, y, 'o')
 plt.ylim(-3, 3)
@@ -78,42 +51,28 @@ plt.xlabel("Feature")
 plt.ylabel("Target")
 
 # %%
-
-from sklearn.datasets import load_breast_cancer
-
-cancer = load_breast_cancer()
+cancer = myML.DataPre.load_datasets("breast_cancer")
 print("cancer.keys():\n", cancer.keys())
-
-# %%
-
 print("Shape of cancer data:", cancer.data.shape)
-
-# %%
-
-print("Sample counts per class:\n",
-      {n: v for n, v in zip(cancer.target_names, np.bincount(cancer.target))})
-
-# %%
-
+print("Sample counts per class:\n",{n: v for n, v in zip(cancer.target_names, np.bincount(cancer.target))})
 print("Feature names:\n", cancer.feature_names)
 
 # %%
-
-from sklearn.datasets import load_boston
-
-boston = load_boston()
+boston = myML.DataPre.load_datasets("boston")
 print("Data shape:", boston.data.shape)
 
 # %%
-
-X, y = mglearn.datasets.load_extended_boston()
+from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
+boston = myML.DataPre.load_datasets("boston")
+X = boston.data
+X = MinMaxScaler().fit_transform(boston.data) # 缩放到0-1
+X = PolynomialFeatures(degree=2, include_bias=False).fit_transform(X) # 生成深度2的多项式
+y = boston.target
 print("X.shape:", X.shape)
 
-# %% md
-
-#### k-Nearest Neighbors
+# %%
+# k-Nearest Neighbors
 ##### k-Neighbors classification
-
 # %%
 
 mglearn.plots.plot_knn_classification(n_neighbors=1)
