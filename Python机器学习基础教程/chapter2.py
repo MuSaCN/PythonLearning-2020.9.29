@@ -86,6 +86,8 @@ clf.fit(X_train, y_train)
 print("Test set predictions:", clf.predict(X_test))
 print("Test set accuracy: {:.2f}".format(clf.score(X_test, y_test)))
 
+############################### 目前到这 ##############################################
+
 # %% md
 ##### Analyzing KNeighborsClassifier
 fig, axes = plt.subplots(1, 3, figsize=(10, 3))
@@ -101,9 +103,7 @@ for n_neighbors, ax in zip([1, 3, 9], axes):
 axes[0].legend(loc=3)
 
 # %%
-
 from sklearn.datasets import load_breast_cancer
-
 cancer = load_breast_cancer()
 X_train, X_test, y_train, y_test = train_test_split(
     cancer.data, cancer.target, stratify=cancer.target, random_state=66)
