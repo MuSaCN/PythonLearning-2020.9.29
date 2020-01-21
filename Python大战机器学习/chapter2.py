@@ -30,10 +30,7 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
-
-
-
-from sklearn.tree import DecisionTreeRegressor
+from sklearn import tree
 
 # --- random data
 n=1000
@@ -45,7 +42,7 @@ y[::5] += 3 * (0.5 - np.random.rand(noise_num)) # 每第5个样本，就在该�
 X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(X,y,test_size=0.25,random_state=1)
 
 # 决策树回归-------------------------------------------------
-regr = DecisionTreeRegressor()
+regr = tree.DecisionTreeRegressor()
 regr.fit(X_train, y_train)
 myML.TreeModel.showModelTest(regr,X_train,y_train)
 myML.TreeModel.showModelTest(regr,X_test,y_test)
@@ -57,7 +54,7 @@ myML.TreeModel.DecisionTree_PlotPredict(regr,X_test,y_test,"test sample",show=Tr
 # 测试 DecisionTreeRegressor 预测性能随划分类型的影响
 splitters=['best','random']
 for splitter in splitters:
-    regr = DecisionTreeRegressor(splitter=splitter)
+    regr = tree.DecisionTreeRegressor(splitter=splitter)
     regr.fit(X_train, y_train)
     print("Splitter %s"%splitter)
     print("Training score:%f"%(regr.score(X_train,y_train)))
@@ -65,33 +62,18 @@ for splitter in splitters:
 
 # 测试 DecisionTreeRegressor 预测性能随  max_depth 的影响
 depths=np.arange(1,20)
-training_scores=[]
-testing_scores=[]
-for depth in depths:
-    regr = DecisionTreeRegressor(max_depth=depth)
-    regr.fit(X_train, y_train)
-    training_scores.append(regr.score(X_train,y_train))
-    testing_scores.append(regr.score(X_test,y_test))
-## 绘图
-fig=plt.figure()
-ax=fig.add_subplot(1,1,1)
-ax.plot(depths,training_scores,label="traing score")
-ax.plot(depths,testing_scores,label="testing score")
-ax.set_xlabel("maxdepth")
-ax.set_ylabel("score")
-ax.set_title("Decision Tree Regression")
-ax.legend(framealpha=0.5)
-plt.show()
+myML.plotML.PlotParam(X_train,X_train,y_train,y_train,"tree.DecisionTreeRegressor()",logX=False,label="traing score",show=False,max_depth=depths)
+myML.plotML.PlotParam(X_train,X_test,y_train,y_test,"tree.DecisionTreeRegressor()",logX=False,label="test score",show=True,max_depth=depths)
+
 
 # 决策树分类---------------------------------------------------
-from sklearn.tree import DecisionTreeClassifier
-
+from sklearn import tree
 iris = myML.DataPre.load_datasets("iris")
 # 根据数据的特点，需要设置分层采样
 X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(iris.data,iris.target,test_size=0.25, random_state=0, stratify=iris.target)
 
 # DecisionTreeClassifier 的用法
-clf = DecisionTreeClassifier()
+clf = tree.DecisionTreeClassifier()
 clf.fit(X_train, Y_train)
 myML.TreeModel.showModelTest(clf,X_train,Y_train)
 myML.TreeModel.showModelTest(clf,X_test,Y_test)
@@ -99,7 +81,7 @@ myML.TreeModel.showModelTest(clf,X_test,Y_test)
 # 测试 DecisionTreeClassifier 的预测性能随 criterion 参数的影响
 criterions=['gini','entropy']
 for criterion in criterions:
-    clf = DecisionTreeClassifier(criterion=criterion)
+    clf = tree.DecisionTreeClassifier(criterion=criterion)
     clf.fit(X_train, Y_train)
     print("criterion:%s"%criterion)
     print("Training score:%f"%(clf.score(X_train,Y_train)))
@@ -108,7 +90,7 @@ for criterion in criterions:
 # 测试 DecisionTreeClassifier 的预测性能随划分类型的影响
 splitters=['best','random']
 for splitter in splitters:
-    clf = DecisionTreeClassifier(splitter=splitter)
+    clf = tree.DecisionTreeClassifier(splitter=splitter)
     clf.fit(X_train, Y_train)
     print("splitter:%s"%splitter)
     print("Training score:%f"%(clf.score(X_train,Y_train)))
@@ -116,23 +98,9 @@ for splitter in splitters:
 
 # 测试 DecisionTreeClassifier 的预测性能随 max_depth 参数的影响
 depths=np.arange(1,20)
-training_scores=[]
-testing_scores=[]
-for depth in depths:
-    clf = DecisionTreeClassifier(max_depth=depth)
-    clf.fit(X_train, Y_train)
-    training_scores.append(clf.score(X_train,Y_train))
-    testing_scores.append(clf.score(X_test,Y_test))
-## 绘图
-fig=plt.figure()
-ax=fig.add_subplot(1,1,1)
-ax.plot(depths,training_scores,label="traing score",marker='o')
-ax.plot(depths,testing_scores,label="testing score",marker='*')
-ax.set_xlabel("maxdepth")
-ax.set_ylabel("score")
-ax.set_title("Decision Tree Classification")
-ax.legend(framealpha=0.5,loc='best')
-plt.show()
+myML.plotML.PlotParam(X_train,X_train,Y_train,Y_train,"tree.DecisionTreeClassifier()",logX=False,label="traing score",show=False,max_depth=depths)
+myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"tree.DecisionTreeClassifier()",logX=False,label="test score",show=True,max_depth=depths)
+
 
 
 
