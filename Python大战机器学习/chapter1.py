@@ -43,6 +43,45 @@ X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.tar
 
 from sklearn import  linear_model
 
+def PlotParam(X_train, Y_train, X_test, Y_test, str_func, logX=True, **kwargs):
+    # 解析字符串形式函数
+    # str_func = "linear_model.Ridge()"
+    # kwargs={"alpha":alphas}
+    left = str_func[0:-1]  # 得到 "**("
+    right = str_func[-1]  # 得到 ")"
+    # 解析输入参数
+    keyname = [];
+    keyvalue = []
+    for i in kwargs.keys():
+        keyname.append(i)
+    for i in kwargs.values():
+        keyvalue.append(i)
+    # 只输入一个连续变量情况下
+    if (len(kwargs.keys()) == 1):
+        p0 = keyname[0]
+        scores = []
+        for value in keyvalue[0]:
+            model = eval(left + p0 + "=" + str(value) + right)
+            print(model)
+            model.fit(X_train, Y_train)
+            # model
+            scores.append(model.score(X_test, Y_test))
+        # 绘图
+        fig = plt.figure()
+        ax = fig.add_subplot(1, 1, 1)
+        ax.plot(keyvalue[0], scores)
+        ax.set_xlabel(keyname[0])
+        ax.set_ylabel("score")
+        if logX == True:
+            ax.set_xscale('log')
+        ax.set_title(left + "***" + right)
+        plt.show()
+
+    # # 输入一个连续变量和一个离散变量情况下
+    # elif len(kwargs.keys()) == 2:
+    #     p0 = keyname[0]; p1 = keyname[1]
+
+
 # ---LinearRegression线性回归
 regr = linear_model.LinearRegression().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
@@ -50,16 +89,20 @@ myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # ---岭回归 Ridge
 regr = linear_model.Ridge().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
+
 # 测试alpha
 alphas=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000]
 scores=[]
-for i,alpha in enumerate(alphas):
-    regr = linear_model.Ridge(alpha=alpha).fit(X_test, Y_test)
+for alpha in alphas:
+    regr = linear_model.Ridge(alpha=alpha)
+    regr.fit(X_test, Y_test)
     scores.append(regr.score(X_test, Y_test))
 ## 绘图
 logA = [np.log(i) for i in alphas]
-myplt.plot(logA,scores)
 
+myplt.plot(alphas,scores,show=False)
+plt.xscale('log')
+plt.show()
 
 # ---Lasso
 regr = linear_model.Lasso().fit(X_train, Y_train)

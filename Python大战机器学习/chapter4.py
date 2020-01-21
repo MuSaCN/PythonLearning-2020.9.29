@@ -33,7 +33,6 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 
 # ---KNN分类和回归模型
 digits = myML.DataPre.load_datasets("digits")# 使用 scikit-learn 自带的手写识别数据集 Digit Dataset
-
 X_train, X_test, y_train, y_test =myML.DataPre.train_test_split(digits.data, digits.target,test_size=0.25, random_state=0,stratify=digits.target)
 
 from sklearn import neighbors

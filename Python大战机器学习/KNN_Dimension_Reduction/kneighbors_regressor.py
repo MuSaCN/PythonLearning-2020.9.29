@@ -10,7 +10,7 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import neighbors, cross_validation
+from sklearn import neighbors, model_selection
 
 def create_regression_data(n):
     '''
@@ -22,7 +22,7 @@ def create_regression_data(n):
     X =5 * np.random.rand(n, 1)
     y = np.sin(X).ravel()
     y[::5] += 1 * (0.5 - np.random.rand(int(n/5))) # 每隔 5 个样本就在样本的值上添加噪音
-    return cross_validation.train_test_split(X, y,test_size=0.25,random_state=0)# 进行简单拆分，测试集大小占 1/4
+    return model_selection.train_test_split(X, y,test_size=0.25,random_state=0)# 进行简单拆分，测试集大小占 1/4
 
 def test_KNeighborsRegressor(*data):
     '''
