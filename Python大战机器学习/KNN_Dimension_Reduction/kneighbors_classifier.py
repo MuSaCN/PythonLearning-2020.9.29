@@ -10,7 +10,7 @@
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import neighbors, datasets,cross_validation
+from sklearn import neighbors, datasets,model_selection
 
 def load_classification_data():
     '''
@@ -21,7 +21,7 @@ def load_classification_data():
     digits=datasets.load_digits() # 使用 scikit-learn 自带的手写识别数据集 Digit Dataset
     X_train=digits.data
     y_train=digits.target
-    return cross_validation.train_test_split(X_train, y_train,test_size=0.25,
+    return model_selection.train_test_split(X_train, y_train,test_size=0.25,
             random_state=0,stratify=y_train) # 进行分层采样拆分，测试集大小占 1/4
 def test_KNeighborsClassifier(*data):
     '''

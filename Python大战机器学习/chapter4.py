@@ -31,6 +31,71 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
 
+# ---KNN分类和回归模型
+digits = myML.DataPre.load_datasets("digits")# 使用 scikit-learn 自带的手写识别数据集 Digit Dataset
+
+X_train, X_test, y_train, y_test =myML.DataPre.train_test_split(digits.data, digits.target,test_size=0.25, random_state=0,stratify=digits.target)
+
+from sklearn import neighbors
+clf=neighbors.KNeighborsClassifier().fit(X_train,y_train)
+print("Training Score:%f"%clf.score(X_train,y_train))
+print("Testing Score:%f"%clf.score(X_test,y_test))
+
+# 测试 KNeighborsClassifier 中 n_neighbors 和 weights 参数的影响
+X_train,X_test,y_train,y_test=myML.DataPre.train_test_split(digits.data, digits.target,test_size=0.25, random_state=0,stratify=digits.target)
+Ks=np.linspace(1,y_train.size,num=100,endpoint=False,dtype='int')
+weights=['uniform','distance']
+
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+### 绘制不同 weights 下， 预测得分随 n_neighbors 的曲线
+for weight in weights:
+    training_scores=[]
+    testing_scores=[]
+    for K in Ks:
+        clf=neighbors.KNeighborsClassifier(n_neighbors=K,weights=weight)
+        clf.fit(X_train,y_train)
+        testing_scores.append(clf.score(X_test,y_test))
+        training_scores.append(clf.score(X_train,y_train))
+    ax.plot(Ks,testing_scores,label="testing score:weight=%s"%weight)
+    ax.plot(Ks,training_scores,label="training score:weight=%s"%weight)
+ax.legend(loc='best')
+ax.set_xlabel("K")
+ax.set_ylabel("score")
+ax.set_ylim(0,1.05)
+ax.set_title("KNeighborsClassifier")
+plt.show()
+
+def test_KNeighborsClassifier_k_p(*data):
+    '''
+    测试 KNeighborsClassifier 中 n_neighbors 和 p 参数的影响
+
+    :param data: 可变参数。它是一个元组，这里要求其元素依次为：训练样本集、测试样本集、训练样本的标记、测试样本的标记
+    :return: None
+    '''
+    X_train,X_test,y_train,y_test=data
+    Ks=np.linspace(1,y_train.size,endpoint=False,dtype='int')
+    Ps=[1,2,10]
+
+    fig=plt.figure()
+    ax=fig.add_subplot(1,1,1)
+    ### 绘制不同 p 下， 预测得分随 n_neighbors 的曲线
+    for P in Ps:
+        training_scores=[]
+        testing_scores=[]
+        for K in Ks:
+            clf=neighbors.KNeighborsClassifier(p=P,n_neighbors=K)
+            clf.fit(X_train,y_train)
+            testing_scores.append(clf.score(X_test,y_test))
+            training_scores.append(clf.score(X_train,y_train))
+        ax.plot(Ks,testing_scores,label="testing score:p=%d"%P)
+        ax.plot(Ks,training_scores,label="training score:p=%d"%P)
+    ax.legend(loc='best')
+    ax.set_xlabel("K")
+    ax.set_ylabel("score")
+    ax.set_ylim(0,1.05)
+    ax.set_title("KNeighborsClassifier")
+    plt.show()
 
 
 
