@@ -40,22 +40,8 @@ X,y = iris.data,iris.target
 pca=decomposition.PCA(n_components=None) # 使用默认的 n_components
 pca.fit(X)
 print('explained variance ratio : %s'% str(pca.explained_variance_ratio_))
-
 # 绘制经过 PCA 降维到二维之后的样本点
-pca=decomposition.PCA(n_components=2) # 目标维度为2维
-pca.fit(X) # 训练模型
-X_r=pca.transform(X) # 执行降维运算，原始数据集转换到二维
-# 绘制二维数据(4维降到2维绘制散点图)
-fig=plt.figure()
-ax=fig.add_subplot(1,1,1)
-for label in np.unique(y):
-    position = y==label
-    ax.scatter(X_r[position,0],X_r[position,1],label="target= %d"%label)
-ax.set_xlabel("X[0]")
-ax.set_ylabel("Y[0]")
-ax.legend(loc="best")
-ax.set_title("PCA")
-plt.show()
+myML.plotML.PlotParam_DimRedu(X,y,"decomposition.PCA()",n_components=[2])
 
 # 超大规模数据降维 IncrementalPCA
 pca=decomposition.IncrementalPCA(n_components=None) # 使用默认的 n_components
@@ -73,7 +59,7 @@ kernels=['linear','poly','rbf']
 for kernel in kernels:
     kpca=decomposition.KernelPCA(n_components=None,kernel=kernel) # 依次测试四种核函数
     kpca.fit(X)
-    print('kernel=%s --> lambdas: %s'% (kernel,kpca.lambdas_))
+    print('kernel=%s --> lambdas: %s'% (kernel, kpca.lambdas_) )
 
 # 绘制经过 KernelPCA 降维到二维之后的样本点
 kernels=['linear','poly','rbf','sigmoid']
@@ -105,8 +91,7 @@ p=[3,10]; gamma = [1,10] ; r = [1,10]
 Params = list(itertools.product(p,gamma,r))# poly 核的参数组成的列表。
 
 for i,(p,gamma,r) in enumerate(Params):
-    kpca=decomposition.KernelPCA(n_components=2,kernel='poly'
-    ,gamma=gamma,degree=p,coef0=r)  # poly 核，目标为2维
+    kpca=decomposition.KernelPCA(gamma=gamma,degree=p,coef0=r)  # poly 核，目标为2维
     kpca.fit(X)
     X_r=kpca.transform(X)# 原始数据集转换到二维
     ax=fig.add_subplot(2,4,i+1)## 两行四列，每个单元显示核函数为 poly 的 KernelPCA 一组参数的效果图
