@@ -42,7 +42,7 @@ pca.fit(X)
 print('explained variance ratio : %s'% str(pca.explained_variance_ratio_))
 
 # 绘制经过 PCA 降维到二维之后的样本点
-myML.plotML.PlotParam_DimRedu(X,y,"decomposition.PCA()",n_components=[2])
+myML.DimReduce.PlotParam_DimRedu(X,y,"decomposition.PCA()",n_components=[2])
 
 # 超大规模数据降维 IncrementalPCA
 pca=decomposition.IncrementalPCA(n_components=None) # 使用默认的 n_components
@@ -63,20 +63,20 @@ for kernel in kernels:
 
 # 绘制经过 KernelPCA 降维到二维之后的样本点
 kernels=["linear","poly","rbf","sigmoid"]
-myML.plotML.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",n_components=[2],kernel=kernels)
+myML.DimReduce.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",n_components=[2],kernel=kernels)
 
 # 绘制经过 使用 poly 核的KernelPCA 降维到二维之后的样本点
 p=[3,10]; gamma = [1,10] ; r = [1,10]
-myML.plotML.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",gamma=gamma,degree=p,coef0=r)
+myML.DimReduce.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",gamma=gamma,degree=p,coef0=r)
 
 # 绘制经过 使用 rbf 核的KernelPCA 降维到二维之后的样本点
 Gammas=[0.5,1,4,10]# rbf 核的参数组成的列表。每个参数就是 gamma值
-myML.plotML.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",n_components=[2],kernel=['rbf'],gamma=Gammas)
+myML.DimReduce.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",n_components=[2],kernel=['rbf'],gamma=Gammas)
 
 # 绘制经过 使用 sigmoid 核的KernelPCA 降维到二维之后的样本点
 gamma = [0.01,0.1,0.2];
 r =[0.1,0.2]
-myML.plotML.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",n_components=[2],kernel=['sigmoid'],gamma=gamma,coef0=r)
+myML.DimReduce.PlotParam_DimRedu(X,y,"decomposition.KernelPCA()",n_components=[2],kernel=['sigmoid'],gamma=gamma,coef0=r)
 
 
 # ---MDS
@@ -91,7 +91,7 @@ for n in [4,3,2,1]: # 依次考察降维目标为 4维、3维、2维、1维
     print('stress(n_components=%d) : %s'% (n, str(mds.stress_)))
 
 # 绘制经过 使用 MDS 降维到二维之后的样本点
-myML.plotML.PlotParam_DimRedu(X,y,"manifold.MDS()",n_components=[2])
+myML.DimReduce.PlotParam_DimRedu(X,y,"manifold.MDS()",n_components=[2])
 
 
 # ---Isomap
@@ -107,11 +107,11 @@ for n in [4,3,2,1]: # 依次考察降维目标为 4维、3维、2维、1维
 
 # 测试 Isomap 中 n_neighbors 参数的影响，其中降维至 2维
 Ks=[1,5,25,y.size-1] # n_neighbors参数的候选值的集合
-myML.plotML.PlotParam_DimRedu(X,y,"manifold.Isomap()",n_components=[2],n_neighbors=Ks)
+myML.DimReduce.PlotParam_DimRedu(X,y,"manifold.Isomap()",n_components=[2],n_neighbors=Ks)
 
 # 测试 Isomap 中 n_neighbors 参数的影响，其中降维至 1维
 Ks=[1,5,25,y.size-1]# n_neighbors参数的候选值的集合
-myML.plotML.PlotParam_DimRedu(X,y,"manifold.Isomap()",n_components=[1],n_neighbors=Ks)
+myML.DimReduce.PlotParam_DimRedu(X,y,"manifold.Isomap()",n_components=[1],n_neighbors=Ks)
 
 
 # ---LLE
@@ -127,11 +127,11 @@ for n in [4,3,2,1]:# 依次考察降维目标为 4维、3维、2维、1维
 
 # 测试 LocallyLinearEmbedding 中 n_neighbors 参数的影响，其中降维至 2维
 Ks=[1,5,25,y.size-1]# n_neighbors参数的候选值的集合
-myML.plotML.PlotParam_DimRedu(X,y,"manifold.LocallyLinearEmbedding()",n_components=[2],n_neighbors=Ks)
+myML.DimReduce.PlotParam_DimRedu(X,y,"manifold.LocallyLinearEmbedding()",n_components=[2],n_neighbors=Ks)
 
 # 测试 LocallyLinearEmbedding 中 n_neighbors 参数的影响，其中降维至 1维
 Ks=[1,5,25,y.size-1]# n_neighbors参数的候选值的集合
-myML.plotML.PlotParam_DimRedu(X,y,"manifold.LocallyLinearEmbedding()",n_components=[1],n_neighbors=Ks)
+myML.DimReduce.PlotParam_DimRedu(X,y,"manifold.LocallyLinearEmbedding()",n_components=[1],n_neighbors=Ks)
 
 
 
