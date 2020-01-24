@@ -31,5 +31,38 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
 
+# ---PCA
+from sklearn import decomposition
+iris = myML.DataPre.load_datasets("iris") # 使用 scikit-learn 自带的 iris 数据集
+X,y = iris.data,iris.target
+
+# 测试 PCA 的用法 (注意：此PCA基于scipy.linalg来实现SVD分解，因此不能应用于实数矩阵，并且无法适用于超大规模数据。)
+pca=decomposition.PCA(n_components=None) # 使用默认的 n_components
+pca.fit(X)
+print('explained variance ratio : %s'% str(pca.explained_variance_ratio_))
+
+# 绘制经过 PCA 降维到二维之后的样本点
+pca=decomposition.PCA(n_components=2) # 目标维度为2维
+pca.fit(X) # 训练模型
+X_r=pca.transform(X) # 执行降维运算，原始数据集转换到二维
+# 绘制二维数据(4维降到2维绘制散点图)
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+for label in np.unique(y):
+    position = y==label
+    ax.scatter(X_r[position,0],X_r[position,1],label="target= %d"%label)
+ax.set_xlabel("X[0]")
+ax.set_ylabel("Y[0]")
+ax.legend(loc="best")
+ax.set_title("PCA")
+plt.show()
+
+# 超大规模数据降维 IncrementalPCA
+pca=decomposition.IncrementalPCA(n_components=None) # 使用默认的 n_components
+pca.fit(X)
+print('explained variance ratio : %s'% str(pca.explained_variance_ratio_))
+
+
+
 
 
