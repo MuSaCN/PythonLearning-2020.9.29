@@ -75,9 +75,46 @@ min_samples=range(1,100)
 myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",logX=False,min_samples=min_samples)
 
 
+# ---AgglomerativeClustering
+centers=[[1,1],[2,2],[1,2],[10,20]] # 用于产生聚类的中心点
+X, labels_true = myML.DataPre.make_datasets("blobs", n_samples=1000, centers=centers, cluster_std=0.5 )
+from sklearn import  cluster
+from sklearn.metrics import adjusted_rand_score
+# 测试 AgglomerativeClustering 的用法
+clst=cluster.AgglomerativeClustering()
+predicted_labels=clst.fit_predict(X)
+print("ARI:%s"% adjusted_rand_score(labels_true,predicted_labels))
+
+# 测试 AgglomerativeClustering 的聚类结果随 n_clusters 参数的影响
+nums=range(1,50)
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.AgglomerativeClustering()",n_clusters=nums)
+
+# 测试 AgglomerativeClustering 的聚类结果随链接方式的影响
+nums=range(1,50)
+linkages=['ward','complete','average']
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.AgglomerativeClustering()",n_clusters=nums,linkage=linkages)
 
 
+# ---GMM
+centers=[[1,1],[2,2],[1,2],[10,20]] # 用于产生聚类的中心点
+X, labels_true = myML.DataPre.make_datasets("blobs", n_samples=1000, centers=centers, cluster_std=0.5 )
+from sklearn import mixture
+from sklearn.metrics import adjusted_rand_score
 
+# 测试 GMM 的用法
+clst=mixture.GaussianMixture()
+clst.fit(X)
+predicted_labels=clst.predict(X)
+print("ARI:%s"% adjusted_rand_score(labels_true,predicted_labels))
+
+# 测试 GMM 的聚类结果随 n_components 参数的影响
+nums=range(1,20)
+myML.plotML.PlotParam_Cluster(X,labels_true,"mixture.GaussianMixture()",n_components=nums)
+
+# 测试 GMM 的聚类结果随协方差类型的影响
+nums=range(1,20)
+cov_types=['spherical','tied','diag','full']
+myML.plotML.PlotParam_Cluster(X,labels_true,"mixture.GaussianMixture()",n_components=nums,covariance_type=cov_types)
 
 
 
