@@ -35,7 +35,7 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 centers=[[1,1],[2,2],[1,2],[10,20]] # 用于产生聚类的中心点
 X, labels_true = myML.DataPre.make_datasets("blobs", n_samples=1000, centers=centers, cluster_std=0.5 )
 # 绘制用于聚类的数据集
-myML.plotML.discrete_scatter(X[:,0],X[:,1],labels_true)
+myML.Cluster.discrete_scatter(X[:,0],X[:,1],labels_true)
 
 # ---KMeans
 from sklearn import  cluster
@@ -47,16 +47,33 @@ myML.Cluster.showModelTest(clst,X,labels_true)
 # 测试 KMeans 的聚类结果随 n_clusters 参数的影响
 nclu = list(range(1,10))
 ninit = [10,20,30,40,50]
-myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_clusters=nclu)
-myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",plot3D=True,n_clusters=nclu,max_iter = ninit)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_clusters=nclu)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",plot3D=True,n_clusters=nclu,max_iter = ninit)
 
 # 测试 KMeans 的聚类结果随 n_init 和 init  参数的影响
 nums=range(1,10)
 init = ["k-means++","random"]
-myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_init=nums,init = init)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_init=nums,init = init)
 
 
-# ---
+# ---DBSCAN
+centers=[[1,1],[2,2],[1,2],[10,20]] # 用于产生聚类的中心点
+X, labels_true = myML.DataPre.make_datasets("blobs", n_samples=1000, centers=centers, cluster_std=0.5 )
+from sklearn import  cluster
+
+# 测试 DBSCAN 的用法
+clst=cluster.DBSCAN()
+predicted_labels=clst.fit_predict(X)
+myML.Cluster.showModelTest(clst,X,labels_true)
+
+# 测试 DBSCAN 的聚类结果随  eps 参数的影响
+epsilons=np.logspace(-1,1.5)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",logX=True,eps=epsilons)
+
+# 测试 DBSCAN 的聚类结果随  min_samples 参数的影响
+min_samples=range(1,100)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",logX=False,min_samples=min_samples)
+
 
 
 
