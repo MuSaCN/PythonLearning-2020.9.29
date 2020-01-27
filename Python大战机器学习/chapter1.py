@@ -54,12 +54,15 @@ alphas=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000]
 myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"linear_model.Lasso()",alpha=alphas)
 
 # ---ElasticNet
+data = myML.DataPre.load_datasets(mode="diabetes")
+X_train,X_test,Y_train,Y_test = myML.DataPre.train_test_split(data.data,data.target,test_size=0.25,random_state=0)
+from sklearn import  linear_model
 regr = linear_model.ElasticNet().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # test alpha and rhos
 alphas=np.logspace(-2,2)
 rhos=np.linspace(0.01,1)
-myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"linear_model.ElasticNet()",plot3D=True,alpha=alphas,l1_ratio=rhos)
+myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"linear_model.ElasticNet()",plot3D=True,alpha=alphas,l1_ratio=rhos)
 
 # ---logistic 回归
 data = myML.DataPre.load_datasets(mode="iris")

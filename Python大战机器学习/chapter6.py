@@ -37,7 +37,23 @@ X, labels_true = myML.DataPre.make_datasets("blobs", n_samples=1000, centers=cen
 # 绘制用于聚类的数据集
 myML.plotML.discrete_scatter(X[:,0],X[:,1],labels_true)
 
+# ---KMeans
+from sklearn import  cluster
 
+# 测试 KMeans 的用法
+clst=cluster.KMeans().fit(X)
+myML.Cluster.showModelTest(clst,X,labels_true)
+
+# 测试 KMeans 的聚类结果随 n_clusters 参数的影响
+nclu = list(range(1,10))
+ninit = [10,20,30,40,50]
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_clusters=nclu)
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",plot3D=True,n_clusters=nclu,max_iter = ninit)
+
+# 测试 KMeans 的聚类结果随 n_init 和 init  参数的影响
+nums=range(1,10)
+init = ["k-means++","random"]
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_init=nums,init = init)
 
 
 
