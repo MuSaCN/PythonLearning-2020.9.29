@@ -31,5 +31,82 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
 
+# ---LinearSVC
+from sklearn import  svm
+iris=myML.DataPre.load_datasets("iris") # 使用 scikit-learn 自带的 iris 数据集
+X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(iris.data, iris.target,test_size=0.25, random_state=0,stratify=iris.target) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
+
+# 测试 LinearSVC 的用法
+cls=svm.LinearSVC()
+cls.fit(X_train,y_train)
+myML.SVM.showModelTest(cls,X_test, y_test)
+
+# 测试 LinearSVC 的预测性能随损失函数的影响
+losses=['hinge','squared_hinge']
+for loss in losses:
+    cls=svm.LinearSVC(loss=loss)
+    cls.fit(X_train,y_train)
+    print("Loss:%s"%loss)
+    myML.SVM.showModelTest(cls, X_test, y_test)
+
+# 测试 LinearSVC 的预测性能随正则化形式的影响
+L12=['l1','l2']
+for p in L12:
+    cls=svm.LinearSVC(penalty=p,dual=False)
+    cls.fit(X_train,y_train)
+    print("penalty:%s"%p)
+    myML.SVM.showModelTest(cls, X_test, y_test)
+
+# 测试 LinearSVC 的预测性能随参数 C 的影响
+Cs=np.logspace(-2,1)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.LinearSVC()",drawParam=1,label="test",logX=True,show=False,C=Cs)
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.LinearSVC()",drawParam=1,label="train",logX=True,show=True,C=Cs)
+
+
+# ---SVC
+from sklearn import  svm
+iris=myML.DataPre.load_datasets("iris") # 使用 scikit-learn 自带的 iris 数据集
+X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(iris.data, iris.target,test_size=0.25, random_state=0,stratify=iris.target) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
+
+# 测试 SVC 的用法。这里使用的是最简单的线性核
+cls=svm.SVC(kernel='linear')
+cls.fit(X_train,y_train)
+myML.SVM.showModelTest(cls,X_test,y_test)
+
+# 测试多项式核的 SVC 的预测性能随 degree、gamma、coef0 的影响.
+### 测试 degree ####
+degrees=range(1,10)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVC()",drawParam=1,label="test",show=False,degree=degrees,kernel=['poly'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawParam=1,label="train",show=True, degree=degrees,kernel=['poly'])
+
+### 测试 gamma ，此时 degree 固定为 3####
+gammas=range(1,20)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVC()",drawParam=1,label="test",show=False,gamma=gammas,degree=[3],kernel=['poly'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawParam=1,label="train",show=True,gamma=gammas,degree=[3],kernel=['poly'])
+
+### 测试 r ，此时 gamma固定为10 ， degree 固定为 3######
+rs=range(0,20)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVC()",drawParam=1,label="test",show=False,coef0=rs,gamma=[10],degree=[3],kernel=['poly'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawParam=1,label="train",show=True,coef0=rs,gamma=[10],degree=[3],kernel=['poly'])
+
+# 测试 高斯核的 SVC 的预测性能随 gamma 参数的影响
+gammas=range(1,20)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVC()",drawParam=1,label="test",show=False,gamma=gammas,kernel=['rbf'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawParam=1,label="train",show=True,gamma=gammas,kernel=['rbf'])
+
+# 测试 sigmoid 核的 SVC 的预测性能随 gamma、coef0 的影响
+fig=plt.figure()
+### 测试 gamma ，固定 coef0 为 0 ####
+gammas=np.logspace(-2,1)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVC()",drawParam=1,logX=True,label="test",show=False,gamma=gammas,kernel=['sigmoid'],coef0=[0])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawParam=1,logX=True,label="train",show=True,gamma=gammas,kernel=['sigmoid'],coef0=[0])
+
+### 测试 r，固定 gamma 为 0.01 ######
+rs=np.linspace(0,5)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVC()",drawParam=1,label="test",show=False,coef0=rs,gamma=[0.01],kernel=['sigmoid'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawParam=1, label="train",show=True,coef0=rs,gamma=[0.01],kernel=['sigmoid'])
+
+
+
 
 
