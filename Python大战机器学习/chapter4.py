@@ -37,21 +37,21 @@ X_train, X_test, y_train, y_test =myML.DataPre.train_test_split(digits.data, dig
 
 from sklearn import neighbors
 clf=neighbors.KNeighborsClassifier().fit(X_train,y_train)
-print("Training Score:%f"%clf.score(X_train,y_train))
-print("Testing Score:%f"%clf.score(X_test,y_test))
+myML.KNN.showModelTest(clf,X_train,y_train)
+myML.KNN.showModelTest(clf,X_test,y_test)
 
 # 测试 KNeighborsClassifier 中 n_neighbors 和 weights 参数的影响
 X_train,X_test,y_train,y_test=myML.DataPre.train_test_split(digits.data, digits.target,test_size=0.25, random_state=0,stratify=digits.target)
 Ks=[1,10,20,50,100,200,500]
 weights=['uniform','distance']
-myML.plotML.PlotParam(X_train,X_test,y_train,y_test,"neighbors.KNeighborsClassifier()",logX=False,label="Test",show=False,n_neighbors=Ks,weights=weights)
-myML.plotML.PlotParam(X_train,X_train,y_train,y_train,"neighbors.KNeighborsClassifier()",logX=False,label="Train",show=True,n_neighbors=Ks,weights=weights)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"neighbors.KNeighborsClassifier()",drawParam=2,logX=False,label="Test",show=False,n_neighbors=Ks,weights=weights)
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"neighbors.KNeighborsClassifier()",drawParam=2,logX=False,label="Train",show=True,n_neighbors=Ks,weights=weights)
 
 # 测试 KNeighborsClassifier 中 n_neighbors 和 p 参数的影响
 Ks=[1,10,20,50,100,200,500]
 Ps=[1,2,10]
-myML.plotML.PlotParam(X_train,X_test,y_train,y_test,"neighbors.KNeighborsClassifier()",logX=False,label="Test",show=False,n_neighbors=Ks,p=Ps)
-myML.plotML.PlotParam(X_train,X_train,y_train,y_train,"neighbors.KNeighborsClassifier()",logX=False,label="Train",show=True,n_neighbors=Ks,p=Ps)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"neighbors.KNeighborsClassifier()",drawParam=2,logX=False,label="Test",show=False,n_neighbors=Ks,p=Ps)
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"neighbors.KNeighborsClassifier()",drawParam=2,logX=False,label="Train",show=True,n_neighbors=Ks,p=Ps)
 
 
 # ---KNN回归模型
@@ -71,11 +71,11 @@ print("Testing Score:%f"%regr.score(X_test,y_test))
 # 测试 KNeighborsRegressor 中 n_neighbors 和 weights 参数的影响
 Ks=[1,10,20,50,100,200,500]
 weights=['uniform','distance']
-myML.plotML.PlotParam(X_train,X_test,y_train,y_test,"neighbors.KNeighborsRegressor()",logX=False,label="Test",show=False,n_neighbors=Ks,weights=weights)
-myML.plotML.PlotParam(X_train,X_train,y_train,y_train,"neighbors.KNeighborsRegressor()",logX=False,label="Train",show=True,n_neighbors=Ks,weights=weights)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"neighbors.KNeighborsRegressor()",drawParam=2,logX=False,label="Test",show=False,n_neighbors=Ks,weights=weights)
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"neighbors.KNeighborsRegressor()",drawParam=2,logX=False,label="Train",show=True,n_neighbors=Ks,weights=weights)
 
 # 测试 KNeighborsRegressor 中 n_neighbors 和 p 参数的影响
 Ks=[1,10,20,50,100,200,500]
 Ps=[1,2,10]
-myML.plotML.PlotParam(X_train,X_test,y_train,y_test,"neighbors.KNeighborsRegressor()",logX=False,label="Test",show=False,n_neighbors=Ks,p=Ps)
-myML.plotML.PlotParam(X_train,X_train,y_train,y_train,"neighbors.KNeighborsRegressor()",logX=False,label="Train",show=True,n_neighbors=Ks,p=Ps)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"neighbors.KNeighborsRegressor()",drawParam=2,logX=False,label="Test",show=False,n_neighbors=Ks,p=Ps)
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"neighbors.KNeighborsRegressor()",drawParam=2,logX=False,label="Train",show=True,n_neighbors=Ks,p=Ps)
