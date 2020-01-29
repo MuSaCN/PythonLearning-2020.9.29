@@ -108,7 +108,7 @@ myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawPara
 
 
 
-# LinearSVR
+# ---LinearSVR
 from sklearn import  svm
 diabetes=myML.DataPre.load_datasets("diabetes") # 使用 scikit-learn 自带的 iris 数据集
 X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(diabetes.data, diabetes.target,test_size=0.25, random_state=0) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
@@ -137,5 +137,49 @@ myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.LinearSVR()",draw
 myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.LinearSVR()",drawParam=1,logX=True,label="train",show=True,C=Cs,epsilon=[0.1],loss=['squared_epsilon_insensitive'])
 
 
+
+# ---SVR
+from sklearn import  svm
+diabetes=myML.DataPre.load_datasets("diabetes") # 使用 scikit-learn 自带的 iris 数据集
+X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(diabetes.data, diabetes.target,test_size=0.25, random_state=0) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
+
+# 测试 SVR 的用法。这里使用最简单的线性核
+regr=svm.SVR(kernel='linear')
+regr.fit(X_train,y_train)
+print('Coefficients:%s, intercept %s'%(regr.coef_,regr.intercept_))
+print('Score: %.2f' % regr.score(X_test, y_test))
+
+# 测试 多项式核的 SVR 的预测性能随  degree、gamma、coef0 的影响.
+### 测试 degree ####
+degrees=range(1,20)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVR()",drawParam=1,label="test",show=False,degree=degrees,kernel=['poly'],coef0=[1])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVR()",drawParam=1,label="test",show=True,degree=degrees,kernel=['poly'],coef0=[1])
+
+### 测试 gamma，固定 degree为3， coef0 为 1 ####
+gammas=range(1,40)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVR()",drawParam=1,label="test",show=False,gamma=gammas,kernel=['poly'],coef0=[1],degree=[3])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVR()",drawParam=1,label="test",show=True,gamma=gammas,kernel=['poly'],coef0=[1],degree=[3])
+
+### 测试 r，固定 gamma 为 20，degree为 3 ######
+rs=range(0,20)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVR()",drawParam=1,label="test",show=False,coef0=rs,gamma=[20],kernel=['poly'],degree=[3])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVR()",drawParam=1,label="test",show=True,coef0=rs,gamma=[20],kernel=['poly'],degree=[3])
+
+# 测试 高斯核的 SVR 的预测性能随 gamma 参数的影响
+gammas=range(1,20)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVR()",drawParam=1,label="test",show=False,gamma=gammas,kernel=['rbf'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVR()",drawParam=1,label="train",show=True,gamma=gammas,kernel=['rbf'])
+
+# 测试 sigmoid 核的 SVR 的预测性能随 gamma、coef0 的影响.
+fig=plt.figure()
+### 测试 gammam，固定 coef0 为 0.01 ####
+gammas=np.logspace(-1,3)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVR()",drawParam=1,label="test",logX=True,show=False,gamma=gammas,kernel=['sigmoid'],coef0=[0.01])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVR()",drawParam=1,label="train",logX=True,show=True,gamma=gammas,kernel=['sigmoid'],coef0=[0.01])
+
+### 测试 r ，固定 gamma 为 10 ######
+rs=np.linspace(0,5)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.SVR()",drawParam=1,label="test",show=False,coef0=rs,gamma=[10],kernel=['sigmoid'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVR()",drawParam=1,label="train",show=True,coef0=rs,gamma=[10],kernel=['sigmoid'])
 
 
