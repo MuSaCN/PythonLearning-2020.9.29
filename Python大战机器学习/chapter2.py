@@ -62,8 +62,8 @@ for splitter in splitters:
 
 # 测试 DecisionTreeRegressor 预测性能随  max_depth 的影响
 depths=np.arange(1,20)
-myML.plotML.PlotParam(X_train,X_train,y_train,y_train,"tree.DecisionTreeRegressor()",logX=False,label="traing score",show=False,max_depth=depths)
-myML.plotML.PlotParam(X_train,X_test,y_train,y_test,"tree.DecisionTreeRegressor()",logX=False,label="test score",show=True,max_depth=depths)
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"tree.DecisionTreeRegressor()",drawParam=1,logX=False,label="traing score",show=False,max_depth=depths)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"tree.DecisionTreeRegressor()",drawParam=1,logX=False,label="test score",show=True,max_depth=depths)
 
 
 # 决策树分类---------------------------------------------------
@@ -98,8 +98,8 @@ for splitter in splitters:
 
 # 测试 DecisionTreeClassifier 的预测性能随 max_depth 参数的影响
 depths=np.arange(1,20)
-myML.plotML.PlotParam(X_train,X_train,Y_train,Y_train,"tree.DecisionTreeClassifier()",logX=False,label="traing score",show=False,max_depth=depths)
-myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"tree.DecisionTreeClassifier()",logX=False,label="test score",show=True,max_depth=depths)
+myML.plotML.PlotParam_Score(X_train,X_train,Y_train,Y_train,"tree.DecisionTreeClassifier()",drawParam=1,logX=False,label="traing score",show=False,max_depth=depths)
+myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"tree.DecisionTreeClassifier()",drawParam=1,logX=False,label="test score",show=True,max_depth=depths)
 
 
 
