@@ -44,14 +44,14 @@ regr = linear_model.Ridge().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # 测试alpha
 alphas=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000]
-myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"linear_model.Ridge()",alpha=alphas)
+myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"linear_model.Ridge()",drawParam=1,logX=True,alpha=alphas)
 
 # ---Lasso
 regr = linear_model.Lasso().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # test alpha
 alphas=[0.01,0.02,0.05,0.1,0.2,0.5,1,2,5,10,20,50,100,200,500,1000]
-myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"linear_model.Lasso()",alpha=alphas)
+myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"linear_model.Lasso()",logX=True,alpha=alphas)
 
 # ---ElasticNet
 data = myML.DataPre.load_datasets(mode="diabetes")
@@ -60,9 +60,9 @@ from sklearn import  linear_model
 regr = linear_model.ElasticNet().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # test alpha and rhos
-alphas=np.logspace(-2,2)
+alphas=np.logspace(-1,1)
 rhos=np.linspace(0.01,1)
-myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"linear_model.ElasticNet()",plot3D=True,alpha=alphas,l1_ratio=rhos)
+myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"linear_model.ElasticNet()",drawParam=2,plot3D=True,alpha=alphas,l1_ratio=rhos)
 
 # ---logistic 回归
 data = myML.DataPre.load_datasets(mode="iris")
@@ -76,8 +76,7 @@ regr = linear_model.LogisticRegression(multi_class='multinomial',solver='lbfgs')
 myML.LinearModel.showModelTest(regr, X_test, Y_test)
 # 测试 LogisticRegression 的预测性能随  C  参数的影响
 Cs=np.logspace(-2,4,num=100)
-myML.plotML.PlotParam(X_train,X_test,Y_train,Y_test,"linear_model.LogisticRegression()",C=Cs)
-scores=[]
+myML.plotML.PlotParam_Score(X_train,X_test,Y_train,Y_test,"linear_model.LogisticRegression()",drawParam=1,logX=True,C=Cs)
 
 
 # ---线性判别分析
