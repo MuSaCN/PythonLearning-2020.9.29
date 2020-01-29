@@ -108,5 +108,34 @@ myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.SVC()",drawPara
 
 
 
+# LinearSVR
+from sklearn import  svm
+diabetes=myML.DataPre.load_datasets("diabetes") # 使用 scikit-learn 自带的 iris 数据集
+X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(diabetes.data, diabetes.target,test_size=0.25, random_state=0) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
+
+# 测试 LinearSVR 的用法
+regr=svm.LinearSVR()
+regr.fit(X_train,y_train)
+myML.SVM.showModelTest(regr,X_test, y_test)
+
+# 测试 LinearSVR 的预测性能随不同损失函数的影响
+losses=['epsilon_insensitive','squared_epsilon_insensitive']
+for loss in losses:
+    regr=svm.LinearSVR(loss=loss)
+    regr.fit(X_train,y_train)
+    print("loss：%s"%loss)
+    myML.SVM.showModelTest(regr,X_test, y_test)
+
+# 测试 LinearSVR 的预测性能随 epsilon 参数的影响
+epsilons=np.logspace(-2,2)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.LinearSVR()",drawParam=1,logX=True,label="test",show=False,epsilon=epsilons,loss=['squared_epsilon_insensitive'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.LinearSVR()",drawParam=1,logX=True,label="train",show=True,epsilon=epsilons,loss=['squared_epsilon_insensitive'])
+
+# 测试 LinearSVR 的预测性能随 C 参数的影响
+Cs=np.logspace(-1,2)
+myML.plotML.PlotParam_Score(X_train,X_test,y_train,y_test,"svm.LinearSVR()",drawParam=1,logX=True,label="test",show=False,C=Cs,epsilon=[0.1],loss=['squared_epsilon_insensitive'])
+myML.plotML.PlotParam_Score(X_train,X_train,y_train,y_train,"svm.LinearSVR()",drawParam=1,logX=True,label="train",show=True,C=Cs,epsilon=[0.1],loss=['squared_epsilon_insensitive'])
+
+
 
 
