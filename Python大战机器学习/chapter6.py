@@ -47,13 +47,13 @@ myML.Cluster.showModelTest(clst,X,labels_true)
 # 测试 KMeans 的聚类结果随 n_clusters 参数的影响
 nclu = list(range(1,10))
 ninit = [10,20,30,40,50]
-myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_clusters=nclu)
-myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",plot3D=True,n_clusters=nclu,max_iter = ninit)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",drawParam=1,n_clusters=nclu)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",drawParam=2,plot3D=True,n_clusters=nclu,max_iter = ninit)
 
 # 测试 KMeans 的聚类结果随 n_init 和 init  参数的影响
 nums=range(1,10)
 init = ["k-means++","random"]
-myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",n_init=nums,init = init)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.KMeans()",drawParam=2,n_init=nums,init = init)
 
 
 # ---DBSCAN
@@ -68,11 +68,11 @@ myML.Cluster.showModelTest(clst,X,labels_true)
 
 # 测试 DBSCAN 的聚类结果随  eps 参数的影响
 epsilons=np.logspace(-1,1.5)
-myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",logX=True,eps=epsilons)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",drawParam=1,logX=True,eps=epsilons)
 
 # 测试 DBSCAN 的聚类结果随  min_samples 参数的影响
 min_samples=range(1,100)
-myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",logX=False,min_samples=min_samples)
+myML.Cluster.PlotParam_Cluster(X,labels_true,"cluster.DBSCAN()",drawParam=1,logX=False,min_samples=min_samples)
 
 
 # ---AgglomerativeClustering
@@ -87,12 +87,12 @@ print("ARI:%s"% adjusted_rand_score(labels_true,predicted_labels))
 
 # 测试 AgglomerativeClustering 的聚类结果随 n_clusters 参数的影响
 nums=range(1,50)
-myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.AgglomerativeClustering()",n_clusters=nums)
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.AgglomerativeClustering()",drawParam=1,n_clusters=nums)
 
 # 测试 AgglomerativeClustering 的聚类结果随链接方式的影响
 nums=range(1,50)
 linkages=['ward','complete','average']
-myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.AgglomerativeClustering()",n_clusters=nums,linkage=linkages)
+myML.plotML.PlotParam_Cluster(X,labels_true,"cluster.AgglomerativeClustering()",drawParam=2,n_clusters=nums,linkage=linkages)
 
 
 # ---GMM
@@ -114,7 +114,7 @@ myML.plotML.PlotParam_Cluster(X,labels_true,"mixture.GaussianMixture()",n_compon
 # 测试 GMM 的聚类结果随协方差类型的影响
 nums=range(1,20)
 cov_types=['spherical','tied','diag','full']
-myML.plotML.PlotParam_Cluster(X,labels_true,"mixture.GaussianMixture()",n_components=nums,covariance_type=cov_types)
+myML.plotML.PlotParam_Cluster(X,labels_true,"mixture.GaussianMixture()",drawParam=2,n_components=nums,covariance_type=cov_types)
 
 
 
