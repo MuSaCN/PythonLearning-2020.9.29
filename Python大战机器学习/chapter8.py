@@ -93,7 +93,7 @@ print(clf.score(train_x,train_y)) # 查看在训练集上的评价预测精度
 myML.Neur.plotSamples(train_data,2,instance=clf)
 
 
-# -------------神经网络模型：用于 iris 模型
+# -------------神经网络模型：用于 iris 模型-----------！！！待升级为多个标签
 from matplotlib.colors import ListedColormap
 from sklearn import neural_network
 ## 加载数据集
@@ -127,7 +127,6 @@ def plot_classifier_predict_meshgrid(ax,clf,x_min,x_max,y_min,y_max):
       Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
       Z = Z.reshape(xx.shape)
       ax.contourf(xx, yy, Z, cmap=plt.cm.Paired) # 绘图
-
 
 def plot_samples(ax, x, y):
     '''
