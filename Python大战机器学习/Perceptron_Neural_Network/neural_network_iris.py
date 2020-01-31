@@ -190,7 +190,7 @@ def mlpclassifier_iris_eta():
 
 if __name__=='__main__':
     mlpclassifier_iris()     # 调用 mlpclassifier_iris
-    #mlpclassifier_iris_hidden_layer_sizes()# 调用 mlpclassifier_iris_hidden_layer_sizes
-    #mlpclassifier_iris_ativations()# 调用 mlpclassifier_iris_ativations
-    #mlpclassifier_iris_algorithms()# 调用 mlpclassifier_iris_algorithms
-    #mlpclassifier_iris_eta()# 调用 mlpclassifier_iris_eta
+    mlpclassifier_iris_hidden_layer_sizes()# 调用 mlpclassifier_iris_hidden_layer_sizes
+    mlpclassifier_iris_ativations()# 调用 mlpclassifier_iris_ativations
+    mlpclassifier_iris_algorithms()# 调用 mlpclassifier_iris_algorithms
+    mlpclassifier_iris_eta()# 调用 mlpclassifier_iris_eta
