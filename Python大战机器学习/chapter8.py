@@ -78,8 +78,19 @@ plt.show()
 
 
 
+# ------多层神经网络
+from sklearn import neural_network
+train_data=myML.Neur.creatTestData(500,no_linear=True,value0=10,value1=20,datadim=2,plot=True)
 
+# ---使用 MLPClassifier绘制预测结果
+train_x=train_data[:,:-1]
+train_y=train_data[:,-1]
+clf=neural_network.MLPClassifier(activation='logistic',max_iter=1000)# 构造分类器实例
+clf.fit(train_x,train_y) # 训练分类器
+print(clf.score(train_x,train_y)) # 查看在训练集上的评价预测精度
 
+## 用训练好的训练集预测平面上每一点的输出##
+myML.Neur.plotSamples(train_data,2,instance=clf)
 
 
 

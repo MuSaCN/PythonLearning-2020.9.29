@@ -109,4 +109,4 @@ def run_predict_with_MLPClassifier():
 
 if __name__=='__main__':
     run_plot_samples_2d() # 调用 run_plot_samples_2d
-    #run_predict_with_MLPClassifier() # 调用 run_predict_with_MLPClassifier
+    run_predict_with_MLPClassifier() # 调用 run_predict_with_MLPClassifier
