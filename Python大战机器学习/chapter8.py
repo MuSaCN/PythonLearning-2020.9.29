@@ -95,7 +95,7 @@ myML.Neur.plotSamples(train_data,2,instance=clf)
 
 # -------------神经网络模型：用于 iris 模型
 from matplotlib.colors import ListedColormap
-from sklearn import neighbors,neural_network
+from sklearn import neural_network
 ## 加载数据集
 iris = myML.DataPre.load_datasets("iris")# 使用 scikit-learn  自带的 iris 数据集
 X=iris.data[:,0:2] # 使用前两个特征，方便绘图
@@ -128,42 +128,44 @@ def plot_classifier_predict_meshgrid(ax,clf,x_min,x_max,y_min,y_max):
       Z = Z.reshape(xx.shape)
       ax.contourf(xx, yy, Z, cmap=plt.cm.Paired) # 绘图
 
-def plot_samples(ax,x,y):
-      '''
-        绘制二维数据集
-        :param ax:  Axes 实例，用于绘图
-        :param x: 第一维特征
-        :param y: 第二维特征
-        :return: None
-      '''
-      n_classes = 3
-      plot_colors = "bry" # 颜色数组。每个类别的样本使用一种颜色
-      for i, color in zip(range(n_classes), plot_colors):
-          idx = np.where(y == i)
-          ax.scatter(x[idx, 0], x[idx, 1], c=color, label=iris.target_names[i], cmap=plt.cm.Paired) # 绘图
+
+def plot_samples(ax, x, y):
+    '''
+      绘制二维数据集
+      :param ax:  Axes 实例，用于绘图
+      :param x: 第一维特征
+      :param y: 第二维特征
+      :return: None
+    '''
+    n_classes = 3
+    plot_colors = "bry"  # 颜色数组。每个类别的样本使用一种颜色
+    for i, color in zip(range(n_classes), plot_colors):
+        idx = np.where(y == i)
+        ax.scatter(x[idx, 0], x[idx, 1], c=color, label=iris.target_names[i], cmap=plt.cm.Paired)  # 绘图
 
 
-def mlpclassifier_iris():
-        '''
-        使用 MLPClassifier 预测调整后的 iris 数据集
-        :return: None
-        '''
-        fig=plt.figure()
-        ax=fig.add_subplot(1,1,1)
-        classifier=neural_network.MLPClassifier(activation='logistic',max_iter=10000,
-            hidden_layer_sizes=(30,))
-        classifier.fit(train_x,train_y)
-        train_score=classifier.score(train_x,train_y)
-        test_score=classifier.score(test_x,test_y)
-        x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
-        y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
-        plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
-        plot_samples(ax,train_x,train_y)
-        ax.legend(loc='best')
-        ax.set_xlabel(iris.feature_names[0])
-        ax.set_ylabel(iris.feature_names[1])
-        ax.set_title("train score:%f;test score:%f"%(train_score,test_score))
-        plt.show()
+# 使用 MLPClassifier 预测调整后的 iris 数据集
+classifier=neural_network.MLPClassifier(activation='logistic',max_iter=10000)
+
+classifier.fit(train_x,train_y)
+
+train_score=classifier.score(train_x,train_y)
+test_score=classifier.score(test_x,test_y)
+
+x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
+y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
+
+fig=plt.figure()
+ax=fig.add_subplot(1,1,1)
+plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
+plot_samples(ax,train_x,train_y)
+ax.legend(loc='best')
+ax.set_xlabel(iris.feature_names[0])
+ax.set_ylabel(iris.feature_names[1])
+ax.set_title("train score:%f;test score:%f"%(train_score,test_score))
+plt.show()
+
+
 
 def mlpclassifier_iris_hidden_layer_sizes():
         '''
