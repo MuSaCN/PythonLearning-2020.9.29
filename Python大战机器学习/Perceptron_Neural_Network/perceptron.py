@@ -223,7 +223,7 @@ def perceptron_dual(train_data,eta,alpha_0,b_0):
     while True:
         i=0
         while(i< length):
-            step_num+=1
+            step_num += 1
             x_i=x[i].reshape((x.shape[1],1)) # 变形为列向量，因为需要调用 np.dot
             y_i=y[i]
             w=creat_w(train_data,alpha)
@@ -237,6 +237,7 @@ def perceptron_dual(train_data,eta,alpha_0,b_0):
         if(i== length ): #没有误分类点，结束循环
             break
     return (alpha,b,step_num)
+
 def run_perceptron_dual():
     '''
     对线性可分数据集执行感知机的原始算法和对偶形式算法，并绘制分离超平面
@@ -246,10 +247,12 @@ def run_perceptron_dual():
     data=creat_data(100)
     eta,w_0,b_0=0.1,np.ones((3,1),dtype=float),1
     w_1,b_1,num_1=perceptron(data,eta,w_0,b_0) ##执行原始形式的算法
+    import time
+    print(time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(time.time())))
     alpha,b_2,num_2=perceptron_dual(data,eta=0.1,alpha_0=np.zeros((data.shape[0]*2,1)),
         b_0=0) # 执行对偶形式的算法
     w_2=creat_w(data,alpha)
-
+    print(time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(time.time())))
     print("w_1,b_1",w_1,b_1)
     print("w_2,b_2",w_2,b_2)
 
@@ -312,8 +315,8 @@ def run_test_eta():
     plt.show()
 if __name__=='__main__':
     run_plot_samples() # 执行 run_plot_samples
-    #run_perceptron()# 执行 run_perceptron
-    #run_perceptron_dual()# 执行 run_perceptron_dual
+    run_perceptron()# 执行 run_perceptron
+    run_perceptron_dual()# 执行 run_perceptron_dual
     #run_test_eta()# 执行 run_test_eta
     #run_plot_samples_no_linear()# 执行 run_plot_samples_no_linear
     #run_perceptron_no_linear()# 执行 run_perceptron_no_linear
