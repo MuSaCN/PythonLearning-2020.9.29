@@ -92,10 +92,7 @@ print(clf.score(train_x,train_y)) # 查看在训练集上的评价预测精度
 ## 用训练好的训练集预测平面上每一点的输出##
 myML.Neur.plotSamples(train_data,2,instance=clf)
 
-
-# -------------神经网络模型：用于 iris 模型-----------！！！待升级为多个标签
-from matplotlib.colors import ListedColormap
-from sklearn import neural_network
+# ------神经网络模型：用于 iris 模型
 ## 加载数据集
 iris = myML.DataPre.load_datasets("iris")# 使用 scikit-learn  自带的 iris 数据集
 X=iris.data[:,0:2] # 使用前两个特征，方便绘图
@@ -110,163 +107,28 @@ test_x=X[-30:] # 最后30个样本作为测试集
 train_y=Y[:-30]
 test_y=Y[-30:]
 
-
-def plot_classifier_predict_meshgrid(ax,clf,x_min,x_max,y_min,y_max):
-      '''
-     绘制 MLPClassifier 的分类结果
-    :param ax:  Axes 实例，用于绘图
-    :param clf: MLPClassifier 实例
-    :param x_min: 第一维特征的最小值
-    :param x_max: 第一维特征的最大值
-    :param y_min: 第二维特征的最小值
-    :param y_max: 第二维特征的最大值
-    :return: None
-      '''
-      plot_step = 0.02 # 步长
-      xx, yy = np.meshgrid(np.arange(x_min, x_max, plot_step),np.arange(y_min, y_max, plot_step))
-      Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
-      Z = Z.reshape(xx.shape)
-      ax.contourf(xx, yy, Z, cmap=plt.cm.Paired) # 绘图
-
-def plot_samples(ax, x, y):
-    '''
-      绘制二维数据集
-      :param ax:  Axes 实例，用于绘图
-      :param x: 第一维特征
-      :param y: 第二维特征
-      :return: None
-    '''
-    n_classes = 3
-    plot_colors = "bry"  # 颜色数组。每个类别的样本使用一种颜色
-    for i, color in zip(range(n_classes), plot_colors):
-        idx = np.where(y == i)
-        ax.scatter(x[idx, 0], x[idx, 1], c=color, label=iris.target_names[i], cmap=plt.cm.Paired)  # 绘图
+# 测试score曲线
+a= {"a":[(10,),(30,),(100,),(5,5),(10,10),(30,30)]}
+myML.plotML.PlotParam_Score(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()", drawParam=2,max_iter=range(10000,10010),hidden_layer_sizes=a["a"])
+myML.plotML.PlotParam_Score(train_x,train_x,train_y,train_y,"neural_network.MLPClassifier()", drawParam=2,max_iter=range(10000,10010),hidden_layer_sizes=a["a"])
 
 
-# 使用 MLPClassifier 预测调整后的 iris 数据集
-classifier=neural_network.MLPClassifier(activation='logistic',max_iter=10000)
+# 画结果
+myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",activation=['logistic'],max_iter=[10000])
 
-classifier.fit(train_x,train_y)
+# 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 hidden_layer_sizes 的影响
+hidden_layer_sizes = [(10,), (30,), (100,), (5, 5), (10, 10), (30, 30)]  # 候选的 hidden_layer_sizes 参数值组成的数组
+myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",hidden_layer_sizes=hidden_layer_sizes,activation=['logistic'],max_iter=[10000])
 
-train_score=classifier.score(train_x,train_y)
-test_score=classifier.score(test_x,test_y)
+# 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 activation 的影响
+ativations = ["logistic", "tanh", "relu"]  # 候选的激活函数字符串组成的列表
+myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",activation=ativations,max_iter=[10000], hidden_layer_sizes=[(30,)])
 
-x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
-y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
+# 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 algorithm 的影响
+algorithms=["lbfgs","sgd","adam"] # 候选的算法字符串组成的列表
+myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",solver=algorithms,activation=["tanh"],max_iter=[10000],hidden_layer_sizes=[(30,)])
 
-fig=plt.figure()
-ax=fig.add_subplot(1,1,1)
-plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
-plot_samples(ax,train_x,train_y)
-ax.legend(loc='best')
-ax.set_xlabel(iris.feature_names[0])
-ax.set_ylabel(iris.feature_names[1])
-ax.set_title("train score:%f;test score:%f"%(train_score,test_score))
-plt.show()
-
-
-
-def mlpclassifier_iris_hidden_layer_sizes():
-        '''
-        使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 hidden_layer_sizes 的影响
-
-        :return: None
-        '''
-        fig=plt.figure()
-        hidden_layer_sizes=[(10,),(30,),(100,),(5,5),(10,10),(30,30)] # 候选的 hidden_layer_sizes 参数值组成的数组
-        for itx,size in enumerate(hidden_layer_sizes):
-            ax=fig.add_subplot(2,3,itx+1)
-            classifier=neural_network.MLPClassifier(activation='logistic',max_iter=10000
-                ,hidden_layer_sizes=size)
-            classifier.fit(train_x,train_y)
-            train_score=classifier.score(train_x,train_y)
-            test_score=classifier.score(test_x,test_y)
-            x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
-            y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
-            plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
-            plot_samples(ax,train_x,train_y)
-            ax.legend(loc='best')
-            ax.set_xlabel(iris.feature_names[0])
-            ax.set_ylabel(iris.feature_names[1])
-            ax.set_title("layer_size:%s;train score:%f;test score:%f"
-                %(size,train_score,test_score))
-        plt.show()
-
-def mlpclassifier_iris_ativations():
-        '''
-        使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 activation 的影响
-
-        :return:  None
-        '''
-        fig=plt.figure()
-        ativations=["logistic","tanh","relu"] # 候选的激活函数字符串组成的列表
-        for itx,act in enumerate(ativations):
-            ax=fig.add_subplot(1,3,itx+1)
-            classifier=neural_network.MLPClassifier(activation=act,max_iter=10000,
-                hidden_layer_sizes=(30,))
-            classifier.fit(train_x,train_y)
-            train_score=classifier.score(train_x,train_y)
-            test_score=classifier.score(test_x,test_y)
-            x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
-            y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
-            plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
-            plot_samples(ax,train_x,train_y)
-            ax.legend(loc='best')
-            ax.set_xlabel(iris.feature_names[0])
-            ax.set_ylabel(iris.feature_names[1])
-            ax.set_title("activation:%s;train score:%f;test score:%f"
-                %(act,train_score,test_score))
-        plt.show()
-
-def mlpclassifier_iris_algorithms():
-        '''
-        使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 algorithm 的影响
-
-        :return: None
-        '''
-        fig=plt.figure()
-        algorithms=["l-bfgs","sgd","adam"] # 候选的算法字符串组成的列表
-        for itx,algo in enumerate(algorithms):
-            ax=fig.add_subplot(1,3,itx+1)
-            classifier=neural_network.MLPClassifier(activation="tanh",max_iter=10000,
-                hidden_layer_sizes=(30,),algorithm=algo)
-            classifier.fit(train_x,train_y)
-            train_score=classifier.score(train_x,train_y)
-            test_score=classifier.score(test_x,test_y)
-            x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
-            y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
-            plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
-            plot_samples(ax,train_x,train_y)
-            ax.legend(loc='best')
-            ax.set_xlabel(iris.feature_names[0])
-            ax.set_ylabel(iris.feature_names[1])
-            ax.set_title("algorithm:%s;train score:%f;test score:%f"%(algo,train_score,test_score))
-        plt.show()
-
-def mlpclassifier_iris_eta():
-        '''
-        使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的学习率的影响
-
-        :return: None
-        '''
-        fig=plt.figure()
-        etas=[0.1,0.01,0.001,0.0001] # 候选的学习率值组成的列表
-        for itx,eta in enumerate(etas):
-            ax=fig.add_subplot(2,2,itx+1)
-            classifier=neural_network.MLPClassifier(activation="tanh",max_iter=1000000,
-            hidden_layer_sizes=(30,),algorithm='sgd',learning_rate_init=eta)
-            classifier.fit(train_x,train_y)
-            iter_num=classifier.n_iter_
-            train_score=classifier.score(train_x,train_y)
-            test_score=classifier.score(test_x,test_y)
-            x_min, x_max = train_x[:, 0].min() - 1, train_x[:, 0].max() + 2
-            y_min, y_max = train_x[:, 1].min() - 1, train_x[:, 1].max() + 2
-            plot_classifier_predict_meshgrid(ax,classifier,x_min,x_max,y_min,y_max)
-            plot_samples(ax,train_x,train_y)
-            ax.legend(loc='best')
-            ax.set_xlabel(iris.feature_names[0])
-            ax.set_ylabel(iris.feature_names[1])
-            ax.set_title("eta:%f;train score:%f;test score:%f;iter_num:%d"
-                %(eta,train_score,test_score,iter_num))
-        plt.show()
+# 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的学习率的影响
+etas = [0.1, 0.01, 0.001, 0.0001]  # 候选的学习率值组成的列表
+myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",learning_rate_init=etas,activation=["tanh"], max_iter=[1000000],hidden_layer_sizes=[(30,)], solver=['sgd'])
 
