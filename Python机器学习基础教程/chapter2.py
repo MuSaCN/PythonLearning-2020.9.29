@@ -41,12 +41,8 @@ myML.plotML.discrete_scatter(X[:, 0], X[:, 1], hue=y)
 print("X.shape:", X.shape)
 
 # %%
-n_samples=40
-rnd = np.random.RandomState(42)
-x = rnd.uniform(-3, 3, size=n_samples)
-y_no_noise = (np.sin(4 * x) + x)
-y = (y_no_noise + rnd.normal(size=len(x))) / 2
-X = x.reshape(-1, 1)
+# 生成自定义 随机波动数据
+X, y = myML.DataPre.make_datasets("wave",n_samples=40)
 plt.plot(X, y, 'o'); plt.ylim(-3, 3); plt.xlabel("Feature"); plt.ylabel("Target");
 
 # %%
@@ -77,7 +73,8 @@ X_test = np.array([[8.2, 3.66214339], [9.9, 3.2], [11.2, .5]])
 myML.KNN.plot_knn_classification(X,Y,X_test,n_neighbors=5,show=True)
 
 # %%
-X, y = mglearn.datasets.make_forge()
+from MyPackage.bookcode.preamble import *
+X,y = myML.DataPre.make_datasets("blobs",forge=True, centers=2, random_state=4, n_samples=30)
 X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X, y, random_state=0)
 
 from sklearn.neighbors import KNeighborsClassifier
@@ -86,8 +83,6 @@ clf.fit(X_train, y_train)
 print("Test set predictions:", clf.predict(X_test))
 print("Test set accuracy: {:.2f}".format(clf.score(X_test, y_test)))
 
-############################### 目前到这 ##############################################
-
 # %% md
 ##### Analyzing KNeighborsClassifier
 fig, axes = plt.subplots(1, 3, figsize=(10, 3))
@@ -95,24 +90,21 @@ for n_neighbors, ax in zip([1, 3, 9], axes):
     # the fit method returns the object self, so we can instantiate
     # and fit in one line
     clf = KNeighborsClassifier(n_neighbors=n_neighbors).fit(X, y)
-    mglearn.plots.plot_2d_separator(clf, X, fill=True, eps=0.5, ax=ax, alpha=.4)
-    mglearn.discrete_scatter(X[:, 0], X[:, 1], y, ax=ax)
+    myML.plotML.plot_2d_separator(clf, X, fill=True, eps=0.5, ax=ax, alpha=.4)
+    myML.plotML.discrete_scatter(X[:, 0], X[:, 1], y, ax=ax)
     ax.set_title("{} neighbor(s)".format(n_neighbors))
     ax.set_xlabel("feature 0")
     ax.set_ylabel("feature 1")
 axes[0].legend(loc=3)
+plt.show()
 
 # %%
-from sklearn.datasets import load_breast_cancer
-cancer = load_breast_cancer()
-X_train, X_test, y_train, y_test = train_test_split(
-    cancer.data, cancer.target, stratify=cancer.target, random_state=66)
-
+cancer = myML.DataPre.load_datasets("breast_cancer")
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, stratify=cancer.target, random_state=66)
 training_accuracy = []
 test_accuracy = []
 # try n_neighbors from 1 to 10
 neighbors_settings = range(1, 11)
-
 for n_neighbors in neighbors_settings:
     # build the model
     clf = KNeighborsClassifier(n_neighbors=n_neighbors)
@@ -121,7 +113,6 @@ for n_neighbors in neighbors_settings:
     training_accuracy.append(clf.score(X_train, y_train))
     # record generalization accuracy
     test_accuracy.append(clf.score(X_test, y_test))
-
 plt.plot(neighbors_settings, training_accuracy, label="training accuracy")
 plt.plot(neighbors_settings, test_accuracy, label="test accuracy")
 plt.ylabel("Accuracy")
@@ -129,29 +120,19 @@ plt.xlabel("n_neighbors")
 plt.legend()
 
 # %% md
-
 ##### k-neighbors regression
+from MyPackage.bookcode.preamble import *
 
 # %%
-
-mglearn.plots.plot_knn_regression(n_neighbors=1)
-
-# %%
-
-mglearn.plots.plot_knn_regression(n_neighbors=3)
+X, y = myML.DataPre.make_datasets("wave",n_samples=40)
+X_test = np.array([[-1.5], [0.9], [1.5]])
+myML.KNN.plot_knn_regression(X, y,X_test,n_neighbors=3)
 
 # %%
-
 from sklearn.neighbors import KNeighborsRegressor
-
-X, y = mglearn.datasets.make_wave(n_samples=40)
-
-# split the wave dataset into a training and a test set
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
-
-# instantiate the model and set the number of neighbors to consider to 3
+X, y = myML.DataPre.make_datasets("wave",n_samples=40)
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X, y, random_state=0)
 reg = KNeighborsRegressor(n_neighbors=3)
-# fit the model using the training data and training targets
 reg.fit(X_train, y_train)
 
 # %%
@@ -163,11 +144,8 @@ print("Test set predictions:\n", reg.predict(X_test))
 print("Test set R^2: {:.2f}".format(reg.score(X_test, y_test)))
 
 # %% md
-
 #### Analyzing KNeighborsRegressor
-
 # %%
-
 fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 # create 1,000 data points, evenly spaced between -3 and 3
 line = np.linspace(-3, 3, 1000).reshape(-1, 1)
@@ -176,9 +154,8 @@ for n_neighbors, ax in zip([1, 3, 9], axes):
     reg = KNeighborsRegressor(n_neighbors=n_neighbors)
     reg.fit(X_train, y_train)
     ax.plot(line, reg.predict(line))
-    ax.plot(X_train, y_train, '^', c=mglearn.cm2(0), markersize=8)
-    ax.plot(X_test, y_test, 'v', c=mglearn.cm2(1), markersize=8)
-
+    ax.plot(X_train, y_train, '^', markersize=8)
+    ax.plot(X_test, y_test, 'v',  markersize=8)
     ax.set_title(
         "{} neighbor(s)\n train score: {:.2f} test score: {:.2f}".format(
             n_neighbors, reg.score(X_train, y_train),
@@ -193,50 +170,36 @@ axes[0].legend(["Model predictions", "Training data/target",
 ##### Strengths, weaknesses, and parameters
 
 # %% md
-
 #### Linear Models
 ##### Linear models for regression
-\begin
-{align *}
-\end
-{align *}
-
-# %%
-
-mglearn.plots.plot_linear_regression_wave()
+from MyPackage.bookcode.preamble import *
 
 # %% md
 
 #### Linear regression aka ordinary least squares
 
 # %%
-
 from sklearn.linear_model import LinearRegression
-
-X, y = mglearn.datasets.make_wave(n_samples=60)
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
-
+X, y = myML.DataPre.make_datasets("wave",n_samples=60)
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X, y, random_state=42)
 lr = LinearRegression().fit(X_train, y_train)
 
 # %%
-
 print("lr.coef_:", lr.coef_)
 print("lr.intercept_:", lr.intercept_)
 
 # %%
-
 print("Training set score: {:.2f}".format(lr.score(X_train, y_train)))
 print("Test set score: {:.2f}".format(lr.score(X_test, y_test)))
 
 # %%
-
-X, y = mglearn.datasets.load_extended_boston()
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+boston = myML.DataPre.load_datasets("boston")
+X = boston.data
+y = boston.target
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X, y, random_state=0)
 lr = LinearRegression().fit(X_train, y_train)
 
 # %%
-
 print("Training set score: {:.2f}".format(lr.score(X_train, y_train)))
 print("Test set score: {:.2f}".format(lr.score(X_test, y_test)))
 
@@ -265,11 +228,9 @@ print("Training set score: {:.2f}".format(ridge01.score(X_train, y_train)))
 print("Test set score: {:.2f}".format(ridge01.score(X_test, y_test)))
 
 # %%
-
 plt.plot(ridge.coef_, 's', label="Ridge alpha=1")
 plt.plot(ridge10.coef_, '^', label="Ridge alpha=10")
 plt.plot(ridge01.coef_, 'v', label="Ridge alpha=0.1")
-
 plt.plot(lr.coef_, 'o', label="LinearRegression")
 plt.xlabel("Coefficient index")
 plt.ylabel("Coefficient magnitude")
@@ -280,11 +241,9 @@ plt.ylim(-25, 25)
 plt.legend()
 
 # %%
-
 mglearn.plots.plot_ridge_n_samples()
 
 # %% md
-
 ##### Lasso
 
 # %%
@@ -313,11 +272,9 @@ print("Test set score: {:.2f}".format(lasso00001.score(X_test, y_test)))
 print("Number of features used:", np.sum(lasso00001.coef_ != 0))
 
 # %%
-
 plt.plot(lasso.coef_, 's', label="Lasso alpha=1")
 plt.plot(lasso001.coef_, '^', label="Lasso alpha=0.01")
 plt.plot(lasso00001.coef_, 'v', label="Lasso alpha=0.0001")
-
 plt.plot(ridge01.coef_, 'o', label="Ridge alpha=0.1")
 plt.legend(ncol=2, loc=(0, 1.05))
 plt.ylim(-25, 25)
@@ -325,25 +282,16 @@ plt.xlabel("Coefficient index")
 plt.ylabel("Coefficient magnitude")
 
 # %% md
-
 ##### Linear models for classification
+from MyPackage.bookcode.preamble import *
 
 # %% md
 
-\begin
-{align *}
-\end
-{align *}
-
 # %%
-
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import LinearSVC
-
-X, y = mglearn.datasets.make_forge()
-
+X,y = myML.DataPre.make_datasets("blobs",True, centers=2, random_state=4, n_samples=30)
 fig, axes = plt.subplots(1, 2, figsize=(10, 3))
-
 for model, ax in zip([LinearSVC(), LogisticRegression()], axes):
     clf = model.fit(X, y)
     mglearn.plots.plot_2d_separator(clf, X, fill=False, eps=0.5,
@@ -353,6 +301,7 @@ for model, ax in zip([LinearSVC(), LogisticRegression()], axes):
     ax.set_xlabel("Feature 0")
     ax.set_ylabel("Feature 1")
 axes[0].legend()
+plt.show()
 
 # %%
 
@@ -363,8 +312,7 @@ mglearn.plots.plot_linear_svc_regularization()
 from sklearn.datasets import load_breast_cancer
 
 cancer = load_breast_cancer()
-X_train, X_test, y_train, y_test = train_test_split(
-    cancer.data, cancer.target, stratify=cancer.target, random_state=42)
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, stratify=cancer.target, random_state=42)
 logreg = LogisticRegression().fit(X_train, y_train)
 print("Training set score: {:.3f}".format(logreg.score(X_train, y_train)))
 print("Test set score: {:.3f}".format(logreg.score(X_test, y_test)))
@@ -418,13 +366,8 @@ plt.legend(loc=3)
 # %% md
 
 ##### Linear models for multiclass classification
-\begin
-{align *}
-\end
-{align *}
 
 # %%
-
 from sklearn.datasets import make_blobs
 
 X, y = make_blobs(random_state=42)
@@ -434,7 +377,6 @@ plt.ylabel("Feature 1")
 plt.legend(["Class 0", "Class 1", "Class 2"])
 
 # %%
-
 linear_svm = LinearSVC().fit(X, y)
 print("Coefficient shape: ", linear_svm.coef_.shape)
 print("Intercept shape: ", linear_svm.intercept_.shape)
@@ -485,11 +427,9 @@ y_pred = logreg.fit(X_train, y_train).predict(X_test)
 y_pred = LogisticRegression().fit(X_train, y_train).predict(X_test)
 
 # %% md
-
 ### Naive Bayes Classifiers
 
 # %%
-
 X = np.array([[0, 1, 0, 1],
               [1, 0, 1, 1],
               [0, 0, 0, 1],
@@ -497,7 +437,6 @@ X = np.array([[0, 1, 0, 1],
 y = np.array([0, 1, 0, 1])
 
 # %%
-
 counts = {}
 for label in np.unique(y):
     # iterate over each class
@@ -505,9 +444,12 @@ for label in np.unique(y):
     counts[label] = X[y == label].sum(axis=0)
 print("Feature counts:\n", counts)
 
-# %% md
 
+# %% md
+----------------------------看到这里------------------------
 #### Strengths, weaknesses and parameters
+from MyPackage.bookcode.preamble import *
+
 
 # %% md
 
