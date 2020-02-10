@@ -61,7 +61,7 @@ from sklearn.preprocessing import MinMaxScaler, PolynomialFeatures
 boston = myML.DataPre.load_datasets("boston")
 X = boston.data
 X = MinMaxScaler().fit_transform(boston.data) # 缩放到0-1
-X = PolynomialFeatures(degree=2, include_bias=False).fit_transform(X) # 生成深度2的多项式
+X = PolynomialFeatures(degree=2, include_bias=False).fit_transform(X) # 生成深度2的多项式 [1, a, b, a^2, ab, b^2]
 y = boston.target
 print("X.shape:", X.shape)
 
@@ -85,39 +85,18 @@ print("Test set accuracy: {:.2f}".format(clf.score(X_test, y_test)))
 
 # %% md
 ##### Analyzing KNeighborsClassifier
-fig, axes = plt.subplots(1, 3, figsize=(10, 3))
-for n_neighbors, ax in zip([1, 3, 9], axes):
-    # the fit method returns the object self, so we can instantiate
-    # and fit in one line
-    clf = KNeighborsClassifier(n_neighbors=n_neighbors).fit(X, y)
-    myML.plotML.plot_2d_separator(clf, X, fill=True, eps=0.5, ax=ax, alpha=.4)
-    myML.plotML.discrete_scatter(X[:, 0], X[:, 1], y, ax=ax)
-    ax.set_title("{} neighbor(s)".format(n_neighbors))
-    ax.set_xlabel("feature 0")
-    ax.set_ylabel("feature 1")
-axes[0].legend(loc=3)
-plt.show()
+n_neighbors = [1, 3, 9]
+myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"neighbors.KNeighborsClassifier()",n_neighbors=n_neighbors)
+
 
 # %%
 cancer = myML.DataPre.load_datasets("breast_cancer")
 X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, stratify=cancer.target, random_state=66)
-training_accuracy = []
-test_accuracy = []
+
 # try n_neighbors from 1 to 10
 neighbors_settings = range(1, 11)
-for n_neighbors in neighbors_settings:
-    # build the model
-    clf = KNeighborsClassifier(n_neighbors=n_neighbors)
-    clf.fit(X_train, y_train)
-    # record training set accuracy
-    training_accuracy.append(clf.score(X_train, y_train))
-    # record generalization accuracy
-    test_accuracy.append(clf.score(X_test, y_test))
-plt.plot(neighbors_settings, training_accuracy, label="training accuracy")
-plt.plot(neighbors_settings, test_accuracy, label="test accuracy")
-plt.ylabel("Accuracy")
-plt.xlabel("n_neighbors")
-plt.legend()
+myML.plotML.PlotParam_Score(X_train, X_test, y_train, y_test,"neighbors.KNeighborsClassifier()",drawParam=1,n_neighbors=neighbors_settings)
+
 
 # %% md
 ##### k-neighbors regression
@@ -136,34 +115,14 @@ reg = KNeighborsRegressor(n_neighbors=3)
 reg.fit(X_train, y_train)
 
 # %%
-
 print("Test set predictions:\n", reg.predict(X_test))
-
-# %%
-
 print("Test set R^2: {:.2f}".format(reg.score(X_test, y_test)))
 
 # %% md
 #### Analyzing KNeighborsRegressor
 # %%
-fig, axes = plt.subplots(1, 3, figsize=(15, 4))
-# create 1,000 data points, evenly spaced between -3 and 3
-line = np.linspace(-3, 3, 1000).reshape(-1, 1)
-for n_neighbors, ax in zip([1, 3, 9], axes):
-    # make predictions using 1, 3, or 9 neighbors
-    reg = KNeighborsRegressor(n_neighbors=n_neighbors)
-    reg.fit(X_train, y_train)
-    ax.plot(line, reg.predict(line))
-    ax.plot(X_train, y_train, '^', markersize=8)
-    ax.plot(X_test, y_test, 'v',  markersize=8)
-    ax.set_title(
-        "{} neighbor(s)\n train score: {:.2f} test score: {:.2f}".format(
-            n_neighbors, reg.score(X_train, y_train),
-            reg.score(X_test, y_test)))
-    ax.set_xlabel("Feature")
-    ax.set_ylabel("Target")
-axes[0].legend(["Model predictions", "Training data/target",
-                "Test data/target"], loc="best")
+n_neighbors = [1,3,9]
+myML.plotML.PlotParam_Regression_Predict(X_train, X_test, y_train, y_test,"neighbors.KNeighborsRegressor()", n_neighbors=n_neighbors)
 
 # %% md
 
@@ -241,7 +200,11 @@ plt.ylim(-25, 25)
 plt.legend()
 
 # %%
-mglearn.plots.plot_ridge_n_samples()
+X,y = myML.DataPre.load_datasets("boston",forge=True)
+
+from sklearn.linear_model import Ridge, LinearRegression
+myML.plotML.plot_learning_curve(Ridge(alpha=1), X, y,show=False)
+myML.plotML.plot_learning_curve(LinearRegression(), X, y,show=True)
 
 # %% md
 ##### Lasso
@@ -285,32 +248,19 @@ plt.ylabel("Coefficient magnitude")
 ##### Linear models for classification
 from MyPackage.bookcode.preamble import *
 
-# %% md
+# %%
+X,y = myML.DataPre.make_datasets("blobs",forge=True, centers=2, random_state=4, n_samples=30)
+myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"linear_model.LogisticRegression()")
+myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"svm.LinearSVC()")
+
 
 # %%
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import LinearSVC
-X,y = myML.DataPre.make_datasets("blobs",True, centers=2, random_state=4, n_samples=30)
-fig, axes = plt.subplots(1, 2, figsize=(10, 3))
-for model, ax in zip([LinearSVC(), LogisticRegression()], axes):
-    clf = model.fit(X, y)
-    mglearn.plots.plot_2d_separator(clf, X, fill=False, eps=0.5,
-                                    ax=ax, alpha=.7)
-    mglearn.discrete_scatter(X[:, 0], X[:, 1], y, ax=ax)
-    ax.set_title(clf.__class__.__name__)
-    ax.set_xlabel("Feature 0")
-    ax.set_ylabel("Feature 1")
-axes[0].legend()
-plt.show()
+Cs = [1e-2, 10, 1e3]
+myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"svm.LinearSVC()",C=Cs, tol=[0.00001], dual=[False])
 
 # %%
-
-mglearn.plots.plot_linear_svc_regularization()
-
-# %%
-
 from sklearn.datasets import load_breast_cancer
-
+from sklearn.linear_model import LogisticRegression
 cancer = load_breast_cancer()
 X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, stratify=cancer.target, random_state=42)
 logreg = LogisticRegression().fit(X_train, y_train)
@@ -368,45 +318,14 @@ plt.legend(loc=3)
 ##### Linear models for multiclass classification
 
 # %%
+from MyPackage.bookcode.preamble import *
 from sklearn.datasets import make_blobs
-
+from sklearn.svm import LinearSVC
 X, y = make_blobs(random_state=42)
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-plt.legend(["Class 0", "Class 1", "Class 2"])
+myML.plotML.discrete_scatter(X[:, 0], X[:, 1], y)
 
 # %%
-linear_svm = LinearSVC().fit(X, y)
-print("Coefficient shape: ", linear_svm.coef_.shape)
-print("Intercept shape: ", linear_svm.intercept_.shape)
-
-# %%
-
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
-line = np.linspace(-15, 15)
-for coef, intercept, color in zip(linear_svm.coef_, linear_svm.intercept_,
-                                  mglearn.cm3.colors):
-    plt.plot(line, -(line * coef[0] + intercept) / coef[1], c=color)
-plt.ylim(-10, 15)
-plt.xlim(-10, 8)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-plt.legend(['Class 0', 'Class 1', 'Class 2', 'Line class 0', 'Line class 1',
-            'Line class 2'], loc=(1.01, 0.3))
-
-# %%
-
-mglearn.plots.plot_2d_classification(linear_svm, X, fill=True, alpha=.7)
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
-line = np.linspace(-15, 15)
-for coef, intercept, color in zip(linear_svm.coef_, linear_svm.intercept_,
-                                  mglearn.cm3.colors):
-    plt.plot(line, -(line * coef[0] + intercept) / coef[1], c=color)
-plt.legend(['Class 0', 'Class 1', 'Class 2', 'Line class 0', 'Line class 1',
-            'Line class 2'], loc=(1.01, 0.3))
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
+myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"svm.LinearSVC()")
 
 # %% md
 
@@ -423,7 +342,6 @@ logreg = LogisticRegression()
 y_pred = logreg.fit(X_train, y_train).predict(X_test)
 
 # %%
-
 y_pred = LogisticRegression().fit(X_train, y_train).predict(X_test)
 
 # %% md
@@ -444,19 +362,13 @@ for label in np.unique(y):
     counts[label] = X[y == label].sum(axis=0)
 print("Feature counts:\n", counts)
 
-
 # %% md
-----------------------------看到这里------------------------
 #### Strengths, weaknesses and parameters
 from MyPackage.bookcode.preamble import *
 
-
 # %% md
-
 ### Decision trees
-
-# %%
-
+dfsasdfsadfdsafadfsaaddfsadfafdsadfsadfsadfsa
 mglearn.plots.plot_animal_tree()
 
 # %% md
@@ -472,11 +384,10 @@ mglearn.plots.plot_tree_progressive()
 ##### Controlling complexity of decision trees
 
 # %%
-
 from sklearn.tree import DecisionTreeClassifier
 
 cancer = load_breast_cancer()
-X_train, X_test, y_train, y_test = train_test_split(
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(
     cancer.data, cancer.target, stratify=cancer.target, random_state=42)
 tree = DecisionTreeClassifier(random_state=0)
 tree.fit(X_train, y_train)
