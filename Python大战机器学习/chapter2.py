@@ -42,10 +42,11 @@ y[::5] += 3 * (0.5 - np.random.rand(noise_num)) # 每第5个样本，就在该�
 X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(X,y,test_size=0.25,random_state=1)
 
 # 决策树回归-------------------------------------------------
-regr = tree.DecisionTreeRegressor()
+regr = tree.DecisionTreeRegressor(max_depth=3)
 regr.fit(X_train, y_train)
 myML.TreeModel.showModelTest(regr,X_train,y_train)
 myML.TreeModel.showModelTest(regr,X_test,y_test)
+myML.TreeModel.DecisionTree_PlotTree(regr)
 
 ##绘图
 myML.TreeModel.DecisionTree_PlotPredict(regr,X_train,y_train,"train sample",show=False)

@@ -16,6 +16,8 @@ X, y = load_iris(return_X_y=True)
 iris = load_iris()
 clf = tree.DecisionTreeClassifier()
 clf = clf.fit(X, y)
+
+
 tree.plot_tree(clf)
 plt.show()
 

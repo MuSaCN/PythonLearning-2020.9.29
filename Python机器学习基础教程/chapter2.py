@@ -368,37 +368,35 @@ from MyPackage.bookcode.preamble import *
 
 # %% md
 ### Decision trees
-dfsasdfsadfdsafadfsaaddfsadfafdsadfsadfsadfsa
 mglearn.plots.plot_animal_tree()
 
 # %% md
-
 ##### Building decision trees
 
 # %%
+X, y = myML.DataPre.make_datasets("moons", n_samples=100, noise=0.25, random_state=3)
+myML.plotML.discrete_scatter(X[:, 0], X[:, 1], y)
+myML.TreeModel.PlotTree_PartitionAndTree(X,y,max_depth = 5)
 
-mglearn.plots.plot_tree_progressive()
+
 
 # %% md
 
 ##### Controlling complexity of decision trees
 
 # %%
+from MyPackage.bookcode.preamble import *
 from sklearn.tree import DecisionTreeClassifier
-
-cancer = load_breast_cancer()
-X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(
-    cancer.data, cancer.target, stratify=cancer.target, random_state=42)
+cancer = myML.DataPre.load_datasets("breast_cancer")
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, stratify=cancer.target, random_state=42)
 tree = DecisionTreeClassifier(random_state=0)
 tree.fit(X_train, y_train)
 print("Accuracy on training set: {:.3f}".format(tree.score(X_train, y_train)))
 print("Accuracy on test set: {:.3f}".format(tree.score(X_test, y_test)))
 
-# %%
-
 tree = DecisionTreeClassifier(max_depth=4, random_state=0)
 tree.fit(X_train, y_train)
-
+# myML.TreeModel.PlotTree_Tree(tree)
 print("Accuracy on training set: {:.3f}".format(tree.score(X_train, y_train)))
 print("Accuracy on test set: {:.3f}".format(tree.score(X_test, y_test)))
 
@@ -407,16 +405,11 @@ print("Accuracy on test set: {:.3f}".format(tree.score(X_test, y_test)))
 #### Analyzing Decision Trees
 
 # %%
-
 from sklearn.tree import export_graphviz
-
 export_graphviz(tree, out_file="tree.dot", class_names=["malignant", "benign"],
                 feature_names=cancer.feature_names, impurity=False, filled=True)
 
-# %%
-
 import graphviz
-
 with open("tree.dot") as f:
     dot_graph = f.read()
 display(graphviz.Source(dot_graph))
@@ -426,23 +419,11 @@ display(graphviz.Source(dot_graph))
 #### Feature Importance in trees
 
 # %%
-
 print("Feature importances:")
 print(tree.feature_importances_)
 
-
 # %%
-
-def plot_feature_importances_cancer(model):
-    n_features = cancer.data.shape[1]
-    plt.barh(np.arange(n_features), model.feature_importances_, align='center')
-    plt.yticks(np.arange(n_features), cancer.feature_names)
-    plt.xlabel("Feature importance")
-    plt.ylabel("Feature")
-    plt.ylim(-1, n_features)
-
-
-plot_feature_importances_cancer(tree)
+myML.TreeModel.plot_feature_importances(tree,cancer.feature_names)
 
 # %%
 
@@ -462,7 +443,7 @@ plt.ylabel("Price in $/Mbyte")
 # %%
 
 from sklearn.tree import DecisionTreeRegressor
-
+from sklearn.linear_model import LinearRegression
 # use historical data to forecast prices after the year 2000
 data_train = ram_prices[ram_prices.date < 2000]
 data_test = ram_prices[ram_prices.date >= 2000]
@@ -505,7 +486,7 @@ plt.legend()
 ###### Analyzing random forests
 
 # %%
-
+from MyPackage.bookcode.preamble import *
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import make_moons
 
