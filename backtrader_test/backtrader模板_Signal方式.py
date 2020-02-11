@@ -46,7 +46,7 @@ myBT.setcash(100000)
 myBT.setcommission(0.001)
 myBT.addsizer(10)
 myBT.AddBarsData(data0, fromdate=None, todate=None)
-myBT.addAllAnalyzer()
+myBT.AddAllAnalyzer()
 
 if __name__ == '__main__':  # 这句必须要有
     # ---加入到信号中，解析信号进行交易

@@ -51,7 +51,7 @@ class iStrategy(myBT.bt.Strategy):
     def notify_order(self,order):
         print("notify_order 开始递交")
         print(len(self), "这是bar执行数量")
-        if myBT.orderStatusCheck(order) == False:
+        if myBT.OrderStatusCheck(order) == False:
             return
         print("notify_order 执行OK")
 

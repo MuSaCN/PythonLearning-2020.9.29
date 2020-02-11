@@ -60,7 +60,7 @@ macddata['DEA'] = DEA['2015']
 macddata['MACD'] = MACD['2015']
 
 
-myDA.candlePlot_ohlc(ChinaBank['2015'],candleTitle='中国银行2015年日K线图',splitFigures=True, Data=macddata,ylabel='MACD')
+myDA.CandlePlot_ohlc(ChinaBank['2015'],candleTitle='中国银行2015年日K线图',splitFigures=True, Data=macddata,ylabel='MACD')
 
 
 

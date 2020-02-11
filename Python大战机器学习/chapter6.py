@@ -35,7 +35,7 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 centers=[[1,1],[2,2],[1,2],[10,20]] # 用于产生聚类的中心点
 X, labels_true = myML.DataPre.make_datasets("blobs", n_samples=1000, centers=centers, cluster_std=0.5 )
 # 绘制用于聚类的数据集
-myML.Cluster.discrete_scatter(X[:,0],X[:,1],labels_true)
+myML.Cluster.Plot_Discrete_Scatter(X[:,0],X[:,1],labels_true)
 
 # ---KMeans
 from sklearn import  cluster

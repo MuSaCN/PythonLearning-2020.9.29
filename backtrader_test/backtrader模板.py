@@ -108,7 +108,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
-        if myBT.orderStatusCheck(order, False) == True:
+        if myBT.OrderStatusCheck(order, False) == True:
             self.barscount = len(self)
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
@@ -129,11 +129,11 @@ myBT.AddBarsData(data0, fromdate=None, todate=None)
 
 
 if __name__ == '__main__':  # 这句必须要有
-    myBT.addAllAnalyzer()  # 多核时不能用
+    myBT.AddAllAnalyzer()  # 多核时不能用
     myBT.StrategyRun(ABCStrategy,plot=True,iplot=False)
     # myBT.OptRun(ABCStrategy,maxcpus=1,Para0=range(5,10))
 
-    all_analyzer = myBT.getAllAnalyzer()
+    all_analyzer = myBT.GetAllAnalyzer()
     print(len(all_analyzer))
     for key in all_analyzer[0]:
         print("--- ",key," :")

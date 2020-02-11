@@ -62,7 +62,7 @@ def next():
 @myBT.OnNotify_Order
 def notify_order():
     print("notify_order", myBT.bars_executed)
-    if myBT.orderStatusCheck(myBT.order_noti,feedback=True) == False:
+    if myBT.OrderStatusCheck(myBT.order_noti,feedback=True) == False:
         return
     else:
         # 必须记录在这里，因为执行在这里
@@ -72,7 +72,7 @@ def notify_order():
 @myBT.OnNotify_Trade
 def notify_trade():
     print("notify_trade", myBT.bars_executed)
-    myBT.tradeStatus(myBT.trade_noti,isclosed=True)
+    myBT.TradeStatus(myBT.trade_noti,isclosed=True)
 
 myBT.addstrategy()
 # ---运行

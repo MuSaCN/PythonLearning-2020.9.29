@@ -93,10 +93,10 @@ class TestStrategy(bt.Strategy):
         bt.indicators.SmoothedMovingAverage(rsi, period=10).subplot = True
         bt.indicators.ATR(self.datas[0]).subplot = True
     def notify_order(self, order):
-        if myBT.orderStatusCheck(order) == True:
+        if myBT.OrderStatusCheck(order) == True:
             self.bar_executed = len(self)
     def notify_trade(self, trade):
-        myBT.tradeStatus(trade,isclosed=True)
+        myBT.TradeStatus(trade,isclosed=True)
     def next(self):
         print('Close, %.2f' % self.dataclose[0])
 

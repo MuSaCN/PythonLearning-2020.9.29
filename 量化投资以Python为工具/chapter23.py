@@ -30,8 +30,8 @@ CRSPday=pd.read_csv(Path2+'/Part4/002/CRSPday.csv')
 ibm=CRSPday.ibm
 ibm.plot()
 plt.show()
-myDA.acf(ibm,nlags=20,plot=True)
-myDA.acf(ibm,nlags=20,qstat=True)
+myDA.TSA_acf(ibm,nlags=20,plot=True)
+myDA.TSA_acf(ibm,nlags=20,qstat=True)
 
 from statsmodels.graphics.tsaplots import *
 plot_acf(ibm,lags=20)
@@ -49,7 +49,7 @@ plot_acf(ge,lags=20)
 LjungBox=stattools.q_stat(stattools.acf(ge)[1:2],len(ge))
 LjungBox[1][-1]
 
-myDA.acf(ge,nlags=9,qstat=True)
+myDA.TSA_acf(ge,nlags=9,qstat=True)
 
 LjungBox=stattools.q_stat(stattools.acf(ge)[1:9],len(ge))
 LjungBox[1][-1]
@@ -66,7 +66,7 @@ from arch.unitroot import ADF
 adf=ADF(r500,lags=3)
 print(adf.summary().as_text())
 plt.show()
-myDA.ADF(r500)
+myDA.TSA_ADF(r500)
 
 
 

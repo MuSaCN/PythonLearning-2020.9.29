@@ -136,7 +136,7 @@ def candleLinePlots(candleData, candleTitle='a', **kwargs):
 
 Vanke15 = Vanke['2015']
 myDA.myfigpro.ReSetFigureAxes()
-myDA.candlePlot_ohlc(Vanke['2015'])
+myDA.CandlePlot_ohlc(Vanke['2015'])
 
 # 使用上面定义的函数
 candleLinePlots(Vanke['2015'], \

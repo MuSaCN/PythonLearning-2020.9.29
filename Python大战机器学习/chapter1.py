@@ -87,7 +87,7 @@ from sklearn import discriminant_analysis
 lda = discriminant_analysis.LinearDiscriminantAnalysis().fit(X_train, Y_train)
 myML.LinearModel.showModelTest(lda, X_test, Y_test)
 # 绘制经过 LDA 转换后的数据(4维降到3维)
-myML.LinearModel.plot_LDA(X_train, Y_train)
+myML.LinearModel.Plot_LDA(X_train, Y_train)
 
 
 

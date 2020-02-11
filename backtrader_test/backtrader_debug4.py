@@ -59,7 +59,7 @@ def next():
 # ---策略订单通知，已经进入下一个bar，且在next()之前执行
 @myBT.OnNotify_Order
 def notify_order():
-    if myBT.orderStatusCheck(myBT.order_noti,feedback=True) == False:
+    if myBT.OrderStatusCheck(myBT.order_noti,feedback=True) == False:
         return
     else:
         # 必须记录在这里，因为执行在这里
@@ -69,7 +69,7 @@ def notify_order():
 # ---策略交易通知，已经进入下一个bar，且在notify_order()之后，next()之前执行
 @myBT.OnNotify_Trade
 def notify_trade():
-    myBT.tradeStatus(myBT.trade_noti,isclosed=False)
+    myBT.TradeStatus(myBT.trade_noti,isclosed=False)
     print("notify_trade() finished",myBT.bars_executed,myBT.open(0),myBT.high(0),myBT.low(0),myBT.close(0))
 
 myBT.addstrategy()

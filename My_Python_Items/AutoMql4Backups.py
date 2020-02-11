@@ -20,7 +20,7 @@ myMql4.MqlDirRemove(myMql4.LogsPath,ignoreFolder=[])
 print("------开始压缩MQL4文件夹------")
 needZip = Mql4Path # 需压缩的目录
 # 备份到OneDrive的Work-Python备份文件夹
-OneDrive_Mql4 = myMql4.myfile.ZipDir(needZip, zipPath=myMql4.mypath.GetOneDrivePath() + "\\Work-Mql备份" , zipName=None, autoName=True)
+OneDrive_Mql4 = myMql4.myfile.Zip_Dir(needZip, zipPath=myMql4.mypath.Get_OneDrivePath() + "\\Work-Mql备份" , zipName=None, autoName=True)
 print("MQL4压缩文件保存完成，{}".format(OneDrive_Mql4))
 
 # ---上传到Baidu云

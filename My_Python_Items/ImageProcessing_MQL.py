@@ -13,12 +13,12 @@ mypath = MyClass_Path()  # 路径类
 myIMql = MyClass_ImageMql() # MQL产品图片处理类
 
 # ---设置桌面为默认的image目录
-filepath = mypath.GetDesktopPath()
+filepath = mypath.Get_DesktopPath()
 
 # ---需要添加到logo图片的指标字样
 IndicatorName = ["AC","Alligator","AO","BWMFI","Fractals","Gator","ATR","BearsPower","BullsPower","CCI","Chaikin","DeMarker","Force","MACD","Momentum","OsMA","RSI","RSV","Stochastic","TriX","WPR","AD","MFI","OBV","Volumes","ADX","ADXWilder","AMA","Bands","DEMA","Envelopes","FrAMA","Ichimoku","MA","SAR","StdDev","TEMA","VIDyA"]  # ***每次需修改***
 
 myIMql.__init__(filepath)
-myIMql.screenshot()
-myIMql.logo(IndicatorName,y=158,size=30)
+myIMql.ScreenShot()
+myIMql.Logo(IndicatorName,y=158,size=30)
 

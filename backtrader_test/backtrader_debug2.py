@@ -61,7 +61,7 @@ def next():
 def notify_order():
     print("notify_order 开始递交")
     print(myBT.bars_executed, "这是bar执行数量")
-    if myBT.orderStatusCheck(myBT.order_noti) == False:
+    if myBT.OrderStatusCheck(myBT.order_noti) == False:
         return
     print("notify_order 执行OK")
 

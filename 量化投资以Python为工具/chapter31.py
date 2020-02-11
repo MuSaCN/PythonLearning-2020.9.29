@@ -38,7 +38,7 @@ Low=ChinaUnicom.Low
 bound = myDA.HighLow_Indi(ChinaUnicom,20)
 
 # ---plot
-myDA.candlePlot_ohlc(ChinaUnicom["2011"],axesindex=0,show=False)
+myDA.CandlePlot_ohlc(ChinaUnicom["2011"],axesindex=0,show=False)
 myDA.myfigpro.myfig.PlotLine(bound.upboundDC["2011"],axesindex=0,show=False)
 myDA.myfigpro.myfig.PlotLine(bound.downboundDC["2011"],axesindex=0,show=False)
 myDA.myfigpro.myfig.FigureShow()

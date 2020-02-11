@@ -33,27 +33,27 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 
 # ---感知机模型
 # data
-train_data0 = myML.Neur.creatTestData(n=20,no_linear=False,value0=10,value1=20,plot=False)
-train_data1 = myML.Neur.creatTestData(n=20,no_linear=True,value0=10,value1=20,plot=False)
+train_data0 = myML.Neur.CreatTestData(n=20,no_linear=False,value0=10,value1=20,plot=False)
+train_data1 = myML.Neur.CreatTestData(n=20,no_linear=True,value0=10,value1=20,plot=False)
 
 # ---对线性可分数据集执行感知机的原始算法并绘制分离超平面
 data=train_data0 #产生线性可分数据集
 w_0= np.ones((3,1),dtype=float) # 初始化 权重
 w,b,num = myML.Neur.PerceptronAlgorithm(data,w_0,eta=0.1,b_0=1) # 执行感知机的原始形式
 ### 绘图
-myML.Neur.plotSamples(data,w=w,b=b)
+myML.Neur.Plot_Samples(data,w=w,b=b)
 
 
 # ---对线性可分数据集执行感知机的原始算法和对偶形式算法，并绘制分离超平面
 data=train_data0
 ## 执行原始形式的算法
 w_1,b_1,num_1=myML.Neur.PerceptronAlgorithm(data,w_0=np.ones((3,1),dtype=float),eta=0.1,b_0=1)
-myML.Neur.plotSamples(data,w=w_1,b=b_1)
+myML.Neur.Plot_Samples(data,w=w_1,b=b_1)
 ## 执行对偶形式的算法
 import time
 print(time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(time.time())))
 w_2,b_2,num_2,alpha=myML.Neur.PerceptronAlgorithm_dual(train_data=data,alpha_0=np.zeros((data.shape[0],1)),eta=0.1,b_0=0)
-myML.Neur.plotSamples(data,w=w_2,b=b_2)
+myML.Neur.Plot_Samples(data,w=w_2,b=b_2)
 print(time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(time.time())))
 #
 print("w_1,b_1",w_1,b_1)
@@ -80,7 +80,7 @@ plt.show()
 
 # ------多层神经网络
 from sklearn import neural_network
-train_data=myML.Neur.creatTestData(500,no_linear=True,value0=10,value1=20,datadim=2,plot=True)
+train_data=myML.Neur.CreatTestData(500,no_linear=True,value0=10,value1=20,datadim=2,plot=True)
 
 # ---使用 MLPClassifier绘制预测结果
 train_x=train_data[:,:-1]
@@ -90,7 +90,7 @@ clf.fit(train_x,train_y) # 训练分类器
 print(clf.score(train_x,train_y)) # 查看在训练集上的评价预测精度
 
 ## 用训练好的训练集预测平面上每一点的输出##
-myML.Neur.plotSamples(train_data,2,instance=clf)
+myML.Neur.Plot_Samples(train_data,2,instance=clf)
 
 # ------神经网络模型：用于 iris 模型
 ## 加载数据集
