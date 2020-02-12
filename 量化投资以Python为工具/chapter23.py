@@ -66,7 +66,7 @@ from arch.unitroot import ADF
 adf=ADF(r500,lags=3)
 print(adf.summary().as_text())
 plt.show()
-myDA.TSA_ADF(r500)
+myDA.tsa_ADF(r500)
 
 
 

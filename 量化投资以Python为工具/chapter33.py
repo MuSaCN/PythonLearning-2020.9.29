@@ -31,8 +31,8 @@ CJSecurities.index=pd.to_datetime(CJSecurities.index)
 
 
 myDA.myfigpro.reset_figure_axes()
-myDA.CandlePlot_ohlcV(CJSecurities,False)
-myDA.CandlePlot_ohlcV(CJSecurities,True)
+myDA.candle_ohlcV(CJSecurities,False)
+myDA.candle_ohlcV(CJSecurities,True)
 
 
 volume=CJSecurities.Volume

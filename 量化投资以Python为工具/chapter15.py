@@ -26,8 +26,8 @@ Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 #1
 au=np.array((6.683,6.678,6.767,6.692,6.672,6.678))
 pa=np.array((6.661,6.664,6.668,6.666,6.665))
-myDA.IntervalEstimation(au,0.90)
-myDA.IntervalEstimation(pa,0.90)
+myDA.interval_estimation(au,0.90)
+myDA.interval_estimation(pa,0.90)
 
 #5.
 import math

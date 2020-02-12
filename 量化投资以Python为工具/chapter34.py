@@ -30,7 +30,7 @@ Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 TsingTao=pd.read_csv(Path+'\\TsingTao.csv',index_col='Date')
 TsingTao=TsingTao.dropna()
 TsingTao.index = pd.to_datetime(TsingTao.index)
-a=myDA.obv_Indi(TsingTao)
+a=myDA.obv_indi(TsingTao)
 
 
 

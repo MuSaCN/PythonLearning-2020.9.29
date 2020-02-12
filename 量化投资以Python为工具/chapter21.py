@@ -55,7 +55,7 @@ dat = pd.concat([ret, ThrFac], 1).dropna()
 dat = pd.concat([ret, ThrFac], 1)
 model = smf.ols('zyhy~RiskPremium2+SMB2+HML2', data=dat).fit()
 print(model.summary())
-myDA.ThreeFactors(dat.zyhy,dat.RiskPremium2,dat.SMB2,dat.HML2,False)
+myDA.three_factors(dat.zyhy,dat.RiskPremium2,dat.SMB2,dat.HML2,False)
 
 # 6.
 zhongxin = pd.read_table(Path2+'/Part3/004/problem21.txt',sep='\t', usecols=['zhongxin', 'Date'], index_col='Date')

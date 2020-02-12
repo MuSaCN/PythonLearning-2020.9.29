@@ -30,8 +30,8 @@ GSPC.index=pd.to_datetime(GSPC.index)
 close=GSPC.Close
 high=GSPC.High
 low=GSPC.Low
-RSV = myDA.rsv_Indi(GSPC,9)
-KDJ = myDA.kdj_Indi(GSPC,9)
+RSV = myDA.rsv_indi(GSPC,9)
+KDJ = myDA.kdj_indi(GSPC,9)
 
 KSignal=KDJ.KValue.apply(lambda x:-1 if x>85 else 1 if x<20 else 0)
 DSignal=KDJ.DValue.apply(lambda x:-1 if x>80 else 1 if x<20 else 0)

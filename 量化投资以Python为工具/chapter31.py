@@ -35,7 +35,7 @@ Close=ChinaUnicom.Close
 High=ChinaUnicom.High
 Low=ChinaUnicom.Low
 
-bound = myDA.HighLow_Indi(ChinaUnicom,20)
+bound = myDA.highlow_indi(ChinaUnicom,20)
 
 # ---plot
 myDA.CandlePlot_ohlc(ChinaUnicom["2011"],axesindex=0,show=False)
