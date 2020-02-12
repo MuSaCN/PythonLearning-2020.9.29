@@ -30,7 +30,7 @@ CJSecurities=CJSecurities.iloc[:,1:]
 CJSecurities.index=pd.to_datetime(CJSecurities.index)
 
 
-myDA.myfigpro.ReSetFigureAxes()
+myDA.myfigpro.reset_figure_axes()
 myDA.CandlePlot_ohlcV(CJSecurities,False)
 myDA.CandlePlot_ohlcV(CJSecurities,True)
 

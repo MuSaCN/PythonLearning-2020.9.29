@@ -37,7 +37,7 @@ from MyPackage.bookcode.preamble import *
 # 生成(小斑点)聚类算法的测试数据；
 X, y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
 # plot dataset
-myML.plotML.Plot_Discrete_Scatter(X[:, 0], X[:, 1], hue=y)
+myML.plotML.plot_discrete_scatter(X[:, 0], X[:, 1], hue=y)
 print("X.shape:", X.shape)
 
 # %%
@@ -74,7 +74,7 @@ print("X.shape:", X.shape)
 # 生成(小斑点)聚类算法的测试数据；
 X, Y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
 X_test = np.array([[8.2, 3.66214339], [9.9, 3.2], [11.2, .5]])
-myML.KNN.Plot_KNN_Classification(X,Y,X_test,n_neighbors=5,show=True)
+myML.KNN.plot_knn_classification(X,Y,X_test,n_neighbors=5,show=True)
 
 # %%
 X, y = mglearn.datasets.make_forge()

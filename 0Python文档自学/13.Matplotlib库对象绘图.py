@@ -30,7 +30,7 @@ Class_Figure=MyClass_Figure([231,232,233,234,235,236])
 
 # 画图
 Class_Figure.PlotLine2D(0,Close,"收盘价")
-Class_Figure.PlotBar(1,[1,3,5,7],[10,20,30,40],1,"柱状图",False,True,None,True)
+Class_Figure.plot_bar(1,[1,3,5,7],[10,20,30,40],1,"柱状图",False,True,None,True)
 Class_Figure.PlotFreHistogram(2,Close,5,"直方图",False,True,[2.5,3.5],False)
 Class_Figure.PlotFreHistogram(3,Close,5,"直方图",False,True,[2.5,3.5],True)
 Close.describe()
@@ -40,10 +40,10 @@ for i in Close:
     elif (i>3)&(i<=4):a[1]+=1
     elif (i>4)&(i<=5):a[2]+=1
     else:a[3]+=1
-Class_Figure.PlotPie(4,a,["(2,3]","(3,4]","(4,5]","(5,6]"])
-Class_Figure.PlotBox(5,Close,"Close")
+Class_Figure.plot_pie(4,a,["(2,3]","(3,4]","(4,5]","(5,6]"])
+Class_Figure.plot_box(5,Close,"Close")
 
-Class_Figure.ReSetFigureAxes([221,222,223,224])
+Class_Figure.reset_figure_axes([221,222,223,224])
 Class_Figure=MyClass_Figure()
 Class_Figure.PlotLine2D(0,Close,objectname="close",cla=False,show=True,grid="x",PlotLabel=["ABCD","X轴","Y轴"])
 Class_Figure.PlotLine2D(0,Open,objectname="Open",cla=False,show=True)

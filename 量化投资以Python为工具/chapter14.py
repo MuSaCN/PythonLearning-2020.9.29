@@ -27,8 +27,8 @@ Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 #1
 Bwages=myfile.read_pd(Path2+"\\Part2\\002\\Bwages.csv")
 Bwages
-myfigpro.HistAndDensity(Bwages["wage"],50)
-mypltpro.DensityAndCumsun(Bwages["wage"],1000)
+myfigpro.hist_density(Bwages["wage"],50)
+mypltpro.density_cumsun(Bwages["wage"],1000)
 
 #2
 history = myfile.read_pd(Path2+'/Part2/001/history.csv',index="Date",parse_dates=True)
@@ -36,26 +36,26 @@ EMarket=history["Emerging.Markets"]
 1-myDA.ReturnBinomProb(EMarket,6,12,True)
 
 #3
-myfig.ReSetFigureAxes()
-myfig.Plot_Prob_Norm(0,1,200,True,show=False)
-myfig.Plot_Prob_Norm(0,0.5**0.5,200,True,show=False)
-myfig.Plot_Prob_Norm(0,2**0.5,200,True,show=False)
-myfig.Plot_Prob_Norm(2,1,200,True,show=True)
+myfig.reset_figure_axes()
+myfig.prob_norm(0,1,200,True,show=False)
+myfig.prob_norm(0,0.5**0.5,200,True,show=False)
+myfig.prob_norm(0,2**0.5,200,True,show=False)
+myfig.prob_norm(2,1,200,True,show=True)
 
-myfig.Plot_Prob_Chi(1,0,5,200,True,"1",show=False)
-myfig.Plot_Prob_Chi(2,0,5,200,True,"2",show=False)
-myfig.Plot_Prob_Chi(3,0,5,200,True,"3",show=False)
-myfig.Plot_Prob_Chi(4,0,5,200,True,"4",show=True)
+myfig.prob_chi(1,0,5,200,True,"1",show=False)
+myfig.prob_chi(2,0,5,200,True,"2",show=False)
+myfig.prob_chi(3,0,5,200,True,"3",show=False)
+myfig.prob_chi(4,0,5,200,True,"4",show=True)
 
-myfig.Plot_Prob_t(1,-5,5,200,False,"1",show=False)
-myfig.Plot_Prob_t(2,-5,5,200,False,"2",show=False)
-myfig.Plot_Prob_t(3,-5,5,200,False,"3",show=False)
-myfig.Plot_Prob_t(4,-5,5,200,False,"4",show=True)
+myfig.prob_t(1,-5,5,200,False,"1",show=False)
+myfig.prob_t(2,-5,5,200,False,"2",show=False)
+myfig.prob_t(3,-5,5,200,False,"3",show=False)
+myfig.prob_t(4,-5,5,200,False,"4",show=True)
 
-myfig.Plot_Prob_f(1,40,0,5,200,True,"1",show=False)
-myfig.Plot_Prob_f(2,40,0,5,200,True,"2",show=False)
-myfig.Plot_Prob_f(3,40,0,5,200,True,"3",show=False)
-myfig.Plot_Prob_f(4,40,0,5,200,True,"4",show=True)
+myfig.prob_f(1,40,0,5,200,True,"1",show=False)
+myfig.prob_f(2,40,0,5,200,True,"2",show=False)
+myfig.prob_f(3,40,0,5,200,True,"3",show=False)
+myfig.prob_f(4,40,0,5,200,True,"4",show=True)
 
 #4
 

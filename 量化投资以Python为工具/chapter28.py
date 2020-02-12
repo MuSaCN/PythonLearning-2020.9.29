@@ -135,7 +135,7 @@ def candleLinePlots(candleData, candleTitle='a', **kwargs):
 # Candle 模组是本书自己编的模组，里面有绘制K线函数Candleplot
 
 Vanke15 = Vanke['2015']
-myDA.myfigpro.ReSetFigureAxes()
+myDA.myfigpro.reset_figure_axes()
 myDA.CandlePlot_ohlc(Vanke['2015'])
 
 # 使用上面定义的函数

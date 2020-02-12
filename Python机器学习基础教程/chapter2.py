@@ -37,7 +37,7 @@ from MyPackage.bookcode.preamble import *
 # 生成(小斑点)聚类算法的测试数据；
 X, y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
 # plot dataset
-myML.plotML.Plot_Discrete_Scatter(X[:, 0], X[:, 1], hue=y)
+myML.plotML.plot_discrete_scatter(X[:, 0], X[:, 1], hue=y)
 print("X.shape:", X.shape)
 
 # %%
@@ -70,7 +70,7 @@ print("X.shape:", X.shape)
 # 生成(小斑点)聚类算法的测试数据；
 X, Y = myML.DataPre.make_datasets("blobs",centers=2, random_state=4, n_samples=30)
 X_test = np.array([[8.2, 3.66214339], [9.9, 3.2], [11.2, .5]])
-myML.KNN.Plot_KNN_Classification(X,Y,X_test,n_neighbors=5,show=True)
+myML.KNN.plot_knn_classification(X,Y,X_test,n_neighbors=5,show=True)
 
 # %%
 from MyPackage.bookcode.preamble import *
@@ -86,7 +86,7 @@ print("Test set accuracy: {:.2f}".format(clf.score(X_test, y_test)))
 # %% md
 ##### Analyzing KNeighborsClassifier
 n_neighbors = [1, 3, 9]
-myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"neighbors.KNeighborsClassifier()",n_neighbors=n_neighbors)
+myML.plotML.plotparam_classifier_boundaries(X,y,"neighbors.KNeighborsClassifier()",n_neighbors=n_neighbors)
 
 
 # %%
@@ -105,7 +105,7 @@ from MyPackage.bookcode.preamble import *
 # %%
 X, y = myML.DataPre.make_datasets("wave",n_samples=40)
 X_test = np.array([[-1.5], [0.9], [1.5]])
-myML.KNN.Plot_KNN_Regression(X, y,X_test,n_neighbors=3)
+myML.KNN.plot_knn_regression(X, y,X_test,n_neighbors=3)
 
 # %%
 from sklearn.neighbors import KNeighborsRegressor
@@ -122,7 +122,7 @@ print("Test set R^2: {:.2f}".format(reg.score(X_test, y_test)))
 #### Analyzing KNeighborsRegressor
 # %%
 n_neighbors = [1,3,9]
-myML.plotML.PlotParam_Regression_Predict(X_train, X_test, y_train, y_test,"neighbors.KNeighborsRegressor()", n_neighbors=n_neighbors)
+myML.plotML.plotparam_regression_predict(X_train, X_test, y_train, y_test,"neighbors.KNeighborsRegressor()", n_neighbors=n_neighbors)
 
 # %% md
 
@@ -203,8 +203,8 @@ plt.legend()
 X,y = myML.DataPre.load_datasets("boston",forge=True)
 
 from sklearn.linear_model import Ridge, LinearRegression
-myML.plotML.PlotParam_LearningCurve(Ridge(alpha=1), X, y,show=False)
-myML.plotML.PlotParam_LearningCurve(LinearRegression(), X, y,show=True)
+myML.plotML.plotparam_learning_curve(Ridge(alpha=1), X, y,show=False)
+myML.plotML.plotparam_learning_curve(LinearRegression(), X, y,show=True)
 
 # %% md
 ##### Lasso
@@ -250,13 +250,13 @@ from MyPackage.bookcode.preamble import *
 
 # %%
 X,y = myML.DataPre.make_datasets("blobs",forge=True, centers=2, random_state=4, n_samples=30)
-myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"linear_model.LogisticRegression()")
-myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"svm.LinearSVC()")
+myML.plotML.plotparam_classifier_boundaries(X,y,"linear_model.LogisticRegression()")
+myML.plotML.plotparam_classifier_boundaries(X,y,"svm.LinearSVC()")
 
 
 # %%
 Cs = [1e-2, 10, 1e3]
-myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"svm.LinearSVC()",C=Cs, tol=[0.00001], dual=[False])
+myML.plotML.plotparam_classifier_boundaries(X,y,"svm.LinearSVC()",C=Cs, tol=[0.00001], dual=[False])
 
 # %%
 from sklearn.datasets import load_breast_cancer
@@ -322,10 +322,10 @@ from MyPackage.bookcode.preamble import *
 from sklearn.datasets import make_blobs
 from sklearn.svm import LinearSVC
 X, y = make_blobs(random_state=42)
-myML.plotML.Plot_Discrete_Scatter(X[:, 0], X[:, 1], y)
+myML.plotML.plot_discrete_scatter(X[:, 0], X[:, 1], y)
 
 # %%
-myML.plotML.PlotParam_Classifier_DecisionBoundaries(X,y,"svm.LinearSVC()")
+myML.plotML.plotparam_classifier_boundaries(X,y,"svm.LinearSVC()")
 
 # %% md
 
@@ -375,8 +375,8 @@ mglearn.plots.plot_animal_tree()
 
 # %%
 X, y = myML.DataPre.make_datasets("moons", n_samples=100, noise=0.25, random_state=3)
-myML.plotML.Plot_Discrete_Scatter(X[:, 0], X[:, 1], y)
-myML.TreeModel.PlotTree_PartitionAndTree(X,y,max_depth = 5)
+myML.plotML.plot_discrete_scatter(X[:, 0], X[:, 1], y)
+myML.TreeModel.plottree_partition_tree(X,y,max_depth = 5)
 
 
 
@@ -423,7 +423,7 @@ print("Feature importances:")
 print(tree.feature_importances_)
 
 # %%
-myML.TreeModel.Plot_feature_importances(tree,cancer.feature_names)
+myML.TreeModel.plot_feature_importances(tree,cancer.feature_names)
 
 # %%
 
@@ -496,7 +496,7 @@ forest = RandomForestClassifier(n_estimators=5, random_state=2)
 forest.fit(X_train, y_train)
 
 # %%
-myML.TreeModel.PlotForest_boundary(forest, X_train,y_train,ax=None)
+myML.TreeModel.plotforest_boundary(forest, X_train,y_train,ax=None)
 
 # %%
 
@@ -508,7 +508,7 @@ print("Accuracy on training set: {:.3f}".format(forest.score(X_train, y_train)))
 print("Accuracy on test set: {:.3f}".format(forest.score(X_test, y_test)))
 
 # %%
-myML.TreeModel.Plot_feature_importances(forest)
+myML.TreeModel.plot_feature_importances(forest)
 
 
 # %% md
@@ -547,7 +547,7 @@ print("Accuracy on test set: {:.3f}".format(gbrt.score(X_test, y_test)))
 
 gbrt = GradientBoostingClassifier(random_state=0, max_depth=1)
 gbrt.fit(X_train, y_train)
-myML.TreeModel.Plot_feature_importances(gbrt)
+myML.TreeModel.plot_feature_importances(gbrt)
 
 
 # %% md

@@ -39,10 +39,10 @@ bound = myDA.HighLow_Indi(ChinaUnicom,20)
 
 # ---plot
 myDA.CandlePlot_ohlc(ChinaUnicom["2011"],axesindex=0,show=False)
-myDA.myfigpro.myfig.PlotLine(bound.upboundDC["2011"],axesindex=0,show=False)
-myDA.myfigpro.myfig.PlotLine(bound.downboundDC["2011"],axesindex=0,show=False)
-myDA.myfigpro.myfig.FigureShow()
-myDA.myfigpro.ReSetFigureAxes()
+myDA.myfigpro.myfig.plot_line(bound.upboundDC["2011"],axesindex=0,show=False)
+myDA.myfigpro.myfig.plot_line(bound.downboundDC["2011"],axesindex=0,show=False)
+myDA.myfigpro.myfig.show()
+myDA.myfigpro.reset_figure_axes()
 
 
 def upbreak(tsLine,tsRefLine):

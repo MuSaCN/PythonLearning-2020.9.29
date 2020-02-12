@@ -39,7 +39,7 @@ train_data1 = myML.Neur.CreatTestData(n=20,no_linear=True,value0=10,value1=20,pl
 # ---对线性可分数据集执行感知机的原始算法并绘制分离超平面
 data=train_data0 #产生线性可分数据集
 w_0= np.ones((3,1),dtype=float) # 初始化 权重
-w,b,num = myML.Neur.PerceptronAlgorithm(data,w_0,eta=0.1,b_0=1) # 执行感知机的原始形式
+w,b,num = myML.Neur.perceptron_algorithm(data,w_0,eta=0.1,b_0=1) # 执行感知机的原始形式
 ### 绘图
 myML.Neur.Plot_Samples(data,w=w,b=b)
 
@@ -47,12 +47,12 @@ myML.Neur.Plot_Samples(data,w=w,b=b)
 # ---对线性可分数据集执行感知机的原始算法和对偶形式算法，并绘制分离超平面
 data=train_data0
 ## 执行原始形式的算法
-w_1,b_1,num_1=myML.Neur.PerceptronAlgorithm(data,w_0=np.ones((3,1),dtype=float),eta=0.1,b_0=1)
+w_1,b_1,num_1=myML.Neur.perceptron_algorithm(data,w_0=np.ones((3,1),dtype=float),eta=0.1,b_0=1)
 myML.Neur.Plot_Samples(data,w=w_1,b=b_1)
 ## 执行对偶形式的算法
 import time
 print(time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(time.time())))
-w_2,b_2,num_2,alpha=myML.Neur.PerceptronAlgorithm_dual(train_data=data,alpha_0=np.zeros((data.shape[0],1)),eta=0.1,b_0=0)
+w_2,b_2,num_2,alpha=myML.Neur.perceptron_algorithm_dual(train_data=data,alpha_0=np.zeros((data.shape[0],1)),eta=0.1,b_0=0)
 myML.Neur.Plot_Samples(data,w=w_2,b=b_2)
 print(time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime(time.time())))
 #
@@ -66,7 +66,7 @@ w_0,b_0,alpha_0=np.ones((3,1)),0,np.zeros((data.shape[0],1))
 etas=np.linspace(0.01,1,num=25,endpoint=False)
 nums1=[]
 for eta in etas:
-    _,_,num_1=myML.Neur.PerceptronAlgorithm(data,w_0=w_0,eta=eta,b_0=b_0) # 获取原始形式算法的迭代次数
+    _,_,num_1=myML.Neur.perceptron_algorithm(data,w_0=w_0,eta=eta,b_0=b_0) # 获取原始形式算法的迭代次数
     nums1.append(num_1)
 fig=plt.figure()
 fig.suptitle("perceptron")
@@ -114,21 +114,21 @@ myML.plotML.PlotParam_Score(train_x,train_x,train_y,train_y,"neural_network.MLPC
 
 
 # 画结果
-myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",activation=['logistic'],max_iter=[10000])
+myML.Neur.plotparam_MLP_classifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",activation=['logistic'],max_iter=[10000])
 
 # 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 hidden_layer_sizes 的影响
 hidden_layer_sizes = [(10,), (30,), (100,), (5, 5), (10, 10), (30, 30)]  # 候选的 hidden_layer_sizes 参数值组成的数组
-myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",hidden_layer_sizes=hidden_layer_sizes,activation=['logistic'],max_iter=[10000])
+myML.Neur.plotparam_MLP_classifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",hidden_layer_sizes=hidden_layer_sizes,activation=['logistic'],max_iter=[10000])
 
 # 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 activation 的影响
 ativations = ["logistic", "tanh", "relu"]  # 候选的激活函数字符串组成的列表
-myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",activation=ativations,max_iter=[10000], hidden_layer_sizes=[(30,)])
+myML.Neur.plotparam_MLP_classifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",activation=ativations,max_iter=[10000], hidden_layer_sizes=[(30,)])
 
 # 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的 algorithm 的影响
 algorithms=["lbfgs","sgd","adam"] # 候选的算法字符串组成的列表
-myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",solver=algorithms,activation=["tanh"],max_iter=[10000],hidden_layer_sizes=[(30,)])
+myML.Neur.plotparam_MLP_classifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",solver=algorithms,activation=["tanh"],max_iter=[10000],hidden_layer_sizes=[(30,)])
 
 # 使用 MLPClassifier 预测调整后的 iris 数据集。考察不同的学习率的影响
 etas = [0.1, 0.01, 0.001, 0.0001]  # 候选的学习率值组成的列表
-myML.Neur.PlotParam_MLPClassifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",learning_rate_init=etas,activation=["tanh"], max_iter=[1000000],hidden_layer_sizes=[(30,)], solver=['sgd'])
+myML.Neur.plotparam_MLP_classifier(train_x,test_x,train_y,test_y,"neural_network.MLPClassifier()",learning_rate_init=etas,activation=["tanh"], max_iter=[1000000],hidden_layer_sizes=[(30,)], solver=['sgd'])
 

@@ -7,7 +7,7 @@ myfig = MyPlot.MyClass_Figure(AddFigure=False)  # 对象式绘图类(可多个�
 myfigpro = MyPlot.MyClass_FigurePro(AddFigure=False)  # Figure高级图系列
 
 # 画决策树需要恢复style
-myplt.SetStyle("defaults")
+myplt.set_style("defaults")
 
 import matplotlib.pyplot as plt
 from sklearn.datasets import load_iris

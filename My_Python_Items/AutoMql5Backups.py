@@ -6,14 +6,14 @@ Mql5Path = "C:\\Users\\i2011\\AppData\\Roaming\\MetaQuotes\\Terminal\\6E8A5B613B
 myMql5 = MyClass_MqlBackups(Mql5Path,isPrint=True)
 
 # ---My_Experts, My_Include, My_Indicators, My_Scripts复制备份操作
-myMql5.MqlDirCopy(myMql5.ExpertsPath,"My_Experts")
-myMql5.MqlDirCopy(myMql5.IncludePath,"My_Include")
-myMql5.MqlDirCopy(myMql5.IndicatorsPath,"My_Indicators")
-myMql5.MqlDirCopy(myMql5.ScriptsPath,"My_Scripts")
+myMql5.dir_copy(myMql5.ExpertsPath,"My_Experts")
+myMql5.dir_copy(myMql5.IncludePath,"My_Include")
+myMql5.dir_copy(myMql5.IndicatorsPath,"My_Indicators")
+myMql5.dir_copy(myMql5.ScriptsPath,"My_Scripts")
 
 # ---Files, Logs清理操作
-myMql5.MqlDirRemove(myMql5.FilesPath,ignoreFolder=["SPSS"])
-myMql5.MqlDirRemove(myMql5.LogsPath,ignoreFolder=[])
+myMql5.dir_remove(myMql5.FilesPath,ignoreFolder=["SPSS"])
+myMql5.dir_remove(myMql5.LogsPath,ignoreFolder=[])
 
 # ---MQL5文件夹备份到OneDrive的Work-Python备份文件夹
 print("------开始压缩MQL5文件夹------")

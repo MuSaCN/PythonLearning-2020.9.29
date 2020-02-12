@@ -41,36 +41,36 @@ for i in Close:
     elif (i>3)&(i<=4):a[1]+=1
     elif (i>4)&(i<=5):a[2]+=1
     else:a[3]+=1
-Class_Plot.Setting2D(PlotLabel=["柱状图","柱点","数量"],grid="both")
-Class_Plot.PlotBar([1.5,2.5,3.5,4.5],a,0.8,"Bar1",show=False,bottom=100)
-Class_Plot.PlotBar([1.5,2.5,3.5,4.5],a,0.8,"Bar2",show=True,horizontal=True)
+Class_Plot.setting_2D(PlotLabel=["柱状图","柱点","数量"],grid="both")
+Class_Plot.plot_bar([1.5,2.5,3.5,4.5],a,0.8,"Bar1",show=False,bottom=100)
+Class_Plot.plot_bar([1.5,2.5,3.5,4.5],a,0.8,"Bar2",show=True,horizontal=True)
 
 #频率直方图/频率累计直方图
-Class_Plot.Setting2D(PlotLabel=["直方图","柱点","频率"],grid="both")
+Class_Plot.setting_2D(PlotLabel=["直方图","柱点","频率"],grid="both")
 Class_Plot.PlotFreHistogram(Close,5,"直方图",True,[2.5,3.5],False)
-Class_Plot.Setting2D(PlotLabel=["直方图","频率","柱点"],grid="both")
+Class_Plot.setting_2D(PlotLabel=["直方图","频率","柱点"],grid="both")
 Class_Plot.PlotFreHistogram(Close,50,"直方图",True,[2.5,3.5],True)
 Class_Plot.PlotFreHistogram(Close,50,"频率直方图",True,None,cumulative=True,type="bar")
 Class_Plot.PlotFreHistogram(Close,50,"频率累计直方图",True,None,cumulative=False,type="bar")
 Class_Plot.PlotFreHistogram(Close,50,"直方图",True,None,cumulative=True,type="barstacked")
 Class_Plot.PlotFreHistogram(Close,50,"直方图",True,None,cumulative=True,type="step")
 Class_Plot.PlotFreHistogram(Close,50,"直方图",True,None,cumulative=True,type="stepfilled")
-Class_Plot.Setting2D(PlotLabel=["直方图","频率","柱点"],grid="both")
+Class_Plot.setting_2D(PlotLabel=["直方图","频率","柱点"],grid="both")
 Class_Plot.PlotFreHistogram(Open,250,"开盘价频率直方图",True)
 
 #饼图
-Class_Plot.PlotPie(a,["(2,3]","(3,4]","(4,5]","(5,6]"])
+Class_Plot.plot_pie(a,["(2,3]","(3,4]","(4,5]","(5,6]"])
 
 #箱型图
-Class_Plot.PlotBox(Close,["Close"])
-Class_Plot.PlotBox(Close,"Close")
+Class_Plot.plot_box(Close,["Close"])
+Class_Plot.plot_box(Close,"Close")
 prcData=ChinaBank.iloc[:,:4]
-Class_Plot.PlotBox(prcData,('Open','High','Low','Close')) #可以传递DataFrame数据类型
-Class_Plot.PlotBox(ChinaBank,('Open','High','Low','Close',"volume"))
-Class_Plot.PlotBox(Close,"Close")
-Class_Plot.PlotBox(Close,"Close",whis=0.3)
-Class_Plot.PlotBox(ChinaBank,('Open','High','Low','Close',"volume"))
-Class_Plot.PlotBox(ChinaBank,('Open','High','Low','Close',"volume"),whis=0.5)
+Class_Plot.plot_box(prcData,('Open','High','Low','Close')) #可以传递DataFrame数据类型
+Class_Plot.plot_box(ChinaBank,('Open','High','Low','Close',"volume"))
+Class_Plot.plot_box(Close,"Close")
+Class_Plot.plot_box(Close,"Close",whis=0.3)
+Class_Plot.plot_box(ChinaBank,('Open','High','Low','Close',"volume"))
+Class_Plot.plot_box(ChinaBank,('Open','High','Low','Close',"volume"),whis=0.5)
 
 
 

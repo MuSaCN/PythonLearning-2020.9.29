@@ -40,7 +40,7 @@ tz_counts = clean_tz.value_counts()
 tz_counts[:10]
 subset = tz_counts[:10]
 
-myfigpro.Bar_Distribution(x=subset.values,y=subset.index)
+myfigpro.bar_distribution(x=subset.values,y=subset.index)
 
 
 

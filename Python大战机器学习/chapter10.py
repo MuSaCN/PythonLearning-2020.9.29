@@ -38,20 +38,20 @@ digits = myML.DataPre.load_datasets("digits") # 使用 scikit-learn 自带的 di
 X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(digits.data,digits.target,test_size=0.25,random_state=0,stratify=digits.target) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
 
 # 测试 AdaBoostClassifier 的用法，绘制 AdaBoostClassifier 的预测性能随基础分类器数量的影响
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=True, learning_rate=[0.1])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=True, learning_rate=[0.1])
 
 # 测试  AdaBoostClassifier 的预测性能随基础分类器数量和基础分类器的类型的影响
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=True, base_estimator=[None,"naive_bayes.GaussianNB()"],learning_rate=[0.1])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=True, base_estimator=[None,"naive_bayes.GaussianNB()"],learning_rate=[0.1])
 
 # 测试  AdaBoostClassifier 的预测性能随学习率的影响
 learning_rates=np.linspace(0.1,0.5)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=False,drawParam=1,show=False,learning_rate=learning_rates,n_estimators=[10])
-myML.Ensemble.PlotParam_Ensemble(X_train,X_train,y_train,y_train,"ensemble.AdaBoostClassifier()",bool_staged=False,drawParam=1,show=True,learning_rate=learning_rates,n_estimators=[10])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=False,drawParam=1,show=False,learning_rate=learning_rates,n_estimators=[10])
+myML.Ensemble.plotparam_ensemble(X_train,X_train,y_train,y_train,"ensemble.AdaBoostClassifier()",bool_staged=False,drawParam=1,show=True,learning_rate=learning_rates,n_estimators=[10])
 
 # 测试  AdaBoostClassifier 的预测性能随学习率和 algorithm 参数的影响
 algorithms=['SAMME.R','SAMME']
 learning_rates=[0.05,0.1,0.5,0.9]
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=True,learning_rate=learning_rates,algorithm=algorithms)
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostClassifier()",bool_staged=True,learning_rate=learning_rates,algorithm=algorithms)
 
 
 # ---AdaBoostRegressor
@@ -59,18 +59,18 @@ digits = myML.DataPre.load_datasets("digits") # 使用 scikit-learn 自带的 di
 X_train,X_test,y_train,y_test = myML.DataPre.train_test_split(digits.data,digits.target,test_size=0.25,random_state=0,stratify=digits.target) # 分层采样拆分成训练集和测试集，测试集大小为原始数据集大小的 1/4
 
 # 测试 AdaBoostRegressor 的用法，绘制 AdaBoostRegressor 的预测性能随基础回归器数量的影响
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=True)
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=True)
 
 # 测试 AdaBoostRegressor 的预测性能随基础回归器数量的和基础回归器类型的影响
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=True,base_estimator=[None,"svm.LinearSVR(epsilon=0.01,C=100)"])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=True,base_estimator=[None,"svm.LinearSVR(epsilon=0.01,C=100)"])
 
 # 测试 AdaBoostRegressor 的预测性能随学习率的影响
 learning_rates=np.linspace(0.01,0.5)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=False,learning_rate=learning_rates,n_estimators=[20])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=False,learning_rate=learning_rates,n_estimators=[20])
 
 # 测试 AdaBoostRegressor 的预测性能随损失函数类型的影响
 losses=['linear','square','exponential']
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=True,loss=losses,n_estimators=[30])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.AdaBoostRegressor()",bool_staged=True,loss=losses,n_estimators=[30])
 
 
 # ---GradientBoostingClassifier
@@ -86,23 +86,23 @@ print("Testing Score:%f"%clf.score(X_test,y_test))
 
 # 测试 GradientBoostingClassifier 的预测性能随 n_estimators 参数的影响
 nums=np.arange(1,10,step=2)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,n_estimators=nums)
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,n_estimators=nums)
 
 # 测试 GradientBoostingClassifier 的预测性能随 max_depth 参数的影响
 maxdepths=np.arange(1,5)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,max_depth=maxdepths,max_leaf_nodes=[None])
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,max_depth=maxdepths,max_leaf_nodes=[None])
 
 # 测试 GradientBoostingClassifier 的预测性能随学习率参数的影响
 learnings=np.linspace(0.1, 0.4, 4)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,learning_rate=learnings)
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,learning_rate=learnings)
 
 # 测试 GradientBoostingClassifier 的预测性能随 subsample 参数的影响
 subsamples=np.linspace(0.01,1.0,4)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,subsample=subsamples)
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,subsample=subsamples)
 
 # 测试 GradientBoostingClassifier 的预测性能随 max_features 参数的影响
 max_features=np.linspace(0.01,1.0,5)
-myML.Ensemble.PlotParam_Ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,max_features=max_features)
+myML.Ensemble.plotparam_ensemble(X_train,X_test,y_train,y_test,"ensemble.GradientBoostingClassifier()",bool_staged=False,max_features=max_features)
 
 
 

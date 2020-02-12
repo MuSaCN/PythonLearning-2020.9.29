@@ -18,11 +18,11 @@ mytime=MyPackage.MyClass_Time.MyClass_Time()            #时间类
 #---------------------------------------------------------
 path="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\利用Python进行数据分析(第二版)代码\\examples\\"
 path1="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\Python数据科学手册\\notebooks\\data\\"
-myfig.SetAxes_3D2D()
-myfig.ReSetFigureAxes()
+myfig.set_axes_3d2d()
+myfig.reset_figure_axes()
 # myfig.AxesList[0].
 # myfig.fig.
-myfig.FigureShow()
+myfig.show()
 plt.show()
 print(123)
 # --------
