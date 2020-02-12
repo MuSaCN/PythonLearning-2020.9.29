@@ -98,7 +98,7 @@ learning_rate = 0.1
 # create instance of neural network
 n = My_BPNeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
-filepath = __mypath__.CurrentWorkPath()+"\\mnist_dataset\\mnist_train_100.csv"
+filepath = __mypath__.current_workpath()+"\\mnist_dataset\\mnist_train_100.csv"
 
 # load the mnist training data CSV file into a list
 training_data_file = open(filepath, 'r')
@@ -123,7 +123,7 @@ for e in range(times):
     pass
 
 # %%
-filepath1 = __mypath__.CurrentWorkPath() + "\\mnist_dataset\\mnist_test_10.csv"
+filepath1 = __mypath__.current_workpath() + "\\mnist_dataset\\mnist_test_10.csv"
 # load the mnist test data CSV file into a list
 test_data_file = open(filepath1, 'r')
 test_data_list = test_data_file.readlines()

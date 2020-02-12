@@ -23,7 +23,7 @@ myDA = MyPackage.MyClass_DataAnalysis.MyClass_DataAnalysis()  #数据分析类
 myBT = MyPackage.MyClass_BackTest.MyClass_BackTest()  #回测类
 myWebQD= MyPackage.MyClass_WebCrawler.MyClass_WebQuotesDownload()  #金融行情下载类
 #------------------------------------------------------------
-__mypath__.CurrentWorkPath()
+__mypath__.current_workpath()
 
 stock_info = myWebQD.get_data_yahoo()
 stock_info
