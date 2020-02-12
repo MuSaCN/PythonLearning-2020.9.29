@@ -38,22 +38,22 @@ class MySignal(myBT.bt.Indicator):
     lines = ('signal',) # 设定返回的lines
     params = (('period', 30),)
     def __init__(self):
-        self.lines.signal = self.data - myBT.addIndi_SMA(self.data, period=self.params.period)
+        self.lines.signal = self.data - myBT.add_indi_sma(self.data, period=self.params.period)
 
 # ---基础设置
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
 myBT.setcommission(0.001)
 myBT.addsizer(10)
-myBT.AddBarsData(data0, fromdate=None, todate=None)
-myBT.AddAllAnalyzer()
+myBT.adddata(data0, fromdate=None, todate=None)
+myBT.addanalyzer_all()
 
 if __name__ == '__main__':  # 这句必须要有
     # ---加入到信号中，解析信号进行交易
     # LONGSHORT: 买入卖出信号都接受执行
     # LONG:买入信号执行，卖出信号仅仅将多头头寸平仓，而不反向卖出。
     # SHORT:卖出信号被执行，而买入信号仅仅将空头头寸平仓，而不方向买入。
-    myBT.SignalRun("LONGSHORT",MySignal,plot=False)
+    myBT.signal_run("LONGSHORT",MySignal,plot=False)
     # ---优化这个方式不可用
     # myBT.OptRun(MySignal,Para0=range(5,100))
 

@@ -33,7 +33,7 @@ mypltpro.density_cumsun(Bwages["wage"],1000)
 #2
 history = myfile.read_pd(Path2+'/Part2/001/history.csv',index="Date",parse_dates=True)
 EMarket=history["Emerging.Markets"]
-1-myDA.ReturnBinomProb(EMarket,6,12,True)
+1-myDA.r_binom_Prob(EMarket,6,12,True)
 
 #3
 myfig.reset_figure_axes()

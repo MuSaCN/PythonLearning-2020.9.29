@@ -41,7 +41,7 @@ for j in range(5,20):
     @myBT.OnInit
     def __init__(i):
         print("init", myBT.Self(i) )
-        myBT.addIndi_SMA(i,0,period=myBT.Para[i][0])
+        myBT.add_indi_sma(i,0,period=myBT.Para[i][0])
         myBT.Self(i).barscount = 0
 
     # ---策略递归，next()执行完就进入下一个bar

@@ -29,7 +29,7 @@ Path2="C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工�
 SHret=pd.read_table(Path+'\\TRD_IndexSum.txt',index_col='Trddt',sep='\t')
 SHret.index=pd.to_datetime(SHret.index)
 
-myDA.tsa_autoARCH(SHret)
+myDA.tsa_auto_ARCH(SHret)
 
 # 5.
 from arch.univariate import ARX, GARCH

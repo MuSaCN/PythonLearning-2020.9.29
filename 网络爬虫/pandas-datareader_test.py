@@ -27,7 +27,7 @@ __mypath__.current_workpath()
 
 stock_info = myWebQD.get_data_yahoo()
 stock_info
-mypd.DisplayAll(stock_info,None,0)
+mypd.display_all(stock_info,None,0)
 
 # 输出图表
 plt.plot(stock_info['Close'])

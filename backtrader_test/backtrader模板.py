@@ -65,7 +65,7 @@ class ABCStrategy(myBT.bt.Strategy):
     def __init__(self):
         self.barscount = 0
         # ---指标输入传入，不输入或者不指定，默认close
-        self.smahandle = myBT.addIndi_SMA(self.datas[0], period=self.params.Para0)
+        self.smahandle = myBT.add_indi_sma(self.datas[0], period=self.params.Para0)
         self.sma = lambda x: self.smahandle[-x]
         # 自定义指标
         self.customhandle = CustomIndicator(self.datas[0],minPeriod=self.params.Para1,subplot = True)
@@ -108,7 +108,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
-        if myBT.OrderStatusCheck(order, False) == True:
+        if myBT.order_status_check(order, False) == True:
             self.barscount = len(self)
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
@@ -125,15 +125,15 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
 myBT.setcommission(0.001)
 myBT.addsizer(1)
-myBT.AddBarsData(data0, fromdate=None, todate=None)
+myBT.adddata(data0, fromdate=None, todate=None)
 
 
 if __name__ == '__main__':  # 这句必须要有
-    myBT.AddAllAnalyzer()  # 多核时不能用
-    myBT.StrategyRun(ABCStrategy,plot=True,iplot=False)
+    myBT.addanalyzer_all()  # 多核时不能用
+    myBT.strategy_run(ABCStrategy,plot=True,iplot=False)
     # myBT.OptRun(ABCStrategy,maxcpus=1,Para0=range(5,10))
 
-    all_analyzer = myBT.GetAllAnalyzer()
+    all_analyzer = myBT.get_analysis_all()
     print(len(all_analyzer))
     for key in all_analyzer[0]:
         print("--- ",key," :")

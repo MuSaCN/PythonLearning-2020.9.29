@@ -53,8 +53,8 @@ pairf.columns = ["PBf","PAf"]
 pairt.columns = ["PBf","PAf"]
 
 
-myDA.PairTrading(pairf,pairt,isPrice=True,method="SSD",width=1.2)
-model = myDA.PairTrading(pairf,pairt,isPrice=True,method="Cointegration",width=1.2)
+myDA.pair_trading(pairf,pairt,isPrice=True,method="SSD",width=1.2)
+model = myDA.pair_trading(pairf,pairt,isPrice=True,method="Cointegration",width=1.2)
 
 
 

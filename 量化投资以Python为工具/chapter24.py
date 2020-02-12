@@ -32,8 +32,8 @@ CPItrain=CPI[3:]
 CPItrain=CPItrain.dropna().CPI
 timeseries = CPItrain
 # ---
-myDA.tsa_autoTEST(timeseries)
-myDA.tsa_autoARIMA(timeseries)
+myDA.tsa_auto_test(timeseries)
+myDA.tsa_auto_ARIMA(timeseries)
 
 #上证指数的平稳时间序列建模
 Datang=pd.read_csv(Path+'/Datang.csv',index_col='time')
@@ -41,8 +41,8 @@ Datang.index=pd.to_datetime(Datang.index)
 returns=Datang.datang['2014-01-01':'2016-01-01']
 timeseries1 = returns
 # ---
-myDA.tsa_autoTEST(timeseries1)
-myDA.tsa_autoARIMA(timeseries1,method="BIC")
+myDA.tsa_auto_test(timeseries1)
+myDA.tsa_auto_ARIMA(timeseries1,method="BIC")
 
 # ------------------------------------------------------------------------
 import statsmodels.tsa.arima_process as sm
