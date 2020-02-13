@@ -683,21 +683,16 @@ print("Accuracy on training set: {:.3f}".format(
 print("Accuracy on test set: {:.3f}".format(svc.score(X_test_scaled, y_test)))
 
 # %% md
-
 #### Strengths, weaknesses and parameters
-fadsfsafsadfdsadfsadfs
-# %% md
+from MyPackage.bookcode.preamble import *
 
+# %% md
 ### Neural Networks (Deep Learning)
 #### The Neural Network Model
 
 # %%
-
-display(mglearn.plots.plot_logistic_regression_graph())
-
-# %%
-
-display(mglearn.plots.plot_single_hidden_layer_graph())
+mglearn.plots.plot_logistic_regression_graph().view()
+mglearn.plots.plot_single_hidden_layer_graph().view()
 
 # %%
 
@@ -710,27 +705,21 @@ plt.ylabel("relu(x), tanh(x)")
 
 # %%
 
-mglearn.plots.plot_two_hidden_layer_graph()
+mglearn.plots.plot_two_hidden_layer_graph().view()
 
 # %% md
 
 #### Tuning Neural Networks
 
 # %%
-
 from sklearn.neural_network import MLPClassifier
-from sklearn.datasets import make_moons
-
-X, y = make_moons(n_samples=100, noise=0.25, random_state=3)
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, stratify=y,
-                                                    random_state=42)
+X, y = myML.DataPre.make_datasets("moons",n_samples=100, noise=0.25, random_state=3)
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X, y, stratify=y,random_state=42)
 
 mlp = MLPClassifier(solver='lbfgs', random_state=0).fit(X_train, y_train)
-mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3)
-mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
+
+myML.plotML.plotparam_classifier_boundaries(X_train,y_train,"neural_network.MLPClassifier()",solver=['lbfgs'], random_state=[0])
+
 
 # %%
 
@@ -764,18 +753,9 @@ plt.xlabel("Feature 0")
 plt.ylabel("Feature 1")
 
 # %%
-
-fig, axes = plt.subplots(2, 4, figsize=(20, 8))
-for axx, n_hidden_nodes in zip(axes, [10, 100]):
-    for ax, alpha in zip(axx, [0.0001, 0.01, 0.1, 1]):
-        mlp = MLPClassifier(solver='lbfgs', random_state=0,
-                            hidden_layer_sizes=[n_hidden_nodes, n_hidden_nodes],
-                            alpha=alpha)
-        mlp.fit(X_train, y_train)
-        mglearn.plots.plot_2d_separator(mlp, X_train, fill=True, alpha=.3, ax=ax)
-        mglearn.discrete_scatter(X_train[:, 0], X_train[:, 1], y_train, ax=ax)
-        ax.set_title("n_hidden=[{}, {}]\nalpha={:.4f}".format(
-            n_hidden_nodes, n_hidden_nodes, alpha))
+hidden_layer_sizes=[10, 100]
+alpha=[0.0001, 0.01, 0.1, 1]
+myML.plotML.plotparam_classifier_boundaries(X_train,y_train,"neural_network.MLPClassifier()",hidden_layer_sizes=hidden_layer_sizes,alpha=alpha,solver=['lbfgs'], random_state=[0])
 
 # %%
 
@@ -793,7 +773,7 @@ print("Cancer data per-feature maxima:\n{}".format(cancer.data.max(axis=0)))
 
 # %%
 
-X_train, X_test, y_train, y_test = train_test_split(
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(
     cancer.data, cancer.target, random_state=0)
 
 mlp = MLPClassifier(random_state=42)
@@ -855,23 +835,20 @@ plt.colorbar()
 ##### Estimating complexity in neural networks
 
 # %% md
-
 ### Uncertainty estimates from classifiers
+from MyPackage.bookcode.preamble import *
 
 # %%
-
 from sklearn.ensemble import GradientBoostingClassifier
-from sklearn.datasets import make_circles
 
-X, y = make_circles(noise=0.25, factor=0.5, random_state=1)
+X, y = myML.DataPre.make_datasets("circles",noise=0.25, factor=0.5, random_state=1)
 
 # we rename the classes "blue" and "red" for illustration purposes:
 y_named = np.array(["blue", "red"])[y]
 
 # we can call train_test_split with arbitrarily many arrays;
 # all will be split in a consistent manner
-X_train, X_test, y_train_named, y_test_named, y_train, y_test = \
-    train_test_split(X, y_named, y, random_state=0)
+X_train, X_test, y_train_named, y_test_named, y_train, y_test = myML.DataPre.train_test_split(X, y_named, y, random_state=0)
 
 # build the gradient boosting model
 gbrt = GradientBoostingClassifier(random_state=0)
@@ -884,8 +861,7 @@ gbrt.fit(X_train, y_train_named)
 # %%
 
 print("X_test.shape:", X_test.shape)
-print("Decision function shape:",
-      gbrt.decision_function(X_test).shape)
+print("Decision function shape:",gbrt.decision_function(X_test).shape)
 
 # %%
 
@@ -894,8 +870,7 @@ print("Decision function:", gbrt.decision_function(X_test)[:6])
 
 # %%
 
-print("Thresholded decision function:\n",
-      gbrt.decision_function(X_test) > 0)
+print("Thresholded decision function:\n", gbrt.decision_function(X_test) > 0)
 print("Predictions:\n", gbrt.predict(X_test))
 
 # %%
@@ -905,14 +880,12 @@ greater_zero = (gbrt.decision_function(X_test) > 0).astype(int)
 # use 0 and 1 as indices into classes_
 pred = gbrt.classes_[greater_zero]
 # pred is the same as the output of gbrt.predict
-print("pred is equal to predictions:",
-      np.all(pred == gbrt.predict(X_test)))
+print("pred is equal to predictions:", np.all(pred == gbrt.predict(X_test)))
 
 # %%
 
 decision_function = gbrt.decision_function(X_test)
-print("Decision function minimum: {:.2f} maximum: {:.2f}".format(
-    np.min(decision_function), np.max(decision_function)))
+print("Decision function minimum: {:.2f} maximum: {:.2f}".format(np.min(decision_function), np.max(decision_function)))
 
 # %%
 
@@ -975,20 +948,11 @@ axes[0].legend(["Test class 0", "Test class 1", "Train class 0",
                 "Train class 1"], ncol=4, loc=(.1, 1.1))
 
 # %% md
-
-![classifier_comparison](images / classifier_comparison.png)
-
-# %% md
-
 #### Uncertainty in multiclass classification
 
-# %%
+iris = myML.DataPre.load_datasets("iris")
 
-from sklearn.datasets import load_iris
-
-iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(
-    iris.data, iris.target, random_state=42)
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(iris.data, iris.target, random_state=42)
 
 gbrt = GradientBoostingClassifier(learning_rate=0.01, random_state=0)
 gbrt.fit(X_train, y_train)

@@ -1,0 +1,59 @@
+digraph {
+	graph [rankdir=LR splines=line]
+	node [fixedsize=True shape=circle]
+	subgraph cluster_0 {
+		node [shape=circle]
+		"x[0]"
+		"x[1]"
+		"x[2]"
+		"x[3]"
+	label = "inputs"
+	color = "white"
+	}
+	subgraph cluster_1 {
+		node [shape=circle]
+		"h1[0]"
+		"h1[1]"
+		"h1[2]"
+	label = "hidden layer 1"
+	color = "white"
+	}
+	subgraph cluster_2 {
+		node [shape=circle]
+		"h2[0]"
+		"h2[1]"
+		"h2[2]"
+	label = "hidden layer 2"
+	color = "white"
+	}
+	subgraph cluster_3 {
+		node [shape=circle]
+		y
+	label = "output"
+	color = "white"
+	}
+	"x[0]" -> "h1[0]" [label=""]
+	"x[0]" -> "h1[1]" [label=""]
+	"x[0]" -> "h1[2]" [label=""]
+	"x[1]" -> "h1[0]" [label=""]
+	"x[1]" -> "h1[1]" [label=""]
+	"x[1]" -> "h1[2]" [label=""]
+	"x[2]" -> "h1[0]" [label=""]
+	"x[2]" -> "h1[1]" [label=""]
+	"x[2]" -> "h1[2]" [label=""]
+	"x[3]" -> "h1[0]" [label=""]
+	"x[3]" -> "h1[1]" [label=""]
+	"x[3]" -> "h1[2]" [label=""]
+	"h1[0]" -> "h2[0]" [label=""]
+	"h1[0]" -> "h2[1]" [label=""]
+	"h1[0]" -> "h2[2]" [label=""]
+	"h1[1]" -> "h2[0]" [label=""]
+	"h1[1]" -> "h2[1]" [label=""]
+	"h1[1]" -> "h2[2]" [label=""]
+	"h1[2]" -> "h2[0]" [label=""]
+	"h1[2]" -> "h2[1]" [label=""]
+	"h1[2]" -> "h2[2]" [label=""]
+	"h2[0]" -> y [label=""]
+	"h2[1]" -> y [label=""]
+	"h2[2]" -> y [label=""]
+}
