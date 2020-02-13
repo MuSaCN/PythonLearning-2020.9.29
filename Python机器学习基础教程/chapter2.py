@@ -557,96 +557,54 @@ myML.TreeModel.plot_feature_importances(gbrt)
 # %% md
 #### Kernelized Support Vector Machines
 #### Linear Models and Non-linear Features
-dsafsadfdsafsadfdsadfsadfssdfdfsaa
 from MyPackage.bookcode.preamble import *
-
+from mpl_toolkits.mplot3d import Axes3D
 # %%
 
-X, y = make_blobs(centers=4, random_state=8)
+X, y =myML.DataPre.make_datasets("blobs",centers=4, random_state=8 )
 y = y % 2
-
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
+# myML.plotML.plot_discrete_scatter(X[:, 0], X[:, 1], y)
 
 # %%
-
 from sklearn.svm import LinearSVC
-
 linear_svm = LinearSVC().fit(X, y)
-
-mglearn.plots.plot_2d_separator(linear_svm, X)
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
+# myML.plotML.plotparam_classifier_boundaries(X,y,"svm.LinearSVC()")
 
 # %%
-
 # add the squared first feature
 X_new = np.hstack([X, X[:, 1:] ** 2])
-
-from mpl_toolkits.mplot3d import Axes3D, axes3d
-
-figure = plt.figure()
-# visualize in 3D
-ax = Axes3D(figure, elev=-152, azim=-26)
-# plot first all the points with y==0, then all with y == 1
-mask = y == 0
-ax.scatter(X_new[mask, 0], X_new[mask, 1], X_new[mask, 2], c='b',
-           cmap=mglearn.cm2, s=60, edgecolor='k')
-ax.scatter(X_new[~mask, 0], X_new[~mask, 1], X_new[~mask, 2], c='r', marker='^',
-           cmap=mglearn.cm2, s=60, edgecolor='k')
-ax.set_xlabel("feature0")
-ax.set_ylabel("feature1")
-ax.set_zlabel("feature1 ** 2")
+# myfig.__init__(AddFigure=True)
+# myfig.set_axes_3d2d()
+# ax = myfig.plot3D_scatter(X_new[:, 0], X_new[:, 1], X_new[:, 2],show=False)
 
 # %%
+Cs=[0.0001,1.0,10000]
+myML.plotML.plotparam_classifier_boundaries(X_new, y,"svm.LinearSVC()",C=Cs)
 
+# %%
 linear_svm_3d = LinearSVC().fit(X_new, y)
 coef, intercept = linear_svm_3d.coef_.ravel(), linear_svm_3d.intercept_
-
 # show linear decision boundary
-figure = plt.figure()
-ax = Axes3D(figure, elev=-152, azim=-26)
 xx = np.linspace(X_new[:, 0].min() - 2, X_new[:, 0].max() + 2, 50)
 yy = np.linspace(X_new[:, 1].min() - 2, X_new[:, 1].max() + 2, 50)
-
 XX, YY = np.meshgrid(xx, yy)
-ZZ = (coef[0] * XX + coef[1] * YY + intercept) / -coef[2]
-ax.plot_surface(XX, YY, ZZ, rstride=8, cstride=8, alpha=0.3)
-ax.scatter(X_new[mask, 0], X_new[mask, 1], X_new[mask, 2], c='b',
-           cmap=mglearn.cm2, s=60, edgecolor='k')
-ax.scatter(X_new[~mask, 0], X_new[~mask, 1], X_new[~mask, 2], c='r', marker='^',
-           cmap=mglearn.cm2, s=60, edgecolor='k')
-
-ax.set_xlabel("feature0")
-ax.set_ylabel("feature1")
-ax.set_zlabel("feature1 ** 2")
-
-# %%
-
 ZZ = YY ** 2
 dec = linear_svm_3d.decision_function(np.c_[XX.ravel(), YY.ravel(), ZZ.ravel()])
 plt.contourf(XX, YY, dec.reshape(XX.shape), levels=[dec.min(), 0, dec.max()],
-             cmap=mglearn.cm2, alpha=0.5)
-mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
+             alpha=0.5)
+myML.plotML.plot_discrete_scatter(X[:, 0], X[:, 1], y,show=False)
 plt.xlabel("Feature 0")
 plt.ylabel("Feature 1")
 
 # %% md
-
 #### The Kernel Trick
 #### Understanding SVMs
-\begin
-{align *}
-\end
-{align *}
 
 # %%
-
+from MyPackage.bookcode.preamble import *
 from sklearn.svm import SVC
+X, y =myML.DataPre.make_datasets("blobs",forge=True,centers=2, random_state=4, n_samples=30)
 
-X, y = mglearn.tools.make_handcrafted_dataset()
 svm = SVC(kernel='rbf', C=10, gamma=0.1).fit(X, y)
 mglearn.plots.plot_2d_separator(svm, X, eps=.5)
 mglearn.discrete_scatter(X[:, 0], X[:, 1], y)
@@ -657,26 +615,18 @@ sv_labels = svm.dual_coef_.ravel() > 0
 mglearn.discrete_scatter(sv[:, 0], sv[:, 1], sv_labels, s=15, markeredgewidth=3)
 plt.xlabel("Feature 0")
 plt.ylabel("Feature 1")
+plt.show()
+
 
 # %% md
-
 #### Tuning SVM parameters
+C=[0.1,1,1000]
+gamma = [0.1,1,10]
+myML.plotML.plotparam_classifier_boundaries(X,y,"svm.SVC()",kernel=['rbf'], C=C, gamma=gamma)
 
 # %%
-
-fig, axes = plt.subplots(3, 3, figsize=(15, 10))
-
-for ax, C in zip(axes, [-1, 0, 3]):
-    for a, gamma in zip(ax, range(-1, 2)):
-        mglearn.plots.plot_svm(log_C=C, log_gamma=gamma, ax=a)
-
-axes[0, 0].legend(["class 0", "class 1", "sv class 0", "sv class 1"],
-                  ncol=4, loc=(.9, 1.2))
-
-# %%
-
-X_train, X_test, y_train, y_test = train_test_split(
-    cancer.data, cancer.target, random_state=0)
+cancer = myML.DataPre.load_datasets("breast_cancer")
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, random_state=0)
 
 svc = SVC()
 svc.fit(X_train, y_train)
@@ -686,7 +636,7 @@ print("Accuracy on test set: {:.2f}".format(svc.score(X_test, y_test)))
 
 # %%
 
-plt.boxplot(X_train, manage_xticks=False)
+plt.boxplot(X_train)
 plt.yscale("symlog")
 plt.xlabel("Feature index")
 plt.ylabel("Feature magnitude")
@@ -735,7 +685,7 @@ print("Accuracy on test set: {:.3f}".format(svc.score(X_test_scaled, y_test)))
 # %% md
 
 #### Strengths, weaknesses and parameters
-
+fadsfsafsadfdsadfsadfs
 # %% md
 
 ### Neural Networks (Deep Learning)
