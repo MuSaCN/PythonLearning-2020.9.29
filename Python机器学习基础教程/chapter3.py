@@ -30,201 +30,112 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #------------------------------------------------------------
-
+# %% md
 from MyPackage.bookcode.preamble import *
 
-plt.rcParams['image.cmap'] = "gray"
 
-# %% md
+X, y = myML.DataPre.make_datasets("blobs",n_samples=50, centers=2, random_state=4, cluster_std=1)
+X += 3
+from sklearn import preprocessing
+cls_nofit = [preprocessing.StandardScaler(), preprocessing.RobustScaler(),preprocessing.MinMaxScaler(), preprocessing.Normalizer(norm='l2')]
+myML.DataPre.plot_scaling(X,y,cls_nofit)
 
-## Unsupervised Learning and Preprocessing
-### Types of unsupervised learning
-### Challenges in unsupervised learning
-### Preprocessing and Scaling
 
-# %%
-
-mglearn.plots.plot_scaling()
-
-# %% md
-
-#### Different Kinds of Preprocessing
-#### Applying Data Transformations
-
-# %%
-
-from sklearn.datasets import load_breast_cancer
-from sklearn.model_selection import train_test_split
-
-cancer = load_breast_cancer()
-
-X_train, X_test, y_train, y_test = train_test_split(cancer.data, cancer.target,
-                                                    random_state=1)
+cancer = myML.DataPre.load_datasets("breast_cancer")
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, random_state=1)
 print(X_train.shape)
 print(X_test.shape)
 
-# %%
 
 from sklearn.preprocessing import MinMaxScaler
-
 scaler = MinMaxScaler()
-
-# %%
-
 scaler.fit(X_train)
-
-# %%
-
 # transform data
 X_train_scaled = scaler.transform(X_train)
-# print dataset properties before and after scaling
 print("transformed shape: {}".format(X_train_scaled.shape))
 print("per-feature minimum before scaling:\n {}".format(X_train.min(axis=0)))
 print("per-feature maximum before scaling:\n {}".format(X_train.max(axis=0)))
-print("per-feature minimum after scaling:\n {}".format(
-    X_train_scaled.min(axis=0)))
-print("per-feature maximum after scaling:\n {}".format(
-    X_train_scaled.max(axis=0)))
+print("per-feature minimum after scaling:\n {}".format(X_train_scaled.min(axis=0)))
+print("per-feature maximum after scaling:\n {}".format(X_train_scaled.max(axis=0)))
 
-# %%
 
 # transform test data
 X_test_scaled = scaler.transform(X_test)
-# print test data properties after scaling
 print("per-feature minimum after scaling:\n{}".format(X_test_scaled.min(axis=0)))
 print("per-feature maximum after scaling:\n{}".format(X_test_scaled.max(axis=0)))
 
-# %% md
 
 #### Scaling training and test data the same way
-
-# %%
-
-from sklearn.datasets import make_blobs
-
-# make synthetic data
-X, _ = make_blobs(n_samples=50, centers=5, random_state=4, cluster_std=2)
-# split it into training and test sets
-X_train, X_test = train_test_split(X, random_state=5, test_size=.1)
-
+X, _ = myML.DataPre.make_datasets("blobs",n_samples=50, centers=5, random_state=4, cluster_std=2)
+X_train, X_test = myML.DataPre.train_test_split(X, random_state=5, test_size=.1)
 # plot the training and test sets
 fig, axes = plt.subplots(1, 3, figsize=(13, 4))
-axes[0].scatter(X_train[:, 0], X_train[:, 1],
-                c=mglearn.cm2(0), label="Training set", s=60)
-axes[0].scatter(X_test[:, 0], X_test[:, 1], marker='^',
-                c=mglearn.cm2(1), label="Test set", s=60)
+axes[0].scatter(X_train[:, 0], X_train[:, 1],c=mglearn.cm2(0), label="Training set", s=60)
+axes[0].scatter(X_test[:, 0], X_test[:, 1], marker='^',c=mglearn.cm2(1), label="Test set", s=60)
 axes[0].legend(loc='upper left')
 axes[0].set_title("Original Data")
-
 # scale the data using MinMaxScaler
 scaler = MinMaxScaler()
 scaler.fit(X_train)
 X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
 # visualize the properly scaled data
-axes[1].scatter(X_train_scaled[:, 0], X_train_scaled[:, 1],
-                c=mglearn.cm2(0), label="Training set", s=60)
-axes[1].scatter(X_test_scaled[:, 0], X_test_scaled[:, 1], marker='^',
-                c=mglearn.cm2(1), label="Test set", s=60)
+axes[1].scatter(X_train_scaled[:, 0], X_train_scaled[:, 1],c=mglearn.cm2(0), label="Training set", s=60)
+axes[1].scatter(X_test_scaled[:, 0], X_test_scaled[:, 1], marker='^',c=mglearn.cm2(1), label="Test set", s=60)
 axes[1].set_title("Scaled Data")
-
 # rescale the test set separately
-# so test set min is 0 and test set max is 1
-# DO NOT DO THIS! For illustration purposes only.
 test_scaler = MinMaxScaler()
 test_scaler.fit(X_test)
 X_test_scaled_badly = test_scaler.transform(X_test)
-
 # visualize wrongly scaled data
-axes[2].scatter(X_train_scaled[:, 0], X_train_scaled[:, 1],
-                c=mglearn.cm2(0), label="training set", s=60)
-axes[2].scatter(X_test_scaled_badly[:, 0], X_test_scaled_badly[:, 1],
-                marker='^', c=mglearn.cm2(1), label="test set", s=60)
+axes[2].scatter(X_train_scaled[:, 0], X_train_scaled[:, 1],c=mglearn.cm2(0), label="training set", s=60)
+axes[2].scatter(X_test_scaled_badly[:, 0], X_test_scaled_badly[:, 1],marker='^', c=mglearn.cm2(1), label="test set", s=60)
 axes[2].set_title("Improperly Scaled Data")
-
 for ax in axes:
     ax.set_xlabel("Feature 0")
     ax.set_ylabel("Feature 1")
 fig.tight_layout()
 
-# %%
-
 from sklearn.preprocessing import StandardScaler
-
 scaler = StandardScaler()
 # calling fit and transform in sequence (using method chaining)
 X_scaled = scaler.fit(X_train).transform(X_train)
 # same result, but more efficient computation
 X_scaled_d = scaler.fit_transform(X_train)
 
-# %% md
-
 #### The effect of preprocessing on supervised learning
-
-# %%
-
 from sklearn.svm import SVC
-
-X_train, X_test, y_train, y_test = train_test_split(cancer.data, cancer.target,
-                                                    random_state=0)
-
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target,random_state=0)
 svm = SVC(C=100)
 svm.fit(X_train, y_train)
 print("Test set accuracy: {:.2f}".format(svm.score(X_test, y_test)))
-
-# %%
 
 # preprocessing using 0-1 scaling
 scaler = MinMaxScaler()
 scaler.fit(X_train)
 X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
-# learning an SVM on the scaled training data
 svm.fit(X_train_scaled, y_train)
-
-# scoring on the scaled test set
-print("Scaled test set accuracy: {:.2f}".format(
-    svm.score(X_test_scaled, y_test)))
-
-# %%
+print("Scaled test set accuracy: {:.2f}".format(svm.score(X_test_scaled, y_test)))
 
 # preprocessing using zero mean and unit variance scaling
 from sklearn.preprocessing import StandardScaler
-
 scaler = StandardScaler()
 scaler.fit(X_train)
 X_train_scaled = scaler.transform(X_train)
 X_test_scaled = scaler.transform(X_test)
-
-# learning an SVM on the scaled training data
 svm.fit(X_train_scaled, y_train)
-
-# scoring on the scaled test set
 print("SVM test accuracy: {:.2f}".format(svm.score(X_test_scaled, y_test)))
-
-# %% md
 
 ### Dimensionality Reduction, Feature Extraction and Manifold Learning
 #### Principal Component Analysis (PCA)
-
-# %%
-
-mglearn.plots.plot_pca_illustration()
-
-# %% md
+# mglearn.plots.plot_pca_illustration()
 
 ##### Applying PCA to the cancer dataset for visualization
-
-# %%
-
 fig, axes = plt.subplots(15, 2, figsize=(10, 20))
 malignant = cancer.data[cancer.target == 0]
 benign = cancer.data[cancer.target == 1]
-
 ax = axes.ravel()
-
 for i in range(30):
     _, bins = np.histogram(cancer.data[:, i], bins=50)
     ax[i].hist(malignant[:, i], bins=bins, color=mglearn.cm3(0), alpha=.5)
@@ -236,71 +147,36 @@ ax[0].set_ylabel("Frequency")
 ax[0].legend(["malignant", "benign"], loc="best")
 fig.tight_layout()
 
-# %%
-
-from sklearn.datasets import load_breast_cancer
-
-cancer = load_breast_cancer()
-
+cancer = myML.DataPre.load_datasets("breast_cancer")
 scaler = StandardScaler()
 scaler.fit(cancer.data)
 X_scaled = scaler.transform(cancer.data)
 
-# %%
-
 from sklearn.decomposition import PCA
-
-# keep the first two principal components of the data
 pca = PCA(n_components=2)
-# fit PCA model to beast cancer data
 pca.fit(X_scaled)
-
-# transform data onto the first two principal components
 X_pca = pca.transform(X_scaled)
 print("Original shape: {}".format(str(X_scaled.shape)))
 print("Reduced shape: {}".format(str(X_pca.shape)))
 
-# %%
-
 # plot first vs. second principal component, colored by class
-plt.figure(figsize=(8, 8))
-mglearn.discrete_scatter(X_pca[:, 0], X_pca[:, 1], cancer.target)
-plt.legend(cancer.target_names, loc="best")
-plt.gca().set_aspect("equal")
-plt.xlabel("First principal component")
-plt.ylabel("Second principal component")
-
-# %%
-
+myML.DimReduce.plotparam_dim_reduction(X_scaled,cancer.target,"decomposition.PCA()",n_components=[2])
 print("PCA component shape: {}".format(pca.components_.shape))
-
-# %%
-
 print("PCA components:\n{}".format(pca.components_))
 
-# %%
 
-plt.matshow(pca.components_, cmap='viridis')
-plt.yticks([0, 1], ["First component", "Second component"])
-plt.colorbar()
-plt.xticks(range(len(cancer.feature_names)),
-           cancer.feature_names, rotation=60, ha='left')
-plt.xlabel("Feature")
-plt.ylabel("Principal components")
+myML.DimReduce.plot_pca_components_(pca,cancer.feature_names)
 
 # %% md
-
 ##### Eigenfaces for feature extraction
-
-# %%
-
+dfsaadfsdfsadfsadfsa
+from MyPackage.bookcode.preamble import *
 from sklearn.datasets import fetch_lfw_people
 
 people = fetch_lfw_people(min_faces_per_person=20, resize=0.7)
 image_shape = people.images[0].shape
 
-fig, axes = plt.subplots(2, 5, figsize=(15, 8),
-                         subplot_kw={'xticks': (), 'yticks': ()})
+fig, axes = plt.subplots(2, 5, figsize=(15, 8),subplot_kw={'xticks': (), 'yticks': ()})
 for target, image, ax in zip(people.target, people.images, axes.ravel()):
     ax.imshow(image)
     ax.set_title(people.target_names[target])
