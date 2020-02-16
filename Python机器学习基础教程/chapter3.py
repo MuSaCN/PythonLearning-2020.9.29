@@ -33,19 +33,16 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 # %% md
 from MyPackage.bookcode.preamble import *
 
-
 X, y = myML.DataPre.make_datasets("blobs",n_samples=50, centers=2, random_state=4, cluster_std=1)
 X += 3
 from sklearn import preprocessing
 cls_nofit = [preprocessing.StandardScaler(), preprocessing.RobustScaler(),preprocessing.MinMaxScaler(), preprocessing.Normalizer(norm='l2')]
 myML.DataPre.plot_scaling(X,y,cls_nofit)
 
-
 cancer = myML.DataPre.load_datasets("breast_cancer")
 X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(cancer.data, cancer.target, random_state=1)
 print(X_train.shape)
 print(X_test.shape)
-
 
 from sklearn.preprocessing import MinMaxScaler
 scaler = MinMaxScaler()
@@ -167,12 +164,10 @@ print("PCA components:\n{}".format(pca.components_))
 
 myML.DimReduce.plot_pca_components_(pca,cancer.feature_names)
 
-# %% md
+
 ##### Eigenfaces for feature extraction
-dfsaadfsdfsadfsadfsa
 from MyPackage.bookcode.preamble import *
 from sklearn.datasets import fetch_lfw_people
-
 people = fetch_lfw_people(min_faces_per_person=20, resize=0.7)
 image_shape = people.images[0].shape
 
@@ -181,12 +176,9 @@ for target, image, ax in zip(people.target, people.images, axes.ravel()):
     ax.imshow(image)
     ax.set_title(people.target_names[target])
 
-# %%
-
 print("people.images.shape: {}".format(people.images.shape))
 print("Number of classes: {}".format(len(people.target_names)))
 
-# %%
 
 # count how often each target appears
 counts = np.bincount(people.target)
@@ -196,12 +188,9 @@ for i, (count, name) in enumerate(zip(counts, people.target_names)):
     if (i + 1) % 3 == 0:
         print()
 
-# %%
-
 mask = np.zeros(people.target.shape, dtype=np.bool)
 for target in np.unique(people.target):
     mask[np.where(people.target == target)[0][:50]] = 1
-
 X_people = people.data[mask]
 y_people = people.target[mask]
 
@@ -209,116 +198,79 @@ y_people = people.target[mask]
 # instead of 0 and 255 for better numeric stability:
 X_people = X_people / 255.
 
-# %%
 
 from sklearn.neighbors import KNeighborsClassifier
 
 # split the data in training and test set
-X_train, X_test, y_train, y_test = train_test_split(
-    X_people, y_people, stratify=y_people, random_state=0)
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X_people, y_people, stratify=y_people, random_state=0)
 # build a KNeighborsClassifier with using one neighbor:
 knn = KNeighborsClassifier(n_neighbors=1)
 knn.fit(X_train, y_train)
 print("Test set score of 1-nn: {:.2f}".format(knn.score(X_test, y_test)))
 
-# %%
 
 mglearn.plots.plot_pca_whitening()
 
-# %%
 
+from sklearn.decomposition import PCA
 pca = PCA(n_components=100, whiten=True, random_state=0).fit(X_train)
 X_train_pca = pca.transform(X_train)
 X_test_pca = pca.transform(X_test)
-
 print("X_train_pca.shape: {}".format(X_train_pca.shape))
-
-# %%
-
 knn = KNeighborsClassifier(n_neighbors=1)
 knn.fit(X_train_pca, y_train)
 print("Test set accuracy: {:.2f}".format(knn.score(X_test_pca, y_test)))
-
-# %%
-
 print("pca.components_.shape: {}".format(pca.components_.shape))
 
-# %%
 
-fig, axes = plt.subplots(3, 5, figsize=(15, 12),
-                         subplot_kw={'xticks': (), 'yticks': ()})
+fig, axes = plt.subplots(3, 5, figsize=(15, 12),subplot_kw={'xticks': (), 'yticks': ()})
 for i, (component, ax) in enumerate(zip(pca.components_, axes.ravel())):
-    ax.imshow(component.reshape(image_shape),
-              cmap='viridis')
+    ax.imshow(component.reshape(image_shape),cmap='viridis')
     ax.set_title("{}. component".format((i + 1)))
 
-# %%
 
-# FIXME hide this!
 from matplotlib.offsetbox import OffsetImage, AnnotationBbox
-
 image_shape = people.images[0].shape
 plt.figure(figsize=(20, 3))
 ax = plt.gca()
-
-imagebox = OffsetImage(people.images[0], zoom=7, cmap="gray")
+imagebox = OffsetImage(people.images[0], zoom=1, cmap="gray")
 ab = AnnotationBbox(imagebox, (.05, 0.4), pad=0.0, xycoords='data')
 ax.add_artist(ab)
 
 for i in range(4):
-    imagebox = OffsetImage(pca.components_[i].reshape(image_shape), zoom=7,
-                           cmap="viridis")
-
-    ab = AnnotationBbox(imagebox, (.3 + .2 * i, 0.4),
-                        pad=0.0,
-                        xycoords='data'
-                        )
+    imagebox = OffsetImage(pca.components_[i].reshape(image_shape), zoom=1,cmap="viridis")
+    ab = AnnotationBbox(imagebox, (.3 + .2 * i, 0.4),pad=0.0,xycoords='data' )
     ax.add_artist(ab)
     if i == 0:
-        plt.text(.18, .25, 'x_{} *'.format(i), fontdict={'fontsize': 50})
+        plt.text(.18, .25, 'x_{} *'.format(i), fontdict={'fontsize': 12})
     else:
-        plt.text(.15 + .2 * i, .25, '+ x_{} *'.format(i),
-                 fontdict={'fontsize': 50})
-
-plt.text(.95, .25, '+ ...', fontdict={'fontsize': 50})
-
-plt.text(.13, .3, r'\approx', fontdict={'fontsize': 50})
+        plt.text(.15 + .2 * i, .25, '+ x_{} *'.format(i),fontdict={'fontsize': 12})
+plt.text(.95, .25, '+ ...', fontdict={'fontsize': 12})
+plt.text(.13, .3, r'\approx', fontdict={'fontsize': 12})
 plt.axis("off")
-plt.savefig("images/03-face_decomposition.png")
+plt.savefig("03-face_decomposition.png")
 plt.close()
 
-# %% md
-
-![decomposition](images / 03 - face_decomposition.png)
-
-# %%
 
 mglearn.plots.plot_pca_faces(X_train, X_test, image_shape)
 
-# %%
 
 mglearn.discrete_scatter(X_train_pca[:, 0], X_train_pca[:, 1], y_train)
 plt.xlabel("First principal component")
 plt.ylabel("Second principal component")
 
-# %% md
 
 #### Non-Negative Matrix Factorization (NMF)
 ##### Applying NMF to synthetic data
 
-# %%
 
-mglearn.plots.plot_nmf_illustration()
-
-# %% md
+# mglearn.plots.plot_nmf_illustration()
 
 ##### Applying NMF to face images
 
-# %%
+# mglearn.plots.plot_nmf_faces(X_train, X_test, image_shape)
 
-mglearn.plots.plot_nmf_faces(X_train, X_test, image_shape)
 
-# %%
 
 from sklearn.decomposition import NMF
 
@@ -333,7 +285,7 @@ for i, (component, ax) in enumerate(zip(nmf.components_, axes.ravel())):
     ax.imshow(component.reshape(image_shape))
     ax.set_title("{}. component".format(i))
 
-# %%
+
 
 compn = 3
 # sort by 3rd component, plot first 10 images
@@ -353,7 +305,7 @@ fig, axes = plt.subplots(2, 5, figsize=(15, 8),
 for i, (ind, ax) in enumerate(zip(inds, axes.ravel())):
     ax.imshow(X_train[ind].reshape(image_shape))
 
-# %%
+
 
 S = mglearn.datasets.make_signals()
 plt.figure(figsize=(6, 1))
@@ -361,25 +313,25 @@ plt.plot(S, '-')
 plt.xlabel("Time")
 plt.ylabel("Signal")
 
-# %%
+
 
 # Mix data into a 100 dimensional state
 A = np.random.RandomState(0).uniform(size=(100, 3))
 X = np.dot(S, A.T)
 print("Shape of measurements: {}".format(X.shape))
 
-# %%
+
 
 nmf = NMF(n_components=3, random_state=42)
 S_ = nmf.fit_transform(X)
 print("Recovered signal shape: {}".format(S_.shape))
 
-# %%
+
 
 pca = PCA(n_components=3)
 H = pca.fit_transform(X)
 
-# %%
+
 
 models = [X, S, S_, H]
 names = ['Observations (first three measurements)',
@@ -394,22 +346,18 @@ for model, name, ax in zip(models, names, axes):
     ax.set_title(name)
     ax.plot(model[:, :3], '-')
 
-# %% md
+
 
 #### Manifold Learning with t-SNE
 
-# %%
 
 from sklearn.datasets import load_digits
-
 digits = load_digits()
-
 fig, axes = plt.subplots(2, 5, figsize=(10, 5),
                          subplot_kw={'xticks': (), 'yticks': ()})
 for ax, img in zip(axes.ravel(), digits.images):
     ax.imshow(img)
 
-# %%
 
 # build a PCA model
 pca = PCA(n_components=2)
@@ -429,15 +377,12 @@ for i in range(len(digits.data)):
 plt.xlabel("First principal component")
 plt.ylabel("Second principal component")
 
-# %%
 
 from sklearn.manifold import TSNE
-
 tsne = TSNE(random_state=42)
 # use fit_transform instead of fit, as TSNE has no transform method
 digits_tsne = tsne.fit_transform(digits.data)
 
-# %%
 
 plt.figure(figsize=(10, 10))
 plt.xlim(digits_tsne[:, 0].min(), digits_tsne[:, 0].max() + 1)
@@ -450,134 +395,58 @@ for i in range(len(digits.data)):
 plt.xlabel("t-SNE feature 0")
 plt.ylabel("t-SNE feature 1")
 
-# %% md
 
 ### Clustering
-
-# %% md
-
 #### k-Means clustering
+from MyPackage.bookcode.preamble import *
 
-# %%
+# mglearn.plots.plot_kmeans_algorithm()
+# mglearn.plots.plot_kmeans_boundaries()
 
-mglearn.plots.plot_kmeans_algorithm()
-
-# %%
-
-mglearn.plots.plot_kmeans_boundaries()
-
-# %%
 
 from sklearn.datasets import make_blobs
 from sklearn.cluster import KMeans
-
 # generate synthetic two-dimensional data
 X, y = make_blobs(random_state=1)
-
 # build the clustering model
 kmeans = KMeans(n_clusters=3)
 kmeans.fit(X)
-
-# %%
-
 print("Cluster memberships:\n{}".format(kmeans.labels_))
-
-# %%
-
 print(kmeans.predict(X))
-
-# %%
-
-mglearn.discrete_scatter(X[:, 0], X[:, 1], kmeans.labels_, markers='o')
-mglearn.discrete_scatter(
-    kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], [0, 1, 2],
-    markers='^', markeredgewidth=2)
-
-# %%
-
-fig, axes = plt.subplots(1, 2, figsize=(10, 5))
-
-# using two cluster centers:
-kmeans = KMeans(n_clusters=2)
-kmeans.fit(X)
-assignments = kmeans.labels_
-
-mglearn.discrete_scatter(X[:, 0], X[:, 1], assignments, ax=axes[0])
-
-# using five cluster centers:
-kmeans = KMeans(n_clusters=5)
-kmeans.fit(X)
-assignments = kmeans.labels_
-
-mglearn.discrete_scatter(X[:, 0], X[:, 1], assignments, ax=axes[1])
-
-# %% md
+myML.Cluster.plotparam_cluster_scatter(X,"cluster.KMeans()",n_clusters=[2,3,5])
 
 ##### Failure cases of k-Means
-
-# %%
-
-X_varied, y_varied = make_blobs(n_samples=200,
-                                cluster_std=[1.0, 2.5, 0.5],
-                                random_state=170)
+X_varied, y_varied = make_blobs(n_samples=200, cluster_std=[1.0, 2.5, 0.5], random_state=170)
 y_pred = KMeans(n_clusters=3, random_state=0).fit_predict(X_varied)
+myML.plotML.plot_discrete_scatter(X_varied[:, 0], X_varied[:, 1], y_pred)
 
-mglearn.discrete_scatter(X_varied[:, 0], X_varied[:, 1], y_pred)
-plt.legend(["cluster 0", "cluster 1", "cluster 2"], loc='best')
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-
-# %%
 
 # generate some random cluster data
 X, y = make_blobs(random_state=170, n_samples=600)
 rng = np.random.RandomState(74)
-
-# transform the data to be stretched
 transformation = rng.normal(size=(2, 2))
 X = np.dot(X, transformation)
-
 # cluster the data into three clusters
 kmeans = KMeans(n_clusters=3)
+myML.Cluster.plotparam_cluster_scatter(X,"cluster.KMeans()",n_clusters=[3])
 kmeans.fit(X)
 y_pred = kmeans.predict(X)
 
-# plot the cluster assignments and cluster centers
-mglearn.discrete_scatter(X[:, 0], X[:, 1], kmeans.labels_, markers='o')
-mglearn.discrete_scatter(
-    kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], [0, 1, 2],
-    markers='^', markeredgewidth=2)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-
-# %%
 
 # generate synthetic two_moons data (with less noise this time)
 from sklearn.datasets import make_moons
-
 X, y = make_moons(n_samples=200, noise=0.05, random_state=0)
-
 # cluster the data into two clusters
 kmeans = KMeans(n_clusters=2)
 kmeans.fit(X)
 y_pred = kmeans.predict(X)
+myML.Cluster.plotparam_cluster_scatter(X,"cluster.KMeans()",n_clusters=[2])
 
-# plot the cluster assignments and cluster centers
-plt.scatter(X[:, 0], X[:, 1], c=y_pred, cmap=mglearn.cm2, s=60, edgecolor='k')
-plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1],
-            marker='^', c=[mglearn.cm2(0), mglearn.cm2(1)], s=100, linewidth=2,
-            edgecolor='k')
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-
-# %% md
 
 ##### Vector Quantization - Or Seeing k-Means as Decomposition
-
-# %%
-
-X_train, X_test, y_train, y_test = train_test_split(
-    X_people, y_people, stratify=y_people, random_state=0)
+from sklearn.decomposition import PCA,NMF
+from sklearn.cluster import KMeans
+X_train, X_test, y_train, y_test = myML.DataPre.train_test_split(X_people, y_people, stratify=y_people, random_state=0)
 nmf = NMF(n_components=100, random_state=0)
 nmf.fit(X_train)
 pca = PCA(n_components=100, random_state=0)
@@ -589,23 +458,18 @@ X_reconstructed_pca = pca.inverse_transform(pca.transform(X_test))
 X_reconstructed_kmeans = kmeans.cluster_centers_[kmeans.predict(X_test)]
 X_reconstructed_nmf = np.dot(nmf.transform(X_test), nmf.components_)
 
-# %%
 
-fig, axes = plt.subplots(3, 5, figsize=(8, 8),
-                         subplot_kw={'xticks': (), 'yticks': ()})
+fig, axes = plt.subplots(3, 5, figsize=(8, 8),subplot_kw={'xticks': (), 'yticks': ()})
 fig.suptitle("Extracted Components")
 for ax, comp_kmeans, comp_pca, comp_nmf in zip(
         axes.T, kmeans.cluster_centers_, pca.components_, nmf.components_):
     ax[0].imshow(comp_kmeans.reshape(image_shape))
     ax[1].imshow(comp_pca.reshape(image_shape), cmap='viridis')
     ax[2].imshow(comp_nmf.reshape(image_shape))
-
 axes[0, 0].set_ylabel("kmeans")
 axes[1, 0].set_ylabel("pca")
 axes[2, 0].set_ylabel("nmf")
-
-fig, axes = plt.subplots(4, 5, subplot_kw={'xticks': (), 'yticks': ()},
-                         figsize=(8, 8))
+fig, axes = plt.subplots(4, 5, subplot_kw={'xticks': (), 'yticks': ()},figsize=(8, 8))
 fig.suptitle("Reconstructions")
 for ax, orig, rec_kmeans, rec_pca, rec_nmf in zip(
         axes.T, X_test, X_reconstructed_kmeans, X_reconstructed_pca,
@@ -614,16 +478,13 @@ for ax, orig, rec_kmeans, rec_pca, rec_nmf in zip(
     ax[1].imshow(rec_kmeans.reshape(image_shape))
     ax[2].imshow(rec_pca.reshape(image_shape))
     ax[3].imshow(rec_nmf.reshape(image_shape))
-
 axes[0, 0].set_ylabel("original")
 axes[1, 0].set_ylabel("kmeans")
 axes[2, 0].set_ylabel("pca")
 axes[3, 0].set_ylabel("nmf")
 
-# %%
 
 X, y = make_moons(n_samples=200, noise=0.05, random_state=0)
-
 kmeans = KMeans(n_clusters=10, random_state=0)
 kmeans.fit(X)
 y_pred = kmeans.predict(X)
@@ -635,146 +496,60 @@ plt.xlabel("Feature 0")
 plt.ylabel("Feature 1")
 print("Cluster memberships:\n{}".format(y_pred))
 
-# %%
-
 distance_features = kmeans.transform(X)
 print("Distance feature shape: {}".format(distance_features.shape))
 print("Distance features:\n{}".format(distance_features))
 
-# %% md
-
-#### Agglomerative Clustering
-
-# %%
-
-mglearn.plots.plot_agglomerative_algorithm()
-
-# %%
-
 from sklearn.cluster import AgglomerativeClustering
-
 X, y = make_blobs(random_state=1)
-
 agg = AgglomerativeClustering(n_clusters=3)
 assignment = agg.fit_predict(X)
-
-mglearn.discrete_scatter(X[:, 0], X[:, 1], assignment)
-plt.legend(["Cluster 0", "Cluster 1", "Cluster 2"], loc="best")
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-
-# %% md
+myML.Cluster.plotparam_cluster_scatter(X,"cluster.AgglomerativeClustering()",n_clusters=[3])
 
 ##### Hierarchical Clustering and Dendrograms
-
-# %%
-
-mglearn.plots.plot_agglomerative()
-
-# %%
-
-# Import the dendrogram function and the ward clustering function from SciPy
-from scipy.cluster.hierarchy import dendrogram, ward
+# mglearn.plots.plot_agglomerative()
 
 X, y = make_blobs(random_state=0, n_samples=12)
-# Apply the ward clustering to the data array X
-# The SciPy ward function returns an array that specifies the distances
-# bridged when performing agglomerative clustering
-linkage_array = ward(X)
-# Now we plot the dendrogram for the linkage_array containing the distances
-# between clusters
-dendrogram(linkage_array)
-
-# mark the cuts in the tree that signify two or three clusters
-ax = plt.gca()
-bounds = ax.get_xbound()
-ax.plot(bounds, [7.25, 7.25], '--', c='k')
-ax.plot(bounds, [4, 4], '--', c='k')
-
-ax.text(bounds[1], 7.25, ' two clusters', va='center', fontdict={'size': 15})
-ax.text(bounds[1], 4, ' three clusters', va='center', fontdict={'size': 15})
-plt.xlabel("Sample index")
-plt.ylabel("Cluster distance")
-
-# %% md
+myML.Cluster.plot_hierarchical_dendrogram(X)
 
 #### DBSCAN
-
-# %%
-
+from MyPackage.bookcode.preamble import *
 from sklearn.cluster import DBSCAN
-
-X, y = make_blobs(random_state=0, n_samples=12)
-
+X, y = myML.DataPre.make_datasets("blobs",random_state=0, n_samples=12)
 dbscan = DBSCAN()
 clusters = dbscan.fit_predict(X)
 print("Cluster memberships:\n{}".format(clusters))
+min_samples=[2, 3, 5]
+eps=[1, 1.5, 2, 3]
+myML.Cluster.plotparam_cluster_scatter(X,"cluster.DBSCAN()",min_samples=min_samples, eps=eps)
+# mglearn.plots.plot_dbscan()
 
-# %%
 
-mglearn.plots.plot_dbscan()
-
-# %%
 
 X, y = make_moons(n_samples=200, noise=0.05, random_state=0)
-
 # Rescale the data to zero mean and unit variance
 scaler = StandardScaler()
 scaler.fit(X)
 X_scaled = scaler.transform(X)
+myML.Cluster.plotparam_cluster_scatter(X_scaled,"cluster.DBSCAN()")
 
 dbscan = DBSCAN()
 clusters = dbscan.fit_predict(X_scaled)
 # plot the cluster assignments
-plt.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters, cmap=mglearn.cm2, s=60)
-plt.xlabel("Feature 0")
-plt.ylabel("Feature 1")
-
-# %% md
 
 ##### Comparing and evaluating clustering algorithms
 ##### Evaluating clustering with ground truth
-
-# %%
-
-from sklearn.metrics.cluster import adjusted_rand_score
-
 X, y = make_moons(n_samples=200, noise=0.05, random_state=0)
-
 # Rescale the data to zero mean and unit variance
 scaler = StandardScaler()
 scaler.fit(X)
 X_scaled = scaler.transform(X)
-
-fig, axes = plt.subplots(1, 4, figsize=(15, 3),
-                         subplot_kw={'xticks': (), 'yticks': ()})
-
 # make a list of algorithms to use
-algorithms = [KMeans(n_clusters=2), AgglomerativeClustering(n_clusters=2),
-              DBSCAN()]
+algorithms = [KMeans(n_clusters=2), AgglomerativeClustering(n_clusters=2), DBSCAN()]
+myML.Cluster.plot_cluster_algorithms(X_scaled,y,algorithms)
 
-# create a random cluster assignment for reference
-random_state = np.random.RandomState(seed=0)
-random_clusters = random_state.randint(low=0, high=2, size=len(X))
 
-# plot random assignment
-axes[0].scatter(X_scaled[:, 0], X_scaled[:, 1], c=random_clusters,
-                cmap=mglearn.cm3, s=60)
-axes[0].set_title("Random assignment - ARI: {:.2f}".format(
-    adjusted_rand_score(y, random_clusters)))
-
-for ax, algorithm in zip(axes[1:], algorithms):
-    # plot the cluster assignments and cluster centers
-    clusters = algorithm.fit_predict(X_scaled)
-    ax.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters,
-               cmap=mglearn.cm3, s=60)
-    ax.set_title("{} - ARI: {:.2f}".format(algorithm.__class__.__name__,
-                                           adjusted_rand_score(y, clusters)))
-
-# %%
-
-from sklearn.metrics import accuracy_score
-
+from sklearn.metrics import accuracy_score,adjusted_rand_score
 # these two labelings of points correspond to the same clustering
 clusters1 = [0, 0, 1, 1, 0]
 clusters2 = [1, 1, 0, 0, 1]
@@ -783,97 +558,66 @@ print("Accuracy: {:.2f}".format(accuracy_score(clusters1, clusters2)))
 # adjusted rand score is 1, as the clustering is exactly the same:
 print("ARI: {:.2f}".format(adjusted_rand_score(clusters1, clusters2)))
 
-# %% md
 
 ##### Evaluating clustering without ground truth
 
-# %%
 
 from sklearn.metrics.cluster import silhouette_score
-
 X, y = make_moons(n_samples=200, noise=0.05, random_state=0)
-
 # rescale the data to zero mean and unit variance
 scaler = StandardScaler()
 scaler.fit(X)
 X_scaled = scaler.transform(X)
-
-fig, axes = plt.subplots(1, 4, figsize=(15, 3),
-                         subplot_kw={'xticks': (), 'yticks': ()})
-
+fig, axes = plt.subplots(1, 4, figsize=(15, 3), subplot_kw={'xticks': (), 'yticks': ()})
 # create a random cluster assignment for reference
 random_state = np.random.RandomState(seed=0)
 random_clusters = random_state.randint(low=0, high=2, size=len(X))
-
 # plot random assignment
-axes[0].scatter(X_scaled[:, 0], X_scaled[:, 1], c=random_clusters,
-                cmap=mglearn.cm3, s=60)
-axes[0].set_title("Random assignment: {:.2f}".format(
-    silhouette_score(X_scaled, random_clusters)))
-
-algorithms = [KMeans(n_clusters=2), AgglomerativeClustering(n_clusters=2),
-              DBSCAN()]
-
+axes[0].scatter(X_scaled[:, 0], X_scaled[:, 1], c=random_clusters, cmap=mglearn.cm3, s=60)
+axes[0].set_title("Random assignment: {:.2f}".format(silhouette_score(X_scaled, random_clusters)))
+algorithms = [KMeans(n_clusters=2), AgglomerativeClustering(n_clusters=2),DBSCAN()]
 for ax, algorithm in zip(axes[1:], algorithms):
     clusters = algorithm.fit_predict(X_scaled)
     # plot the cluster assignments and cluster centers
-    ax.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters, cmap=mglearn.cm3,
-               s=60)
-    ax.set_title("{} : {:.2f}".format(algorithm.__class__.__name__,
-                                      silhouette_score(X_scaled, clusters)))
+    ax.scatter(X_scaled[:, 0], X_scaled[:, 1], c=clusters, cmap=mglearn.cm3,s=60)
+    ax.set_title("{} : {:.2f}".format(algorithm.__class__.__name__,silhouette_score(X_scaled, clusters)))
 
-# %% md
+
 
 ##### Comparing algorithms on the faces dataset
-
-# %%
-
 # extract eigenfaces from lfw data and transform data
 from sklearn.decomposition import PCA
 
 pca = PCA(n_components=100, whiten=True, random_state=0)
 X_pca = pca.fit_transform(X_people)
 
-# %% md
 
 ##### Analyzing the faces dataset with DBSCAN
-
-# %%
-
 # apply DBSCAN with default parameters
 dbscan = DBSCAN()
 labels = dbscan.fit_predict(X_pca)
 print("Unique labels: {}".format(np.unique(labels)))
 
-# %%
 
 dbscan = DBSCAN(min_samples=3)
 labels = dbscan.fit_predict(X_pca)
 print("Unique labels: {}".format(np.unique(labels)))
 
-# %%
-
 dbscan = DBSCAN(min_samples=3, eps=15)
 labels = dbscan.fit_predict(X_pca)
 print("Unique labels: {}".format(np.unique(labels)))
-
-# %%
 
 # count number of points in all clusters and noise.
 # bincount doesn't allow negative numbers, so we need to add 1.
 # the first number in the result corresponds to noise points
 print("Number of points per cluster: {}".format(np.bincount(labels + 1)))
 
-# %%
-
 noise = X_people[labels == -1]
 
-fig, axes = plt.subplots(3, 9, subplot_kw={'xticks': (), 'yticks': ()},
-                         figsize=(12, 4))
+fig, axes = plt.subplots(3, 9, subplot_kw={'xticks': (), 'yticks': ()}, figsize=(12, 4))
 for image, ax in zip(noise, axes.ravel()):
     ax.imshow(image.reshape(image_shape), vmin=0, vmax=1)
 
-# %%
 
 for eps in [1, 3, 5, 7, 9, 11, 13]:
     print("\neps={}".format(eps))
@@ -882,71 +626,46 @@ for eps in [1, 3, 5, 7, 9, 11, 13]:
     print("Number of clusters: {}".format(len(np.unique(labels))))
     print("Cluster sizes: {}".format(np.bincount(labels + 1)))
 
-# %%
+
 
 dbscan = DBSCAN(min_samples=3, eps=7)
 labels = dbscan.fit_predict(X_pca)
-
 for cluster in range(max(labels) + 1):
     mask = labels == cluster
     n_images = np.sum(mask)
-    fig, axes = plt.subplots(1, n_images, figsize=(n_images * 1.5, 4),
-                             subplot_kw={'xticks': (), 'yticks': ()})
+    fig, axes = plt.subplots(1, n_images, figsize=(n_images * 1.5, 4), subplot_kw={'xticks': (), 'yticks': ()})
     for image, label, ax in zip(X_people[mask], y_people[mask], axes):
         ax.imshow(image.reshape(image_shape), vmin=0, vmax=1)
         ax.set_title(people.target_names[label].split()[-1])
 
-# %% md
+
 
 ##### Analyzing the faces dataset with k-Means
-
-# %%
-
 # extract clusters with k-Means
 km = KMeans(n_clusters=10, random_state=0)
 labels_km = km.fit_predict(X_pca)
 print("Cluster sizes k-means: {}".format(np.bincount(labels_km)))
 
-# %%
 
-fig, axes = plt.subplots(2, 5, subplot_kw={'xticks': (), 'yticks': ()},
-                         figsize=(12, 4))
+
+fig, axes = plt.subplots(2, 5, subplot_kw={'xticks': (), 'yticks': ()}, figsize=(12, 4))
 for center, ax in zip(km.cluster_centers_, axes.ravel()):
-    ax.imshow(pca.inverse_transform(center).reshape(image_shape),
-              vmin=0, vmax=1)
+    ax.imshow(pca.inverse_transform(center).reshape(image_shape), vmin=0, vmax=1)
 
 # %%
+from MyPackage.bookcode.preamble import *
+mglearn.plots.plot_kmeans_faces(km, pca, X_pca, X_people, y_people, people.target_names)
 
-mglearn.plots.plot_kmeans_faces(km, pca, X_pca, X_people,
-                                y_people, people.target_names)
-
-# %% md
 
 ##### Analyzing the faces dataset with agglomerative clustering
-
-# %%
-
 # extract clusters with ward agglomerative clustering
 agglomerative = AgglomerativeClustering(n_clusters=10)
 labels_agg = agglomerative.fit_predict(X_pca)
-print("cluster sizes agglomerative clustering: {}".format(
-    np.bincount(labels_agg)))
-
-# %%
-
+print("cluster sizes agglomerative clustering: {}".format(np.bincount(labels_agg)))
 print("ARI: {:.2f}".format(adjusted_rand_score(labels_agg, labels_km)))
 
 # %%
-
-linkage_array = ward(X_pca)
-# now we plot the dendrogram for the linkage_array
-# containing the distances between clusters
-plt.figure(figsize=(20, 5))
-dendrogram(linkage_array, p=7, truncate_mode='level', no_labels=True)
-plt.xlabel("Sample index")
-plt.ylabel("Cluster distance")
-
-# %%
+myML.Cluster.plot_hierarchical_dendrogram(X_pca,p=7, truncate_mode='level', no_labels=True)
 
 n_clusters = 10
 for cluster in range(n_clusters):
@@ -981,24 +700,5 @@ for cluster in [10, 13, 19, 22, 36]:  # hand-picked "interesting" clusters
                      fontdict={'fontsize': 9})
     for i in range(cluster_size, 15):
         axes[i].set_visible(False)
-
-# %% md
-
-#### Summary of Clustering Methods
-
-# %% md
-
-### Summary and Outlook
-
-# %%
-
-from sklearn.linear_model import LogisticRegression
-
-logreg = LogisticRegression()
-
-# %% md
-
-![api_table](images / api_table.png)
-
 
 
