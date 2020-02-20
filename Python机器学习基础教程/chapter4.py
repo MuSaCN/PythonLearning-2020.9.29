@@ -34,13 +34,11 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 
 #%%
 from MyPackage.bookcode.preamble import *
-
 ## Representing Data and Engineering Features
 
-#%% md
+
 ### Categorical Variables
 #### One-Hot-Encoding (Dummy variables)
-
 import os
 # The file has no headers naming the columns, so we pass header=None
 # and provide the column names explicitly in "names"
@@ -52,23 +50,21 @@ data = pd.read_csv(
            'capital-gain', 'capital-loss', 'hours-per-week', 'native-country',
            'income'])
 # For illustration purposes, we only select some of the columns
-data = data[['age', 'workclass', 'education', 'gender', 'hours-per-week',
-             'occupation', 'income']]
+data = data[['age', 'workclass', 'education', 'gender', 'hours-per-week', 'occupation', 'income']]
 # IPython.display allows nice output formatting within the Jupyter notebook
 display(data.head())
 
-#%% md
 
 ##### Checking string-encoded categorical data
 print(data.gender.value_counts())
 
-#%%
+
 print("Original features:\n", list(data.columns), "\n")
 data_dummies = pd.get_dummies(data)
 print("Features after get_dummies:\n", list(data_dummies.columns))
 display(data_dummies.head())
 
-#%%
+
 features = data_dummies.loc[:, 'age':'occupation_ Transport-moving']
 features.columns
 # Extract NumPy arrays
@@ -76,7 +72,7 @@ X = features.values
 y = data_dummies['income_ >50K'].values
 print("X.shape: {}  y.shape: {}".format(X.shape, y.shape))
 
-#%%
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
@@ -84,7 +80,6 @@ logreg = LogisticRegression()
 logreg.fit(X_train, y_train)
 print("Test score: {:.2f}".format(logreg.score(X_test, y_test)))
 
-#%% md
 
 #### Numbers Can Encode Categoricals
 
@@ -93,11 +88,10 @@ demo_df = pd.DataFrame({'Integer Feature': [0, 1, 2, 1],
                         'Categorical Feature': ['socks', 'fox', 'socks', 'box']})
 display(demo_df)
 display(pd.get_dummies(demo_df))
-
 demo_df['Integer Feature'] = demo_df['Integer Feature'].astype(str)
 display(pd.get_dummies(demo_df, columns=['Integer Feature', 'Categorical Feature']))
 
-#%% md
+
 ### OneHotEncoder and ColumnTransformer: Categorical Variables with scikit-learn
 from sklearn.preprocessing import OneHotEncoder
 # Setting sparse=False means OneHotEncode will return a numpy array, not a sparse matrix
@@ -105,20 +99,15 @@ ohe = OneHotEncoder(sparse=False)
 print(ohe.fit_transform(demo_df))
 print(ohe.get_feature_names())
 
-#%%
 
 display(data.head())
 
-#%%
+
 # 不同的列以不同的方式转换
-from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
+ct = myML.DataPre.ColumnTransformer(transformers=[("scaling", StandardScaler(), ['age', 'hours-per-week']), ("onehot", OneHotEncoder(sparse=False), ['workclass', 'education', 'gender', 'occupation'])])
 
-ct = ColumnTransformer(
-    [("scaling", StandardScaler(), ['age', 'hours-per-week']),
-     ("onehot", OneHotEncoder(sparse=False), ['workclass', 'education', 'gender', 'occupation'])])
 
-#%%
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
@@ -126,35 +115,22 @@ from sklearn.model_selection import train_test_split
 data_features = data.drop("income", axis=1)
 # split dataframe and income
 X_train, X_test, y_train, y_test = train_test_split(data_features, data.income, random_state=0)
-
 ct.fit(X_train)
 X_train_trans = ct.transform(X_train)
 print(X_train_trans.shape)
 
-#%%
+
 logreg = LogisticRegression()
 logreg.fit(X_train_trans, y_train)
-
 X_test_trans = ct.transform(X_test)
 print("Test score: {:.2f}".format(logreg.score(X_test_trans, y_test)))
-
 ct.named_transformers_.onehot
 
-#%% md
-#### Convenient ColumnTransformer creation with ``make_columntransformer``
-from sklearn.compose import make_column_transformer
-ct = make_column_transformer(
-    (['age', 'hours-per-week'], StandardScaler()),
-    (['workclass', 'education', 'gender', 'occupation'], OneHotEncoder(sparse=False)))
 
-#%% md
 ### Binning, Discretization, Linear Models, and Trees
-
-#%%
 from sklearn.linear_model import LinearRegression
 from sklearn.tree import DecisionTreeRegressor
-
-X, y = mglearn.datasets.make_wave(n_samples=120)
+X, y = myML.DataPre.make_datasets("wave",n_samples=120)
 line = np.linspace(-3, 3, 1000, endpoint=False).reshape(-1, 1)
 
 reg = DecisionTreeRegressor(min_samples_leaf=3).fit(X, y)
@@ -168,39 +144,13 @@ plt.ylabel("Regression output")
 plt.xlabel("Input feature")
 plt.legend(loc="best")
 
-#%%
 
-from sklearn.preprocessing import KBinsDiscretizer
-
-#%%
-
-kb = KBinsDiscretizer(n_bins=10, strategy='uniform')
-kb.fit(X)
-print("bin edges: \n", kb.bin_edges_)
-
-#%%
-
-X_binned = kb.transform(X)
-X_binned
-
-#%%
-
-print(X[:10])
-X_binned.toarray()[:10]
-
-#%%
-
-kb = KBinsDiscretizer(n_bins=10, strategy='uniform', encode='onehot-dense')
-kb.fit(X)
-X_binned = kb.transform(X)
-
-#%%
+# 将连续数据分成间隔(分类数据)，再OneHot编码。
+kb, X_binned = myML.DataPre.KBinsDiscretizer(X,n_bins=10, strategy='uniform', encode='onehot-dense')
 
 line_binned = kb.transform(line)
-
 reg = LinearRegression().fit(X_binned, y)
 plt.plot(line, reg.predict(line_binned), label='linear regression binned')
-
 reg = DecisionTreeRegressor(min_samples_split=3).fit(X_binned, y)
 plt.plot(line, reg.predict(line_binned), label='decision tree binned')
 plt.plot(X[:, 0], y, 'o', c='k')
@@ -209,58 +159,40 @@ plt.legend(loc="best")
 plt.ylabel("Regression output")
 plt.xlabel("Input feature")
 
-#%% md
 
 ### Interactions and Polynomials
-
-#%%
-
 X_combined = np.hstack([X, X_binned])
 print(X_combined.shape)
 
-#%%
-
 reg = LinearRegression().fit(X_combined, y)
-
 line_combined = np.hstack([line, line_binned])
 plt.plot(line, reg.predict(line_combined), label='linear regression combined')
-
 plt.vlines(kb.bin_edges_[0], -3, 3, linewidth=1, alpha=.2)
 plt.legend(loc="best")
 plt.ylabel("Regression output")
 plt.xlabel("Input feature")
 plt.plot(X[:, 0], y, 'o', c='k')
-
-#%%
 
 X_product = np.hstack([X_binned, X * X_binned])
 print(X_product.shape)
 
-#%%
-
 reg = LinearRegression().fit(X_product, y)
-
 line_product = np.hstack([line_binned, line * line_binned])
 plt.plot(line, reg.predict(line_product), label='linear regression product')
-
 plt.vlines(kb.bin_edges_[0], -3, 3, linewidth=1, alpha=.2)
-
 plt.plot(X[:, 0], y, 'o', c='k')
 plt.ylabel("Regression output")
 plt.xlabel("Input feature")
 plt.legend(loc="best")
 
 #%%
-
+sadfsaddfsadfsa
 from sklearn.preprocessing import PolynomialFeatures
-
 # include polynomials up to x ** 10:
 # the default "include_bias=True" adds a feature that's constantly 1
 poly = PolynomialFeatures(degree=10, include_bias=False)
 poly.fit(X)
 X_poly = poly.transform(X)
-
-#%%
 
 print("X_poly.shape: {}".format(X_poly.shape))
 
