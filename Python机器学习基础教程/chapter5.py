@@ -35,16 +35,10 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 #%%
 from MyPackage.bookcode.preamble import *
 
-#%% md
-
 ## Model Evaluation and Improvement
-
-#%%
-
 from sklearn.datasets import make_blobs
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
-
 # create a synthetic dataset
 X, y = make_blobs(random_state=0)
 # split data and labels into a training and a test set
@@ -54,132 +48,76 @@ logreg = LogisticRegression().fit(X_train, y_train)
 # evaluate the model on the test set
 print("Test set score: {:.2f}".format(logreg.score(X_test, y_test)))
 
-#%% md
 
 ### Cross-Validation
-
-#%%
-
-mglearn.plots.plot_cross_validation()
-
-#%% md
+# mglearn.plots.plot_cross_validation()
 
 #### Cross-Validation in scikit-learn
-
-#%%
-
 from sklearn.model_selection import cross_val_score
 from sklearn.datasets import load_iris
 from sklearn.linear_model import LogisticRegression
-
 iris = load_iris()
 logreg = LogisticRegression()
-
-scores = cross_val_score(logreg, iris.data, iris.target)
+scores =myML.ModelEval.cross_val_score(logreg, iris.data, iris.target)
 print("Cross-validation scores: {}".format(scores))
 
-#%%
-
-scores = cross_val_score(logreg, iris.data, iris.target, cv=5)
+scores = myML.ModelEval.cross_val_score(logreg, iris.data, iris.target, cv=5)
 print("Cross-validation scores: {}".format(scores))
 
-#%%
-
-print("Average cross-validation score: {:.2f}".format(scores.mean()))
-
-#%%
 
 from sklearn.model_selection import cross_validate
-res = cross_validate(logreg, iris.data, iris.target, cv=5,
-                     return_train_score=True)
+res = myML.ModelEval.cross_validate(logreg, iris.data, iris.target, cv=5, return_train_score=True, toPandas=False)
 display(res)
 
-#%%
-
 res_df = pd.DataFrame(res)
-display(res_df)
-print("Mean times and scores:\n", res_df.mean())
+print(res_df.mean())
 
-#%% md
+
 
 #### Benefits of Cross-Validation
-
-#%% md
-
 ### Stratified K-Fold cross-validation and other strategies
-
-#%%
 
 from sklearn.datasets import load_iris
 iris = load_iris()
 print("Iris labels:\n{}".format(iris.target))
 
-#%%
+# mglearn.plots.plot_stratified_cross_validation()
 
-mglearn.plots.plot_stratified_cross_validation()
-
-#%% md
 
 #### More control over cross-validation
 
-#%%
-
 from sklearn.model_selection import KFold
 kfold = KFold(n_splits=5)
-
-#%%
-
-print("Cross-validation scores:\n{}".format(
-      cross_val_score(logreg, iris.data, iris.target, cv=kfold)))
-
-#%%
+print("Cross-validation scores:\n{}".format(myML.ModelEval.cross_val_score(logreg, iris.data, iris.target, cv=kfold)))
 
 kfold = KFold(n_splits=3)
-print("Cross-validation scores:\n{}".format(
-    cross_val_score(logreg, iris.data, iris.target, cv=kfold)))
-
-#%%
+print("Cross-validation scores:\n{}".format(myML.ModelEval.cross_val_score(logreg, iris.data, iris.target, cv=kfold)))
 
 kfold = KFold(n_splits=3, shuffle=True, random_state=0)
-print("Cross-validation scores:\n{}".format(
-    cross_val_score(logreg, iris.data, iris.target, cv=kfold)))
+print("Cross-validation scores:\n{}".format(myML.ModelEval.cross_val_score(logreg, iris.data, iris.target, cv=kfold)))
 
-#%% md
 
 #### Leave-one-out cross-validation
-
-#%%
-
 from sklearn.model_selection import LeaveOneOut
 loo = LeaveOneOut()
-scores = cross_val_score(logreg, iris.data, iris.target, cv=loo)
+scores = myML.ModelEval.cross_val_score(logreg, iris.data, iris.target, cv=loo)
 print("Number of cv iterations: ", len(scores))
 print("Mean accuracy: {:.2f}".format(scores.mean()))
 
-#%% md
 
 #### Shuffle-split cross-validation
 
-#%%
-
-mglearn.plots.plot_shuffle_split()
-
-#%%
+# mglearn.plots.plot_shuffle_split()
 
 from sklearn.model_selection import ShuffleSplit
 shuffle_split = ShuffleSplit(test_size=.5, train_size=.5, n_splits=10)
 scores = cross_val_score(logreg, iris.data, iris.target, cv=shuffle_split)
 print("Cross-validation scores:\n{}".format(scores))
 
-#%% md
 
 ##### Cross-validation with groups
 
-#%%
-
-mglearn.plots.plot_group_kfold()
-
-#%%
+# mglearn.plots.plot_group_kfold()
 
 from sklearn.model_selection import GroupKFold
 # create synthetic dataset
@@ -190,22 +128,16 @@ groups = [0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3, 3]
 scores = cross_val_score(logreg, X, y, groups, cv=GroupKFold(n_splits=3))
 print("Cross-validation scores:\n{}".format(scores))
 
-#%% md
+
 
 ### Grid Search
-
-#%% md
-
 #### Simple Grid Search
 
-#%%
 
 # naive grid search implementation
 from sklearn.svm import SVC
-X_train, X_test, y_train, y_test = train_test_split(
-    iris.data, iris.target, random_state=0)
-print("Size of training set: {}   size of test set: {}".format(
-      X_train.shape[0], X_test.shape[0]))
+X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, random_state=0)
+print("Size of training set: {}   size of test set: {}".format(X_train.shape[0], X_test.shape[0]))
 
 best_score = 0
 
@@ -224,23 +156,19 @@ for gamma in [0.001, 0.01, 0.1, 1, 10, 100]:
 print("Best score: {:.2f}".format(best_score))
 print("Best parameters: {}".format(best_parameters))
 
-#%% md
 
 #### The danger of overfitting the parameters and the validation set
 
-#%%
+# mglearn.plots.plot_threefold_split()
 
-mglearn.plots.plot_threefold_split()
-
-#%%
 
 from sklearn.svm import SVC
 # split data into train+validation set and test set
-X_trainval, X_test, y_trainval, y_test = train_test_split(
-    iris.data, iris.target, random_state=0)
+X_trainval, X_test, y_trainval, y_test = train_test_split(iris.data, iris.target, random_state=0)
 # split train+validation set into training and validation sets
-X_train, X_valid, y_train, y_valid = train_test_split(
-    X_trainval, y_trainval, random_state=1)
+X_train, X_valid, y_train, y_valid = train_test_split(X_trainval, y_trainval, random_state=1)
+X_train, X_valid, X_test, y_train, y_valid, y_test = myML.DataPre.train_valid_test_split(iris.data, iris.target,random_test=0,random_valid=1)
+
 print("Size of training set: {}   size of validation set: {}   size of test set:"
       " {}\n".format(X_train.shape[0], X_valid.shape[0], X_test.shape[0]))
 
@@ -267,11 +195,8 @@ print("Best score on validation set: {:.2f}".format(best_score))
 print("Best parameters: ", best_parameters)
 print("Test set score with best parameters: {:.2f}".format(test_score))
 
-#%% md
 
 #### Grid Search with Cross-Validation
-
-#%%
 
 for gamma in [0.001, 0.01, 0.1, 1, 10, 100]:
     for C in [0.001, 0.01, 0.1, 1, 10, 100]:
@@ -290,96 +215,41 @@ for gamma in [0.001, 0.01, 0.1, 1, 10, 100]:
 svm = SVC(**best_parameters)
 svm.fit(X_trainval, y_trainval)
 
-#%%
 
-mglearn.plots.plot_cross_val_selection()
+# mglearn.plots.plot_cross_val_selection()
 
-#%%
-
-mglearn.plots.plot_grid_search_overview()
-
-#%%
+# mglearn.plots.plot_grid_search_overview()
 
 param_grid = {'C': [0.001, 0.01, 0.1, 1, 10, 100],
               'gamma': [0.001, 0.01, 0.1, 1, 10, 100]}
 print("Parameter grid:\n{}".format(param_grid))
 
-#%%
-
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
-grid_search = GridSearchCV(SVC(), param_grid, cv=5,
-                          return_train_score=True)
 
-#%%
-
-X_train, X_test, y_train, y_test = train_test_split(
-    iris.data, iris.target, random_state=0)
-
-#%%
-
-grid_search.fit(X_train, y_train)
-
-#%%
-
-print("Test set score: {:.2f}".format(grid_search.score(X_test, y_test)))
-
-#%%
-
-print("Best parameters: {}".format(grid_search.best_params_))
-print("Best cross-validation score: {:.2f}".format(grid_search.best_score_))
-
-#%%
-
-print("Best estimator:\n{}".format(grid_search.best_estimator_))
-
-#%% md
+X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, random_state=0)
+grid_search = myML.ModelEval.GridSearchCV(SVC(), param_grid, X_train, y_train,cv=5,return_train_score=True)
 
 ##### Analyzing the result of cross-validation
+results = myML.ModelEval.show_GridSearchCV_results(grid_search,True)
+print("Test set score: {:.2f}".format(grid_search.score(X_test, y_test)))
 
-#%%
-
-import pandas as pd
-# convert to Dataframe
-results = pd.DataFrame(grid_search.cv_results_)
-# show the first 5 rows
-display(results.head())
-
-#%%
-
-scores = np.array(results.mean_test_score).reshape(6, 6)
 
 # plot the mean cross-validation scores
-mglearn.tools.heatmap(scores, xlabel='gamma', xticklabels=param_grid['gamma'],
-                      ylabel='C', yticklabels=param_grid['C'], cmap="viridis")
+myML.ModelEval.plot_GridSearchCV_heatmap(grid_search,param_grid)
 
-#%%
 
 fig, axes = plt.subplots(1, 3, figsize=(13, 5))
-
-param_grid_linear = {'C': np.linspace(1, 2, 6),
-                     'gamma':  np.linspace(1, 2, 6)}
-
-param_grid_one_log = {'C': np.linspace(1, 2, 6),
-                      'gamma':  np.logspace(-3, 2, 6)}
-
-param_grid_range = {'C': np.logspace(-3, 2, 6),
-                    'gamma':  np.logspace(-7, -2, 6)}
+param_grid_linear = {'C': np.linspace(1, 2, 6),'gamma':  np.linspace(1, 2, 6)}
+param_grid_one_log = {'C': np.linspace(1, 2, 6),'gamma':  np.logspace(-3, 2, 6)}
+param_grid_range = {'C': np.logspace(-3, 2, 6),'gamma':  np.logspace(-7, -2, 6)}
 
 for param_grid, ax in zip([param_grid_linear, param_grid_one_log,
                            param_grid_range], axes):
     grid_search = GridSearchCV(SVC(), param_grid, cv=5)
     grid_search.fit(X_train, y_train)
-    scores = grid_search.cv_results_['mean_test_score'].reshape(6, 6)
+    scores_image = myML.ModelEval.plot_GridSearchCV_heatmap(grid_search, param_grid, ax)
 
-    # plot the mean cross-validation scores
-    scores_image = mglearn.tools.heatmap(
-        scores, xlabel='gamma', ylabel='C', xticklabels=param_grid['gamma'],
-        yticklabels=param_grid['C'], cmap="viridis", ax=ax)
-
-plt.colorbar(scores_image, ax=axes.tolist())
-
-#%%
 
 param_grid = [{'kernel': ['rbf'],
                'C': [0.001, 0.01, 0.1, 1, 10, 100],
@@ -388,38 +258,24 @@ param_grid = [{'kernel': ['rbf'],
                'C': [0.001, 0.01, 0.1, 1, 10, 100]}]
 print("List of grids:\n{}".format(param_grid))
 
-#%%
-
-grid_search = GridSearchCV(SVC(), param_grid, cv=5,
-                          return_train_score=True)
-grid_search.fit(X_train, y_train)
+grid_search = myML.ModelEval.GridSearchCV(SVC(), param_grid, X_train, y_train, cv=5,return_train_score=True)
 print("Best parameters: {}".format(grid_search.best_params_))
 print("Best cross-validation score: {:.2f}".format(grid_search.best_score_))
 
-#%%
-
+results = grid_search.cv_results_
 results = pd.DataFrame(grid_search.cv_results_)
 # we display the transposed table so that it better fits on the page:
 display(results.T)
 
-#%% md
 
 #### Using different cross-validation strategies with grid search
-
-#%% md
-
 #### Nested cross-validation
-
-#%%
-
 param_grid = {'C': [0.001, 0.01, 0.1, 1, 10, 100],
               'gamma': [0.001, 0.01, 0.1, 1, 10, 100]}
 scores = cross_val_score(GridSearchCV(SVC(), param_grid, cv=5),
                          iris.data, iris.target, cv=5)
 print("Cross-validation scores: ", scores)
 print("Mean cross-validation score: ", scores.mean())
-
-#%%
 
 def nested_cv(X, y, inner_cv, outer_cv, Classifier, parameter_grid):
     outer_scores = []
@@ -455,30 +311,24 @@ def nested_cv(X, y, inner_cv, outer_cv, Classifier, parameter_grid):
         outer_scores.append(clf.score(X[test_samples], y[test_samples]))
     return np.array(outer_scores)
 
-#%%
-
 from sklearn.model_selection import ParameterGrid, StratifiedKFold
 scores = nested_cv(iris.data, iris.target, StratifiedKFold(5),
                    StratifiedKFold(5), SVC, ParameterGrid(param_grid))
 print("Cross-validation scores: {}".format(scores))
 
-#%% md
+
 
 ##### Parallelizing cross-validation and grid search
 
-#%% md
-
 ### Evaluation Metrics and Scoring
 #### Keep the End Goal in Mind
-
-#%% md
 
 #### Metrics for Binary Classification
 ##### Kinds of errors
 ##### Imbalanced datasets
 
 #%%
-
+dfsadfsaafsddfsadfs
 from sklearn.datasets import load_digits
 
 digits = load_digits()
