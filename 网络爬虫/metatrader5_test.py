@@ -30,16 +30,16 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 #------------------------------------------------------------
 
 myMT5 = MyMql.MyClass_ConnectMT5(connect=True)
-rates = myMT5.MT5CopyRatesFrom("EURUSD",myMT5.mt5.MT5_TIMEFRAME_H1,[2019,11,1],10)
-rates = myMT5.MT5CopyRatesFromPos("GBPUSD",myMT5.mt5.MT5_TIMEFRAME_D1,1,10)
-rates = myMT5.MT5CopyRatesRange("EURUSD",myMT5.mt5.MT5_TIMEFRAME_H1,[2019,10,1],[2019,10,3])
-rates1 = myMT5.RatesToDataFrame(rates,False)
-myMT5.DataTimeZoneOffset(rates1)
+rates = myMT5.copy_rates_from("EURUSD",myMT5.mt5.TIMEFRAME_H1,[2019,11,1],10)
+rates = myMT5.copy_rates_from_pos("GBPUSD",myMT5.mt5.TIMEFRAME_D1,1,10)
+rates = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_H1,[2019,10,1],[2019,10,3])
+rates1 = myMT5.rates_to_DataFrame(rates,True)
+myMT5.datatime_zone_offset(rates1)
 
-ticks = myMT5.MT5CopyTicksFrom("EURUSD",myMT5.mt5.MT5_COPY_TICKS_ALL,[2019,10,20],1000)
-ticks = myMT5.MT5CopyTicksRange("EURUSD",myMT5.mt5.MT5_COPY_TICKS_ALL,[2019,10,10],[2019,10,11])
-ticks1 = myMT5.TicksToDataFrame(ticks,False)
-myMT5.DataTimeZoneOffset(ticks1)
+ticks = myMT5.copy_ticks_from("EURUSD",myMT5.mt5.COPY_TICKS_ALL,[2019,10,20],1000)
+ticks = myMT5.copy_ticks_range("EURUSD",myMT5.mt5.COPY_TICKS_ALL,[2019,10,10],[2019,10,11])
+ticks1 = myMT5.ticks_to_DataFrame(ticks,True)
+myMT5.datatime_zone_offset(ticks1)
 
 
 
