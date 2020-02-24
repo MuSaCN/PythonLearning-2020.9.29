@@ -465,7 +465,7 @@ print("Average precision of svc: {:.3f}".format(ap_svc))
 
 ##### Receiver Operating Characteristics (ROC) and AUC
 
-#%%
+# myML.ModelEval.roc_curve(X_test,y_test,svc,True)
 
 from sklearn.metrics import roc_curve
 fpr, tpr, thresholds = roc_curve(y_test, svc.decision_function(X_test))
@@ -479,13 +479,12 @@ plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
          label="threshold zero", fillstyle="none", c='k', mew=2)
 plt.legend(loc=4)
 
-#%%
 
+# myML.ModelEval.roc_curve(X_test,y_test,svc,True)
+# myML.ModelEval.roc_curve(X_test,y_test,rf,True)
 fpr_rf, tpr_rf, thresholds_rf = roc_curve(y_test, rf.predict_proba(X_test)[:, 1])
-
 plt.plot(fpr, tpr, label="ROC Curve SVC")
 plt.plot(fpr_rf, tpr_rf, label="ROC Curve RF")
-
 plt.xlabel("FPR")
 plt.ylabel("TPR (recall)")
 plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
@@ -493,26 +492,22 @@ plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
 close_default_rf = np.argmin(np.abs(thresholds_rf - 0.5))
 plt.plot(fpr_rf[close_default_rf], tpr[close_default_rf], '^', markersize=10,
          label="threshold 0.5 RF", fillstyle="none", c='k', mew=2)
-
 plt.legend(loc=4)
 
-#%%
 
+# myML.ModelEval.roc_curve(X_test, y_test, rf, False)
+# myML.ModelEval.roc_curve(X_test, y_test, svc, False)
 from sklearn.metrics import roc_auc_score
 rf_auc = roc_auc_score(y_test, rf.predict_proba(X_test)[:, 1])
 svc_auc = roc_auc_score(y_test, svc.decision_function(X_test))
 print("AUC for Random Forest: {:.3f}".format(rf_auc))
 print("AUC for SVC: {:.3f}".format(svc_auc))
 
-#%%
 
 y = digits.target == 9
-
-X_train, X_test, y_train, y_test = train_test_split(
-    digits.data, y, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(digits.data, y, random_state=0)
 
 plt.figure()
-
 for gamma in [1, 0.05, 0.01]:
     svc = SVC(gamma=gamma).fit(X_train, y_train)
     accuracy = svc.score(X_test, y_test)
@@ -527,69 +522,51 @@ plt.xlim(-0.01, 1)
 plt.ylim(0, 1.02)
 plt.legend(loc="best")
 
-#%% md
+
 
 #### Metrics for Multiclass Classification
-
-#%%
-
 from sklearn.metrics import accuracy_score
-X_train, X_test, y_train, y_test = train_test_split(
-    digits.data, digits.target, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(digits.data, digits.target, random_state=0)
 lr = LogisticRegression().fit(X_train, y_train)
 pred = lr.predict(X_test)
 print("Accuracy: {:.3f}".format(accuracy_score(y_test, pred)))
 print("Confusion matrix:\n{}".format(confusion_matrix(y_test, pred)))
 
-#%%
 
-scores_image = mglearn.tools.heatmap(
-    confusion_matrix(y_test, pred), xlabel='Predicted label',
-    ylabel='True label', xticklabels=digits.target_names,
-    yticklabels=digits.target_names, cmap=plt.cm.gray_r, fmt="%d")
+matrix = confusion_matrix(y_test, pred)
+# myML.ModelEval.confusion_matrix(y_test, pred, True)
+
+scores_image = mglearn.tools.heatmap(matrix, xlabel='Predicted label',ylabel='True label', xticklabels=digits.target_names,yticklabels=digits.target_names, cmap=plt.cm.gray_r, fmt="%d")
 plt.title("Confusion matrix")
 plt.gca().invert_yaxis()
 
-#%%
 
 print(classification_report(y_test, pred))
-
-#%%
-
-print("Micro average f1 score: {:.3f}".format(
-    f1_score(y_test, pred, average="micro")))
-print("Macro average f1 score: {:.3f}".format(
-    f1_score(y_test, pred, average="macro")))
-
-#%% md
+print("Micro average f1 score: {:.3f}".format(f1_score(y_test, pred, average="micro")))
+print("Macro average f1 score: {:.3f}".format(f1_score(y_test, pred, average="macro")))
 
 #### Regression metrics
 
-#%% md
 
 ### Using evaluation metrics in model selection
 
-#%%
-
 # default scoring for classification is accuracy
-print("Default scoring: {}".format(
-    cross_val_score(SVC(), digits.data, digits.target == 9, cv=5)))
+print("Default scoring: {}".format(cross_val_score(SVC(), digits.data, digits.target == 9, cv=5)))
 # providing scoring="accuracy" doesn't change the results
 explicit_accuracy =  cross_val_score(SVC(), digits.data, digits.target == 9,
                                      scoring="accuracy", cv=5)
+
 print("Explicit accuracy scoring: {}".format(explicit_accuracy))
 roc_auc =  cross_val_score(SVC(), digits.data, digits.target == 9,
                            scoring="roc_auc", cv=5)
 print("AUC scoring: {}".format(roc_auc))
 
-#%%
 
 res = cross_validate(SVC(), digits.data, digits.target == 9,
                      scoring=["accuracy", "roc_auc", "recall_macro"],
                      return_train_score=True, cv=5)
 display(pd.DataFrame(res))
 
-#%%
 
 X_train, X_test, y_train, y_test = train_test_split(
     digits.data, digits.target == 9, random_state=0)
@@ -602,11 +579,9 @@ grid.fit(X_train, y_train)
 print("Grid-Search with accuracy")
 print("Best parameters:", grid.best_params_)
 print("Best cross-validation score (accuracy)): {:.3f}".format(grid.best_score_))
-print("Test set AUC: {:.3f}".format(
-    roc_auc_score(y_test, grid.decision_function(X_test))))
+print("Test set AUC: {:.3f}".format(roc_auc_score(y_test, grid.decision_function(X_test))))
 print("Test set accuracy: {:.3f}".format(grid.score(X_test, y_test)))
 
-#%%
 
 # using AUC scoring instead:
 grid = GridSearchCV(SVC(), param_grid=param_grid, scoring="roc_auc")
