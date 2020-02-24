@@ -327,36 +327,28 @@ print("Cross-validation scores: {}".format(scores))
 ##### Kinds of errors
 ##### Imbalanced datasets
 
-#%%
-dfsadfsaafsddfsadfs
 from sklearn.datasets import load_digits
-
 digits = load_digits()
 y = digits.target == 9
-
-X_train, X_test, y_train, y_test = train_test_split(
-    digits.data, y, random_state=0)
-
-#%%
+X_train, X_test, y_train, y_test = train_test_split(digits.data, y, random_state=0)
+pd.Series(y_train).value_counts()
 
 from sklearn.dummy import DummyClassifier
-dummy_majority = DummyClassifier(strategy='most_frequent').fit(X_train, y_train)
+dummy_majority = myML.ModelEval.DummyClassifier(strategy='most_frequent').fit(X_train, y_train)
 pred_most_frequent = dummy_majority.predict(X_test)
 print("Unique predicted labels: {}".format(np.unique(pred_most_frequent)))
 print("Test score: {:.2f}".format(dummy_majority.score(X_test, y_test)))
 
-#%%
 
 from sklearn.tree import DecisionTreeClassifier
 tree = DecisionTreeClassifier(max_depth=2).fit(X_train, y_train)
 pred_tree = tree.predict(X_test)
 print("Test score: {:.2f}".format(tree.score(X_test, y_test)))
 
-#%%
 
 from sklearn.linear_model import LogisticRegression
 
-dummy = DummyClassifier().fit(X_train, y_train)
+dummy = myML.ModelEval.DummyClassifier().fit(X_train, y_train)
 pred_dummy = dummy.predict(X_test)
 print("dummy score: {:.2f}".format(dummy.score(X_test, y_test)))
 
@@ -364,26 +356,18 @@ logreg = LogisticRegression(C=0.1).fit(X_train, y_train)
 pred_logreg = logreg.predict(X_test)
 print("logreg score: {:.2f}".format(logreg.score(X_test, y_test)))
 
-#%% md
+
 
 ##### Confusion matrices
-
-#%%
 
 from sklearn.metrics import confusion_matrix
 
 confusion = confusion_matrix(y_test, pred_logreg)
 print("Confusion matrix:\n{}".format(confusion))
 
-#%%
 
-mglearn.plots.plot_confusion_matrix_illustration()
-
-#%%
-
-mglearn.plots.plot_binary_confusion_matrix()
-
-#%%
+# mglearn.plots.plot_confusion_matrix_illustration()
+# mglearn.plots.plot_binary_confusion_matrix()
 
 print("Most frequent class:")
 print(confusion_matrix(y_test, pred_most_frequent))
@@ -394,128 +378,73 @@ print(confusion_matrix(y_test, pred_tree))
 print("\nLogistic Regression")
 print(confusion_matrix(y_test, pred_logreg))
 
-#%% md
 
 ###### Relation to accuracy
-\begin{equation}
-\text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}}
-\end{equation}
-
-#%% md
 
 ##### Precision, recall and f-score
-\begin{equation}
-\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
-\end{equation}
-
-#%% md
-
-\begin{equation}
-\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
-\end{equation}
-\begin{equation}
-\text{F} = 2 \cdot \frac{\text{precision} \cdot \text{recall}}{\text{precision} + \text{recall}}
-\end{equation}
-
-#%%
 
 from sklearn.metrics import f1_score
-print("f1 score most frequent: {:.2f}".format(
-    f1_score(y_test, pred_most_frequent)))
+print("f1 score most frequent: {:.2f}".format(f1_score(y_test, pred_most_frequent)))
 print("f1 score dummy: {:.2f}".format(f1_score(y_test, pred_dummy)))
 print("f1 score tree: {:.2f}".format(f1_score(y_test, pred_tree)))
-print("f1 score logistic regression: {:.2f}".format(
-    f1_score(y_test, pred_logreg)))
+print("f1 score logistic regression: {:.2f}".format(f1_score(y_test, pred_logreg)))
 
-#%%
 
 from sklearn.metrics import classification_report
-print(classification_report(y_test, pred_most_frequent,
-                            target_names=["not nine", "nine"]))
+print(classification_report(y_test, pred_most_frequent,target_names=["not nine", "nine"]))
+print(classification_report(y_test, pred_dummy,target_names=["not nine", "nine"]))
+print(classification_report(y_test, pred_logreg,target_names=["not nine", "nine"]))
 
-#%%
-
-print(classification_report(y_test, pred_dummy,
-                            target_names=["not nine", "nine"]))
-
-#%%
-
-print(classification_report(y_test, pred_logreg,
-                            target_names=["not nine", "nine"]))
-
-#%% md
 
 ##### Taking uncertainty into account
 
-#%%
-
-X, y = make_blobs(n_samples=(400, 50), cluster_std=[7.0, 2],
-                  random_state=22)
+X, y = make_blobs(n_samples=(400, 50), cluster_std=[7.0, 2],random_state=22)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 svc = SVC(gamma=.05).fit(X_train, y_train)
 
-#%%
-
-mglearn.plots.plot_decision_threshold()
-
-#%%
+# mglearn.plots.plot_decision_threshold()
 
 print(classification_report(y_test, svc.predict(X_test)))
-
-#%%
-
 y_pred_lower_threshold = svc.decision_function(X_test) > -.8
-
-#%%
 
 print(classification_report(y_test, y_pred_lower_threshold))
 
-#%% md
+myML.ModelEval.classifier_threshold_test(X_test,y_test,svc,-0.8)
+
 
 ##### Precision-Recall curves and ROC curves
-
-#%%
-
-from sklearn.metrics import precision_recall_curve
-precision, recall, thresholds = precision_recall_curve(
-    y_test, svc.decision_function(X_test))
-
-#%%
-
 # Use more data points for a smoother curve
 X, y = make_blobs(n_samples=(4000, 500), cluster_std=[7.0, 2], random_state=22)
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
 svc = SVC(gamma=.05).fit(X_train, y_train)
-precision, recall, thresholds = precision_recall_curve(
-    y_test, svc.decision_function(X_test))
+
+# myML.ModelEval.precision_recall_curve(X_test,y_test,svc,True)
+
+from sklearn.metrics import precision_recall_curve
+precision, recall, thresholds = precision_recall_curve(y_test, svc.decision_function(X_test))
+
+precision, recall, thresholds = precision_recall_curve(y_test, svc.decision_function(X_test))
 # find threshold closest to zero
 close_zero = np.argmin(np.abs(thresholds))
-plt.plot(precision[close_zero], recall[close_zero], 'o', markersize=10,
-         label="threshold zero", fillstyle="none", c='k', mew=2)
-
+thresholds[close_zero]
+plt.plot(precision[close_zero], recall[close_zero], 'o', markersize=10, label="threshold zero", fillstyle="none", c='k', mew=2)
 plt.plot(precision, recall, label="precision recall curve")
 plt.xlabel("Precision")
 plt.ylabel("Recall")
 plt.legend(loc="best")
 
-#%%
-
 from sklearn.ensemble import RandomForestClassifier
-
 rf = RandomForestClassifier(n_estimators=100, random_state=0, max_features=2)
 rf.fit(X_train, y_train)
+# myML.ModelEval.precision_recall_curve(X_test,y_test,svc,True)
+# myML.ModelEval.precision_recall_curve(X_test,y_test,rf,True)
 
 # RandomForestClassifier has predict_proba, but not decision_function
-precision_rf, recall_rf, thresholds_rf = precision_recall_curve(
-    y_test, rf.predict_proba(X_test)[:, 1])
-
+precision_rf, recall_rf, thresholds_rf = precision_recall_curve(y_test, rf.predict_proba(X_test)[:, 1])
 plt.plot(precision, recall, label="svc")
-
 plt.plot(precision[close_zero], recall[close_zero], 'o', markersize=10,
          label="threshold zero svc", fillstyle="none", c='k', mew=2)
-
 plt.plot(precision_rf, recall_rf, label="rf")
-
 close_default_rf = np.argmin(np.abs(thresholds_rf - 0.5))
 plt.plot(precision_rf[close_default_rf], recall_rf[close_default_rf], '^', c='k',
          markersize=10, label="threshold 0.5 rf", fillstyle="none", mew=2)
@@ -523,26 +452,18 @@ plt.xlabel("Precision")
 plt.ylabel("Recall")
 plt.legend(loc="best")
 
-#%%
-
-print("f1_score of random forest: {:.3f}".format(
-    f1_score(y_test, rf.predict(X_test))))
+print("f1_score of random forest: {:.3f}".format(f1_score(y_test, rf.predict(X_test))))
 print("f1_score of svc: {:.3f}".format(f1_score(y_test, svc.predict(X_test))))
 
-#%%
-
+# myML.ModelEval.precision_recall_curve(X_test,y_test,svc,False)
 from sklearn.metrics import average_precision_score
 ap_rf = average_precision_score(y_test, rf.predict_proba(X_test)[:, 1])
 ap_svc = average_precision_score(y_test, svc.decision_function(X_test))
 print("Average precision of random forest: {:.3f}".format(ap_rf))
 print("Average precision of svc: {:.3f}".format(ap_svc))
 
-#%% md
 
 ##### Receiver Operating Characteristics (ROC) and AUC
-\begin{equation}
-\text{FPR} = \frac{\text{FP}}{\text{FP} + \text{TN}}
-\end{equation}
 
 #%%
 
