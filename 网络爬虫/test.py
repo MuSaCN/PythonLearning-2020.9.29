@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPath.MyClass_Path("\\Python大战机器学习")  # 路径类
+# __mypath__ = MyPath.MyClass_Path("\\Python大战机器学习")  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
 mytime = MyTime.MyClass_Time()  # 时间类
 myplt = MyPlot.MyClass_Plot()  # 直接绘图类(单个图窗)
@@ -35,5 +35,7 @@ import requests
 url = "https://www.baidu.com"
 res = requests.get(url).text
 print(res)
+
+
 
 
