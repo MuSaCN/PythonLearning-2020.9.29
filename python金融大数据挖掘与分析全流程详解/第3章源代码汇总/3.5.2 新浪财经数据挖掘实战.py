@@ -30,6 +30,8 @@ def xinlang(company):
 
 
 companys = ['华能信托', '阿里巴巴', '万科集团', '百度', '腾讯', '京东']
+companys = [ '阿里巴巴']
+
 for i in companys:
     try:
         xinlang(i)

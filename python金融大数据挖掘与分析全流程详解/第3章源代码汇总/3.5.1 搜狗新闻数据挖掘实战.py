@@ -7,7 +7,7 @@ import re
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'}
 
-
+company = "阿里巴巴"
 def sogou(company):
     url = 'https://news.sogou.com/news?mode=1&sort=0&fixrank=1&query=' + company + '&shid=djt1'
     res = requests.get(url,headers=headers, timeout=10).text
@@ -18,7 +18,7 @@ def sogou(company):
     title = re.findall(p_title, res)
     p_href = '<a href="(.*?)" id="u.*?" target="_blank">'
     href = re.findall(p_href, res)
-    p_date = '<p class="news-from">.*?&nbsp;(.*?)</p>'
+    p_date = '<p class="news-from">(.*?)</p>'
     date = re.findall(p_date, res)
 
     # 数据清洗及打印输出
@@ -31,6 +31,7 @@ def sogou(company):
 
 
 companys = ['华能信托', '阿里巴巴', '万科集团', '百度', '腾讯', '京东']
+companys = ['阿里巴巴']
 for i in companys:
     try:
         sogou(i)

@@ -43,9 +43,36 @@ for i in companys:  # 这个i只是个代号，可以换成其他内容
     myWebC.news_baidu(i,file="百度新闻爬取.txt")
     print(i + '百度新闻爬取成功')
 
+# 3.3 异常处理及24小时数据挖掘实战
+import time
+# while True:
+#     companys = ['华能信托', '阿里巴巴', '万科集团', '百度集团', '腾讯', '京东']
+#     for i in companys:
+#         try:
+#             myWebC.news_baidu(i)
+#             print(i + '百度新闻爬取成功')
+#         except:
+#             print(i + '百度新闻爬取失败')
+#     time.sleep(20)  # 每10800秒运行一次，即3小时运行一次，注意缩进
 
 
+# 3.4.2-1 一家公司批量爬取多页
+
+for i in range(10):
+    myWebC.news_baidu("阿里巴巴",page = i)
+    print('第' + str(i+1) + '页爬取成功')
+
+# 3.4.2-2 多家公司批量爬取多页
+companys = ['华能信托', '阿里巴巴', '万科集团', '百度集团', '腾讯', '京东']
+for company in companys:
+    for i in range(10):  # i是从0开始的序号，所以下面要写i+1，这里一共爬取了20页
+        myWebC.news_baidu(company, page = i)
+        print(company + ' 第' + str(i+1) + '页爬取成功')
+
+# 3.5.1 搜狗新闻数据挖掘实战
+myWebC.news_sogou('阿里巴巴',sort=1,page=2,file=None)
 
 
-
+# 3.5.2 新浪财经数据挖掘实战
+myWebC.news_sina('阿里巴巴')
 
