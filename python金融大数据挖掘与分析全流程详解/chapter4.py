@@ -30,10 +30,63 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 myWebC = MyWebCrawler.MyClass_WebCrawler()  # 综合网络爬虫类
+mySQL = MyDatabase.MyClass_MySQL(connect=False) # MySQL类
 #------------------------------------------------------------
 
 
+# 4.3.3 数据插入数据库
+# 先预定义些变量
+company = '阿里巴巴'
+title = '测试标题'
+href = '测试链接'
+source = '测试来源'
+date = '测试日期'
 
+# 连接数据库，必须打开数据库服务器才行
+mySQL.__init__(database='quant')
+sql = "INSERT INTO table0(company, title, href, source, date) VALUES (%s, %s, %s, %s, %s)"
+mySQL.execute_commit(sql, (company, title, href, source, date))
+mySQL.close()
+
+
+# 4.3.4 连接数据库并提取数据
+# 1.根据1个条件查找并提取
+company = '阿里巴巴'
+mySQL.__init__(database='quant')
+sql = 'SELECT * FROM table0 WHERE company = %s'  # 编写SQL语句
+data = mySQL.execute_fetchall_commit(sql, company)
+mySQL.close()
+
+
+# 2.根据2个条件查找并提取
+company = '阿里巴巴'
+title = '标题1'
+mySQL.__init__(database='quant')
+sql = 'SELECT * FROM table0 WHERE company = %s AND title = %s'  # 编写SQL语句
+data = mySQL.execute_fetchall_commit(sql, (company, title))
+mySQL.close()
+
+# 4.3.5 连接数据库并删除数据
+company = '阿里巴巴'
+mySQL.__init__(database='quant')
+sql = 'DELETE FROM table0 WHERE company = %s'  # 编写SQL语句
+mySQL.execute_commit(sql, company)
+mySQL.close()
+
+# 4.4 把数据挖掘到数据存入数据库
+myWebC.news_baidu("阿里巴巴",database="quant.table0",port=3308)
+
+companys = ['华能信托', '阿里巴巴', '百度集团', '腾讯', '京东']
+for company in companys:
+    try:
+        myWebC.news_baidu(company,database="quant.table0",port=3308)
+        print(company + '爬取并存入数据库成功')
+    except:
+        print(company + '爬取并存入数据库失败')
+
+myWebC.news_baidu("阿里巴巴",database="quant.test",port=3308)
+myWebC.news_sogou("量化投资",database="quant.test",port=3308)
+myWebC.news_sina("习近平",database="quant.test",port=3308)
 
 
 
