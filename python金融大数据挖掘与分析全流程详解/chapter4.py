@@ -84,9 +84,9 @@ for company in companys:
     except:
         print(company + '爬取并存入数据库失败')
 
-myWebC.news_baidu("阿里巴巴",database="quant.test",port=3308)
-myWebC.news_sogou("量化投资",database="quant.test",port=3308)
-myWebC.news_sina("习近平",database="quant.test",port=3308)
+myWebC.news_baidu("阿里巴巴",database="quant.news",port=3308)
+myWebC.news_sogou("量化投资",database="quant.news",port=3308)
+myWebC.news_sina("习近平",database="quant.news",port=3308)
 
 
 
