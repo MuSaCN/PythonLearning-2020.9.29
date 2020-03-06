@@ -58,9 +58,9 @@ data = mySQL.execute_fetchall_commit(sql, company)
 mySQL.close()
 
 
-# mySQL.__init__(database='quant')
-# mySQL.deletetable("news")
-# mySQL.deletetable_content("news")
+mySQL.__init__(database='quant')
+mySQL.deletetable("news")
+mySQL.deletetable_content("news")
 
 
 # 2.根据2个条件查找并提取

@@ -11,6 +11,7 @@ res = requests.get(url).text
 # 1.编码分析
 # 1.1 查看Python获得的网页源代码的编码方式，其编码方式为ISO-8859-1
 url = 'https://www.baidu.com'
+url = 'http://finance.sina.com.cn/stock/hkstock/marketalerts/2020-03-06/doc-iimxyqvz8239967.shtml'
 code = requests.get(url).encoding
 print('通过Python获得的网页源代码的编码方式为：' + code)
 

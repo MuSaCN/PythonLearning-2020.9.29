@@ -34,18 +34,33 @@ mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 #------------------------------------------------------------
 
 # 5.1 数据去重及清洗优化
-company = "阿里巴巴"
-text = myWebC.get("http://finance.sina.com.cn/stock/hkstock/marketalerts/2020-03-06/doc-iimxyqvz8239967.shtml").text
+company = "腾讯"
+url = 'https://www.thepaper.cn/newsDetail_forward_6366027'
+text = myWebC.get(url).text
 print(text)
 myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
-
-
-myWebC.news_baidu("阿里巴巴",rtt=1,checkhref=False,word_href=None)
-myWebC.news_baidu("阿里巴巴",rtt=1,checkhref=True,word_href=None)
-myWebC.news_baidu("阿里巴巴",rtt=1,checkhref=True,word_href=None,database="quant.news")
+text = myWebC.no_messy_code(text)
+print(text)
+myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
+text = myWebC.get_href_content(url)
+print(text)
+myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
 
 
 myWebC.news_sogou("阿里巴巴")
 myWebC.news_sina("阿里巴巴")
 
+
+mySQL.__init__("quant")
+mySQL.deletetable_content("news")
+
+keywords = ['违约', '诉讼', '兑付', '阿里', '百度', '京东', '互联网']
+myWebC.news_baidu("腾讯",rtt=1,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebC.news_sogou("腾讯",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebC.news_sina("腾讯",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+
+
+
+# 5.4.3 从数据库汇总每日评分
+myWebC.totalscore_daily("quant.news",word="腾讯")
 
