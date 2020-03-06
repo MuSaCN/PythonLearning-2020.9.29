@@ -53,16 +53,21 @@ mySQL.close()
 # 1.根据1个条件查找并提取
 company = '阿里巴巴'
 mySQL.__init__(database='quant')
-sql = 'SELECT * FROM table0 WHERE company = %s'  # 编写SQL语句
+sql = 'SELECT * FROM news WHERE company = %s'  # 编写SQL语句
 data = mySQL.execute_fetchall_commit(sql, company)
 mySQL.close()
+
+
+# mySQL.__init__(database='quant')
+# mySQL.deletetable("news")
+# mySQL.deletetable_content("news")
 
 
 # 2.根据2个条件查找并提取
 company = '阿里巴巴'
 title = '标题1'
 mySQL.__init__(database='quant')
-sql = 'SELECT * FROM table0 WHERE company = %s AND title = %s'  # 编写SQL语句
+sql = 'SELECT * FROM news WHERE company = %s AND title = %s'  # 编写SQL语句
 data = mySQL.execute_fetchall_commit(sql, (company, title))
 mySQL.close()
 

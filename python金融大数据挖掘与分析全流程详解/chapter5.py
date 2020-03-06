@@ -33,10 +33,19 @@ myWebC = MyWebCrawler.MyClass_WebCrawler()  # 综合网络爬虫类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 #------------------------------------------------------------
 
+# 5.1 数据去重及清洗优化
+company = "阿里巴巴"
+text = myWebC.get("http://finance.sina.com.cn/stock/hkstock/marketalerts/2020-03-06/doc-iimxyqvz8239967.shtml").text
+print(text)
+myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
 
 
+myWebC.news_baidu("阿里巴巴",rtt=1,checkhref=False,word_href=None)
+myWebC.news_baidu("阿里巴巴",rtt=1,checkhref=True,word_href=None)
+myWebC.news_baidu("阿里巴巴",rtt=1,checkhref=True,word_href=None,database="quant.news")
 
 
-
+myWebC.news_sogou("阿里巴巴")
+myWebC.news_sina("阿里巴巴")
 
 

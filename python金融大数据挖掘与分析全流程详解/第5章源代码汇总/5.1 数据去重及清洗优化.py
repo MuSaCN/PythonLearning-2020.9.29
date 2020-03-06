@@ -8,10 +8,10 @@ import pymysql
 import time
 
 headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'}
-
+company = "阿里巴巴"
 def baidu(company):
     # 1.获取网页源代码（参考2.3、3.1、3.4节）
-    url = 'https://www.baidu.com/s?tn=news&rtt=4&bsst=1&cl=2&wd=' + company  # 其中设置rtt=4则为按时间排序，如果rtt=1则为按焦点排序
+    url = 'https://www.baidu.com/s?tn=news&rtt=1&bsst=1&cl=2&wd=' + company  # 其中设置rtt=4则为按时间排序，如果rtt=1则为按焦点排序
     res = requests.get(url, headers=headers, timeout=10).text
 
     # 2.编写正则提炼内容（参考3.1节）
