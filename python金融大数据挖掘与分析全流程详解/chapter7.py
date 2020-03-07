@@ -35,12 +35,8 @@ mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 
 myWebQD.__init__(True)
 myWebQD.pro.stk_limit(ts_code='002149.SZ', start_date='20190115', end_date='20190615')
+myWebQD.ts.pro_bar(ts_code='000001.SH', asset='I', start_date='20180101', end_date='20181011',freq='5min')
+
+myWebQD.ts.get_hist_data('000001',start='2020-03-06', end='2020-03-7', ktype='5')
 
 
-
-import tushare as ts
-pro0 = ts.pro_api("3f932532f37859fa2f4289fe06866b18a32f6c6e2e05ab89b8a8c328")
-pro0.stk_limit(ts_code='002149.SZ', start_date='20190115', end_date='20190615')
-
-pro1 = ts.pro_api("5a24dd5110f526f4f4d39fbfd64c5de51c2e82150e5a286439083b37")
-pro1.stk_limit(ts_code='002149.SZ', start_date='20190115', end_date='20190615')
