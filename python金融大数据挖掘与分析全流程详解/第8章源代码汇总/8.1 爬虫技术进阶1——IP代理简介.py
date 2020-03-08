@@ -9,4 +9,5 @@ print(proxy)
 proxies = {"http": "http://"+proxy, "https": "https://"+proxy}
 url = 'https://httpbin.org/get'
 res = requests.get(url, proxies=proxies).text
+res = requests.get(url).text
 print(res)
