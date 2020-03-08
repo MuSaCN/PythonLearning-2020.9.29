@@ -34,20 +34,6 @@ mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 #------------------------------------------------------------
 
 # 8.2 爬虫进阶2-爬虫利器selenium库详解
-from selenium.webdriver.chrome.options import Options
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
-import time
-
-exe_data = r'D:\软件安装地址\360Chrome\Chrome\Application\360chrome.exe'    #浏览器根目录所在地
-chrome_options = Options()
-chrome_options.binary_location =exe_data
-
-browser = webdriver.Chrome(chrome_options=chrome_options)
-browser.get('http://www.baidu.com')
-browser.find_element_by_id("kw").send_keys("xiaobai" + Keys.RETURN)
-time.sleep(10)
-driver.quit()
 
 
 # 1.打开及关闭网页+网页最大化

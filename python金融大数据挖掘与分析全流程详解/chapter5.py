@@ -29,38 +29,38 @@ myWebQD = MyWebCrawler.MyClass_WebQuotesDownload()  # 金融行情下载类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
-myWebC = MyWebCrawler.MyClass_WebCrawler()  # 综合网络爬虫类
+myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 #------------------------------------------------------------
 
 # 5.1 数据去重及清洗优化
 company = "腾讯"
 url = 'https://www.thepaper.cn/newsDetail_forward_6366027'
-text = myWebC.get(url).text
+text = myWebR.get(url).text
 print(text)
-myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
-text = myWebC.no_messy_code(text)
+myWebR.findall(company[0] + '.{0,5}' + company[-1], text)
+text = myWebR.no_messy_code(text)
 print(text)
-myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
-text = myWebC.get_href_content(url)
+myWebR.findall(company[0] + '.{0,5}' + company[-1], text)
+text = myWebR.get_href_content(url)
 print(text)
-myWebC.findall(company[0] + '.{0,5}' + company[-1], text)
+myWebR.findall(company[0] + '.{0,5}' + company[-1], text)
 
-
-myWebC.news_sogou("阿里巴巴")
-myWebC.news_sina("阿里巴巴")
+myWebR.news_baidu("阿里巴巴")
+myWebR.news_sogou("阿里巴巴")
+myWebR.news_sina("阿里巴巴")
 
 
 mySQL.__init__("quant")
 mySQL.deletetable_content("news")
 
 keywords = ['违约', '诉讼', '兑付', '阿里', '百度', '京东', '互联网']
-myWebC.news_baidu("腾讯",rtt=1,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
-myWebC.news_sogou("腾讯",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
-myWebC.news_sina("腾讯",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebR.news_baidu("腾讯",rtt=1,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebR.news_sogou("腾讯",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebR.news_sina("腾讯",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
 
 
 
 # 5.4.3 从数据库汇总每日评分
-myWebC.totalscore_daily("quant.news",word="腾讯")
+myWebR.totalscore_daily("quant.news",word="腾讯")
 
