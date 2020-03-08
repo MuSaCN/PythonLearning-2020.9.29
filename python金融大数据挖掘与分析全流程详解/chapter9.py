@@ -31,47 +31,11 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 myWebQD = MyWebCrawler.MyClass_WebQuotesDownload(tushare=False)  # 金融行情下载类
 myWebC = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
-myWebS = MyWebCrawler.MyClass_Selenium() # Selenium模拟浏览器类
+myWebS = MyWebCrawler.MyClass_Selenium()  # Selenium模拟浏览器类
 #------------------------------------------------------------
 
-# 8.2 爬虫进阶2-爬虫利器selenium库详解
 
-# 1.打开及关闭网页+网页最大化
-myWebS.__init__(defaultbrowser=True)
-myWebS.get("https://www.baidu.com/")
-myWebS.quit()
 
-# 2.xpath方法 / css_selector方法 来定位元素
-pages = []
-myWebS.__init__(openChrome=True)
-myWebS.get("https://www.baidu.com/")
-
-pages.append(myWebS.page_source())
-myWebS.find_element('//*[@id="kw"]').send_keys('量化投资')
-myWebS.find_element('#su').click()
-import datetime
-now = datetime.datetime.now()
-while (datetime.datetime.now() - now).seconds < 2 :
-    data = myWebS.page_source()
-    if pages[-1] != data:
-        pages.append(data)
-len(pages)
-data = myWebS.page_source(sleep=3)
-myWebS.quit()
-
-# 5.browser.page_source方法来获取新浪财经股票信息
-myWebS.__init__(openChrome=True)
-myWebS.get("http://finance.sina.com.cn/realstock/company/sh000001/nc.shtml")
-data = myWebS.page_source()
-print(data)
-myWebS.quit()
-
-# 6.Chrome Headless无界面浏览器设置
-myWebS.__init__(openChrome=True,headless=True)
-myWebS.get("http://finance.sina.com.cn/realstock/company/sh000001/nc.shtml")
-data = myWebS.page_source()
-print(data)
-myWebS.quit()
 
 
 
