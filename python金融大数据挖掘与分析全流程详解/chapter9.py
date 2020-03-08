@@ -30,13 +30,21 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 myWebQD = MyWebCrawler.MyClass_WebQuotesDownload(tushare=False)  # 金融行情下载类
-myWebC = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
+myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium()  # Selenium模拟浏览器类
+myWebAPP = MyWebCrawler.MyClass_IntegrateAPP() # 整合应用类
 #------------------------------------------------------------
 
+# 9.1 新浪股票实时数据挖掘实战
+myWebS.__init__(True,False)
+myWebS.get('http://finance.sina.com.cn/realstock/company/sh000001/nc.shtml')
+data = myWebS.page_source()
+print(data)
+myWebS.quit()
 
-
-
+p_price = '<div id="price" class=".*?">(.*?)</div>'
+price = myWebR.findall(p_price,data)
+print(price)
 
 
 

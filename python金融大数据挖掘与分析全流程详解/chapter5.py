@@ -31,6 +31,7 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
+myWebAPP = MyWebCrawler.MyClass_IntegrateAPP() # 整合应用类
 #------------------------------------------------------------
 
 # 5.1 数据去重及清洗优化
@@ -46,21 +47,21 @@ text = myWebR.get_href_content(url)
 print(text)
 myWebR.findall(company[0] + '.{0,5}' + company[-1], text)
 
-myWebR.news_baidu("阿里巴巴")
-myWebR.news_sogou("阿里巴巴")
-myWebR.news_sina("阿里巴巴")
+myWebAPP.news_baidu("阿里巴巴")
+myWebAPP.news_sogou("阿里巴巴")
+myWebAPP.news_sina("阿里巴巴")
 
 
 mySQL.__init__("quant")
 mySQL.deletetable_content("news")
 
 keywords = ['违约', '诉讼', '兑付', '阿里', '百度', '京东', '互联网']
-myWebR.news_baidu("腾讯",rtt=1,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
-myWebR.news_sogou("腾讯",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
-myWebR.news_sina("腾讯",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebAPP.news_baidu("阿里巴巴",rtt=1,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebAPP.news_sogou("阿里巴巴",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
+myWebAPP.news_sina("阿里巴巴",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
 
 
 
 # 5.4.3 从数据库汇总每日评分
-myWebR.totalscore_daily("quant.news",word="腾讯")
+myWebAPP.totalscore_daily("quant.news",word="阿里巴巴")
 
