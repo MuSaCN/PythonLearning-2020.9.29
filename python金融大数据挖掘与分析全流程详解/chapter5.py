@@ -53,7 +53,21 @@ myWebAPP.news_sina("阿里巴巴")
 
 
 mySQL.__init__("quant")
+sql = 'SELECT * FROM news WHERE company = "阿里巴巴" AND (date BETWEEN DATE_FORMAT("2020-03-08","%Y-%m-%d 00:00:00") AND DATE_FORMAT("2020-03-08","%Y-%m-%d 23:59:59") or date = "2020-03-08")'
+sql = 'SELECT * FROM news WHERE company = "阿里巴巴" AND (date = "2020-03-08" or date BETWEEN DATE_FORMAT("2020-03-08","%Y-%m-%d 00:00:00") AND DATE_FORMAT("2020-03-08","%Y-%m-%d 23:59:59"))'
+
+import time
+today = time.strftime("%Y-%m-%d")
+company = "阿里巴巴"
+sql = 'SELECT * FROM news WHERE company = "阿里巴巴" AND (date = "2020-03-08" or date BETWEEN DATE_FORMAT("2020-03-08","%Y-%m-%d 00:00:00") AND DATE_FORMAT("2020-03-08","%Y-%m-%d 23:59:59"))'
+
+sql = 'SELECT * FROM news WHERE company = "'+company+'" AND (date = "'+today+'" or date BETWEEN DATE_FORMAT("'+today+'","%Y-%m-%d 00:00:00") AND DATE_FORMAT("'+today+'","%Y-%m-%d 23:59:59"))'
+
+mySQL.execute_fetchall_commit(sql)
+
+
 mySQL.deletetable_content("news")
+mySQL.close()
 
 keywords = ['违约', '诉讼', '兑付', '阿里', '百度', '京东', '互联网']
 myWebAPP.news_baidu("阿里巴巴",rtt=1,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
@@ -63,5 +77,5 @@ myWebAPP.news_sina("阿里巴巴",sort="time",scorekeyword=keywords,checkhref=Tr
 
 
 # 5.4.3 从数据库汇总每日评分
-myWebAPP.totalscore_daily("quant.news",word="阿里巴巴")
+myWebAPP.totalscore_daily("quant.news",word="阿里巴巴",today="2020-03-08")
 
