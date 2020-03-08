@@ -37,11 +37,9 @@ myWebS = MyWebCrawler.MyClass_Selenium() # Selenium模拟浏览器类
 # 8.2 爬虫进阶2-爬虫利器selenium库详解
 
 # 1.打开及关闭网页+网页最大化
-from selenium import webdriver
-browser = webdriver.Chrome()
-browser.maximize_window()
-browser.get("https://www.baidu.com/")
-browser.quit()
+myWebS.__init__(defaultbrowser=True)
+myWebS.get("https://www.baidu.com/")
+myWebS.quit()
 
 # 2.xpath方法来定位元素
 from selenium import webdriver
