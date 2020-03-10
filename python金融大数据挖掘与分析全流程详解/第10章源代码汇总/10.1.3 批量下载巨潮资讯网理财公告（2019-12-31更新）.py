@@ -74,31 +74,32 @@ for i in range(len(href)):
         print(title[i] + '不是PDF文件')
 
 # 补充知识点1：无界面浏览器设置
-# for i in range(len(href)):
-#     chrome_options = webdriver.ChromeOptions()
-#     chrome_options.add_argument('--headless')
-#     browser = webdriver.Chrome(options=chrome_options)
-#     browser.get(href[i])
-#     try:
-#         browser.find_element_by_xpath('/html/body/div/div[1]/div[2]/div[1]/a[3]').click()
-#         time.sleep(3)  # 这个一定要加，因为下载需要一点时间
-#         browser.quit()
-#         print(str(i+1) + '.' + title[i] + '是PDF文件')
-#     except:
-#         print(title[i] + '不是PDF文件')
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': 'E:\\公告'}  # 这边你可以修改文件储存的位置
+chrome_options.add_experimental_option('prefs', prefs)
+browser = webdriver.Chrome(options=chrome_options)
+for i in range(3):
+    browser.get(href[i])
+    try:
+        browser.find_element_by_xpath('/html/body/div/div[1]/div[2]/div[1]/a[3]').click()
+        time.sleep(3)  # 这个一定要加，因为下载需要一点时间
+        print(str(i+1) + '.' + title[i] + '是PDF文件')
+    except:
+        print(title[i] + '不是PDF文件')
 
 
 # 补充知识点2：自动批量爬取PDF - 自己设定储存位置
-# for i in range(len(href)):
-#     chrome_options = webdriver.ChromeOptions()
-#     prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': 'd:\\公告'} #这边你可以修改文件储存的位置
-#     chrome_options.add_experimental_option('prefs', prefs)
-#     browser = webdriver.Chrome(chrome_options=chrome_options)
-#     browser.get(href[i])
-#     try:
-#         browser.find_element_by_xpath('/html/body/div/div[1]/div[2]/div[1]/a[3]').click()
-#         time.sleep(3) # 这个一定要加，因为下载需要一点时间
-#         print(str(i+1) + '.' + title[i] + '下载完毕')
-#         browser.quit()
-#     except:
-#         print(title[i] + '不是PDF')
+for i in range(len(href)):
+    chrome_options = webdriver.ChromeOptions()
+    prefs = {'profile.default_content_settings.popups': 0, 'download.default_directory': 'E:\\公告'} #这边你可以修改文件储存的位置
+    chrome_options.add_experimental_option('prefs', prefs)
+    browser = webdriver.Chrome(chrome_options=chrome_options)
+    browser.get(href[i])
+    try:
+        browser.find_element_by_xpath('/html/body/div/div[1]/div[2]/div[1]/a[3]').click()
+        time.sleep(3) # 这个一定要加，因为下载需要一点时间
+        print(str(i+1) + '.' + title[i] + '下载完毕')
+        browser.quit()
+    except:
+        print(title[i] + '不是PDF')

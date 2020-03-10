@@ -36,8 +36,7 @@ myWebAPP = MyWebCrawler.MyClass_IntegrateAPP()  # 爬虫整合应用类
 #------------------------------------------------------------
 
 
-
-
-
-
+# 10.1 批量下载巨潮资讯网理财公告
+myWebAPP.news_cninfo("中国银行",to_pages=2,timefilter=["2020-03-06"],quit=True,scorekeyword=["银行"],hrefdownload="E:\\公告")
+myWebAPP.quit()
 
