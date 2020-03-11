@@ -25,7 +25,7 @@ myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 # mySMT5 = MyMql.MyClass_SocketMT5() # 以Socket方式建立python与MT5通信类
 # myDefault = MyDefault.MyClass_Default_Matplotlib() # matplotlib默认设置
 # myBaidu = MyWebCrawler.MyClass_BaiduPan() # Baidu网盘交互类
-myWebQD = MyWebCrawler.MyClass_WebQuotesDownload()  # 金融行情下载类
+myWebQD = MyWebCrawler.MyClass_QuotesDownload()  # 金融行情下载类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 #------------------------------------------------------------
