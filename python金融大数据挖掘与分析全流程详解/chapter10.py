@@ -42,10 +42,11 @@ myWebAPP.quit()
 
 
 # 1.解析第一页的文本信息
-pdf = myfile.pdf_open('公司A理财公告.PDF')
-textlist = myfile.pdf_extract_text(pdf,index="all")
-print(textlist[0])
+with myfile.pdf_open('公司A理财公告.PDF') as pdf:
+    textlist = myfile.pdf_extract_text(pdf, index="all")
+    print(textlist[0])
+    tablelist = myfile.pdf_extract_tables(pdf, index="all", to_pandas=True)
+    print(tablelist[0])
+    print(tablelist[1])
 
-tablelist = myfile.pdf_extract_tables(pdf,index="all",to_pandas=True)
-print(tablelist[0])
-print(tablelist[1])
+
