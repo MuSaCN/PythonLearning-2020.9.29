@@ -32,7 +32,7 @@ mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 myWebQD = MyWebCrawler.MyClass_WebQuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome = False)  # Selenium模拟浏览器类
-myWebAPP = MyWebCrawler.MyClass_IntegrateAPP() # 爬虫整合应用类
+myWebAPP = MyWebCrawler.MyClass_APPIntegrate() # 爬虫整合应用类
 #------------------------------------------------------------
 
 # 9.1 新浪股票实时数据挖掘实战
