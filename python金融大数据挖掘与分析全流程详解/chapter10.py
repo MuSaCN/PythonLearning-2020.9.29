@@ -49,4 +49,3 @@ with myfile.pdf_open('公司A理财公告.PDF') as pdf:
     print(tablelist[0])
     print(tablelist[1])
 
-
