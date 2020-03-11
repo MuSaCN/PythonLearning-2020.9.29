@@ -32,7 +32,9 @@ pdf = pdfplumber.open('公司A理财公告.PDF')
 pages = pdf.pages
 page = pages[3]  # 因为表格在第四页，所以提取第四页，也即pages[3]
 tables = page.extract_tables()  # 通过extract_tables方法获取该页所有表格
+len(tables)
 table = tables[0]  # 因为第四页只有一个表格，所以通过tables[0]提取
+len(table)
 # 替换原来table中的换行符
 for i in range(len(table)):  # 遍历大列表中的每一个子列表
     for j in range(len(table[i])):  # 遍历子列表中的每一个元素

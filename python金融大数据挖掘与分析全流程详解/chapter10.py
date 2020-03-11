@@ -40,3 +40,12 @@ myWebAPP = MyWebCrawler.MyClass_IntegrateAPP()  # 爬虫整合应用类
 myWebAPP.news_cninfo("中国银行",to_pages=2,timefilter=["2020-03-06"],quit=True,scorekeyword=["银行"],hrefdownload="E:\\公告")
 myWebAPP.quit()
 
+
+# 1.解析第一页的文本信息
+pdf = myfile.pdf_open('公司A理财公告.PDF')
+textlist = myfile.pdf_extract_text(pdf,index="all")
+print(textlist[0])
+
+tablelist = myfile.pdf_extract_tables(pdf,index="all",to_pandas=True)
+print(tablelist[0])
+print(tablelist[1])
