@@ -33,11 +33,33 @@ myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下�
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
 myWebAPP = MyWebCrawler.MyClass_APPIntegration()  # 爬虫整合应用类
+myEmail = MyWebCrawler.MyClass_Email() # 邮箱交互类
 #------------------------------------------------------------
 
+myEmail.__init__(to = "435116098@qq.com")
+myEmail.set_subject_maintext(subject='测试邮件主题!',maintext='测试邮件正文内容')
+myEmail.send_message()
 
 
 
+# 1.编写邮件正文内容
+mail_msg = '''
+<p>这个是一个常规段落</p>
+<p><a href="https://www.baidu.com">这是一个包含链接的段落</a></p>
+'''
+myEmail.__init__()
+myEmail.attach_subject_maintext('html主题!',mail_msg,"html","utf-8")
+myEmail.send_message()
 
+# 11.1.4 发送邮件附件
+mail_msg = '''
+<p>这个是一个常规段落</p>
+<p><a href="https://www.baidu.com">这是一个包含链接的段落</a></p>
+'''
+myEmail.__init__()
+myEmail.attach_subject_maintext('html主题!',mail_msg,"html","utf-8")
+myEmail.attach_file("公司A理财公告.PDF","A.PDF")
+myEmail.attach_file("test.csv")
+myEmail.send_message()
 
 

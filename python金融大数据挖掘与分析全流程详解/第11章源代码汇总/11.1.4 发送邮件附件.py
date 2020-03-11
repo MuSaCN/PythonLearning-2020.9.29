@@ -26,6 +26,9 @@ att1["Content-Type"] = 'application/octet-stream'
 att1["Content-Disposition"] = 'attachment; filename="test.docx"'
 msg.attach(att1)
 
+
+
+
 # 4.设置邮件主题、发件人、收件人
 msg['Subject'] = '测试邮件主题!'
 msg['From'] = user
