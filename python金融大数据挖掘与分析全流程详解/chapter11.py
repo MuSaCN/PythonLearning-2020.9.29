@@ -62,4 +62,14 @@ myEmail.attach_file("公司A理财公告.PDF","A.PDF")
 myEmail.attach_file("test.csv")
 myEmail.send_message()
 
+# 11.2.1 案例实战-自动发送数据分析邮件
+company = "阿里巴巴"
+date = "2020-03-08"
+myWebAPP.send_email_database(database="quant.news",word=company,date=date,to=None)
+
+import schedule
+schedule.every(1).minutes.do( myWebAPP.send_email_database,database="quant.news",word=company,date=date,to=None )
+
+while True:
+    schedule.run_pending()
 
