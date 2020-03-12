@@ -43,3 +43,20 @@ for im in images:
     im.callbacksSM.connect('changed', update)
 
 plt.show()
+
+class A:
+    def __init__(self):
+        self.a =1
+        self._c =2
+        self.__ddd = 45
+        self.___abc__ =3
+
+    def __aaa(self):
+        print(123)
+    def _a_(self):
+        print(567)
+class B(A):
+    def __init__(self):
+        super().__init__()
+b=B()
+b.___abc__

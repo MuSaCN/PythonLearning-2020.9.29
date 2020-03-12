@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPath.MyClass_Path()  # 路径类
+__mypath__ = MyPath.MyClass_Path("\\python金融大数据挖掘与分析全流程详解")  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
 mytime = MyTime.MyClass_Time()  # 时间类
 myplt = MyPlot.MyClass_Plot()  # 直接绘图类(单个图窗)
@@ -31,36 +31,31 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
 myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
-myWebS = MyWebCrawler.MyClass_Selenium(openChrome = False)  # Selenium模拟浏览器类
+myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
 myWebAPP = MyWebCrawler.MyClass_APPIntegration() # 爬虫整合应用类
+myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 #------------------------------------------------------------
 
-# 9.1 新浪股票实时数据挖掘实战
-myWebAPP.sina_realstock("sh000001",quit=True)
+# 12.1.1-1 requests库下载文件
+url = 'http://images.china-pub.com/ebook8055001-8060000/8057968/shupi.jpg'
+myWebR.download(url,"pic.jpg")
+
+# 12.1.1-2 通过pandas获取表格
+url = 'http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/dzjy/index.phtml'  # 新浪财经数据中心提供股票大宗交易的在线表格
+myWebAPP
 
 
-# 9.2 东方财富网数据挖掘实战
-myWebAPP.news_eastmoney("阿里巴巴", quit=True, database="quant.news")
 
 
-# 9.3 裁判文书网数据挖掘实战
-'''2019年8月份之后裁判文书网改版，其反爬非常强，所以模拟键盘鼠标操作后等待很久也等不到刷新，
-所以这里主要给大家练习下如何通过selenium库模拟键盘鼠标操作。'''
-from selenium import webdriver
-import time
-browser = webdriver.Chrome()
-browser.get('http://wenshu.court.gov.cn/')
-browser.find_element_by_xpath('//*[@id="_view_1540966814000"]/div/div[1]/div[2]/input').clear()  # 清空原搜索框
-browser.find_element_by_xpath('//*[@id="_view_1540966814000"]/div/div[1]/div[2]/input').send_keys('房地产')  # 在搜索框内模拟输入'房地产'三个字
-browser.find_element_by_xpath('//*[@id="_view_1540966814000"]/div/div[1]/div[3]').click()  # 点击搜索按钮
-time.sleep(10)  # 如果还是获取不到你想要的内容，你可以把这个时间再稍微延长一些，现在裁判文书网反爬非常厉害，所以可能等待也等不到刷新，所以这里主要给大家练习下模拟键盘鼠标操作
-data = browser.page_source
-browser.quit()
-print(data)
 
-# 9.4 巨潮资讯网数据挖掘实战
-myWebAPP.news_cninfo("阿里巴巴")
-myWebAPP.quit()
+tables = pd.read_html(url)  # 通过pd.read_html(url)获取的是一个列表，所以仍需通过[0]的方式提取列表的第一个元素
+table = tables[0]
 
-myWebAPP.news_cninfo("阿里巴巴",database="quant.news")
+print(table)
+table.to_excel('大宗交易表.xlsx')  # 如果想忽略行索引的话，可以设置index参数为False
+
+print('获取表格成功！')
+
+
+
 
