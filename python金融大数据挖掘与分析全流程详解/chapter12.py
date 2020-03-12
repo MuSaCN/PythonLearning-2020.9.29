@@ -40,21 +40,42 @@ myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 url = 'http://images.china-pub.com/ebook8055001-8060000/8057968/shupi.jpg'
 myWebR.download(url,"pic.jpg")
 
+
 # 12.1.1-2 通过pandas获取表格
 url = 'http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/dzjy/index.phtml'  # 新浪财经数据中心提供股票大宗交易的在线表格
-myWebAPP
+myWebAPP.read_html(url,to_excel="测试.xlsx")
 
 
+# 12.1.2 和讯研报网表格获取
 
+# 它可能会弹出一个Warning警告，警告不是报错，不用在意
+import pandas as pd
+from selenium import webdriver
+import re
+# 设置Selenium的无界面模式
+chrome_options = webdriver.ChromeOptions()
+chrome_options.add_argument('--headless')
+browser = webdriver.Chrome(options=chrome_options)
 
+data_all = pd.DataFrame()  # 创建一个空列表用来汇总所有表格信息
+for pg in range(1, 2):  # 可以将页码调大，比如2019-04-30该天，网上一共有176页，这里可以将这个2改成176
+    url = 'http://yanbao.stock.hexun.com/ybsj5_' + str(pg) + '.shtml'
+    browser.get(url)  # 通过Selenium访问网站
+    data = browser.page_source  # 获取网页源代码
+    table = pd.read_html(data)[0]  # 通过pandas库提取表格
 
-tables = pd.read_html(url)  # 通过pd.read_html(url)获取的是一个列表，所以仍需通过[0]的方式提取列表的第一个元素
-table = tables[0]
+    # 添加股票代码信息
+    p_code = '<a href="yb_(.*?).shtml'
+    code = re.findall(p_code, data)
+    table['股票代码'] = code
 
-print(table)
-table.to_excel('大宗交易表.xlsx')  # 如果想忽略行索引的话，可以设置index参数为False
+    # 通过concat()函数纵向拼接成一个总的DataFrame
+    data_all = pd.concat([data_all, table], ignore_index=True)
 
-print('获取表格成功！')
+print(data_all)
+print('分析师评级报告获取成功')
+data_all.to_excel('分析师评级报告.xlsx')
+
 
 
 
