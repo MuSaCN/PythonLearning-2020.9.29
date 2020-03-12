@@ -22,6 +22,7 @@ print(a)
 b = data.drop_duplicates('c1')
 print(b)
 
+
 # 2.缺失值处理
 # 2.1 这里先构造一个含有缺失值的DataFrame，代码如下：
 import numpy as np
@@ -35,7 +36,7 @@ print(data.isnull())  # 或者写data.isna()
 print(data['c1'].isnull())
 
 # 2.4 查看空值行
-print([data['c1'].isnull()])
+print(data[data['c1'].isnull()])
 
 # 2.5 空值处理方式1 - 删除空值
 a = data.dropna()  # ，可以设置thresh参数，比如将其设置为n，其含义是如果该行的非空值少于n个，则删除该行，写法为data.dropna(thresh=5)

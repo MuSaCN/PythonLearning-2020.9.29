@@ -45,36 +45,9 @@ myWebR.download(url,"pic.jpg")
 url = 'http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/dzjy/index.phtml'  # 新浪财经数据中心提供股票大宗交易的在线表格
 myWebAPP.read_html(url,to_excel="测试.xlsx")
 
-
 # 12.1.2 和讯研报网表格获取
+myWebAPP.hexun_yanbao_stock(ybsj_index=5,to_page=5,to_excel="分析师评级报告.xlsx")
 
-# 它可能会弹出一个Warning警告，警告不是报错，不用在意
-import pandas as pd
-from selenium import webdriver
-import re
-# 设置Selenium的无界面模式
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_argument('--headless')
-browser = webdriver.Chrome(options=chrome_options)
-
-data_all = pd.DataFrame()  # 创建一个空列表用来汇总所有表格信息
-for pg in range(1, 2):  # 可以将页码调大，比如2019-04-30该天，网上一共有176页，这里可以将这个2改成176
-    url = 'http://yanbao.stock.hexun.com/ybsj5_' + str(pg) + '.shtml'
-    browser.get(url)  # 通过Selenium访问网站
-    data = browser.page_source  # 获取网页源代码
-    table = pd.read_html(data)[0]  # 通过pandas库提取表格
-
-    # 添加股票代码信息
-    p_code = '<a href="yb_(.*?).shtml'
-    code = re.findall(p_code, data)
-    table['股票代码'] = code
-
-    # 通过concat()函数纵向拼接成一个总的DataFrame
-    data_all = pd.concat([data_all, table], ignore_index=True)
-
-print(data_all)
-print('分析师评级报告获取成功')
-data_all.to_excel('分析师评级报告.xlsx')
 
 
 
