@@ -34,6 +34,7 @@ myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
 myWebAPP = MyWebCrawler.MyClass_APPIntegration() # 爬虫整合应用类
 myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
+myReportA = MyQuant.MyClass_ReportAnalysis() # 研报分析类
 #------------------------------------------------------------
 
 # 12.1.1-1 requests库下载文件
@@ -46,10 +47,8 @@ url = 'http://vip.stock.finance.sina.com.cn/q/go.php/vInvestConsult/kind/dzjy/in
 myWebAPP.read_html(url,to_excel="测试.xlsx")
 
 # 12.1.2 和讯研报网表格获取
-myWebAPP.hexun_yanbao_stock(ybsj_index=5,to_page=5,to_excel="分析师评级报告.xlsx")
+table = myWebAPP.hexun_yanbao_stock(ybsj_index=5,to_page=1,to_excel=None)
 
-
-
-
-
+# ---分析和讯研报数据_券商评级调升股: page_or_read = 5爬取网站 / "*.xlsx"读取；lengths代表时长，[10,20]则表示10、20天前；path为仅路径
+myReportA.hexun_broker_buy_analysis(page_or_excel=2,lengths=[10,20,30],path="")
 
