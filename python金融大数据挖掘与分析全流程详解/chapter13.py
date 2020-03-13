@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPath.MyClass_Path("\\python金融大数据挖掘与分析全流程详解")  # 路径类
+__mypath__ = MyPath.MyClass_Path()  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
 myword = MyFile.MyClass_Word() # word生成类
 mytime = MyTime.MyClass_Time()  # 时间类
@@ -47,7 +47,7 @@ myword.add_paragraph_run('漫天的我落在枫叶上雪花上',bold=True,italic
 myword.add_paragraph_run('而你在想我',alignment="JUSTIFY")
 myword.add_paragraph_run('设置首行缩进示例文字',first_line_indent=0.32)
 myword.add_paragraph_run('设置行距示例文字',line_spacing=16)
-myword.add_paragraph_run('设置段前段后距示例文字',space=14)
+myword.add_paragraph_run('设置段前段后距示例文字',space_before=14)
 
 myword.add_paragraph_list('点序号', style='List Bullet')
 myword.add_paragraph_list('数字序号', style='List Number')
@@ -62,6 +62,10 @@ table.cell(1, 2).text = '"在吗"'  # 第三行第三列
 
 myword.add_picture('水墨.png',widthInches=3,heightInches=3,alignment="CENTER")
 myword.save("三行情书3.docx")
+
+# 13.3 案例实战-生成数据分析报告
+mySQLAPP.creat_docx_database(database="quant.news",word="阿里巴巴",date ="2020-03-08")
+
 
 
 
