@@ -11,6 +11,7 @@ from scipy import stats
 #------------------------------------------------------------
 __mypath__ = MyPath.MyClass_Path("\\python金融大数据挖掘与分析全流程详解")  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
+myword = MyFile.MyClass_Word() # word生成类
 mytime = MyTime.MyClass_Time()  # 时间类
 myplt = MyPlot.MyClass_Plot()  # 直接绘图类(单个图窗)
 mypltpro = MyPlot.MyClass_PlotPro()  # Plot高级图系列
