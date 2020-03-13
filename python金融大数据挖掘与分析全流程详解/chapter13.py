@@ -30,16 +30,38 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
+mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration() # 数据库应用整合
 myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
-myWebAPP = MyWebCrawler.MyClass_IntegrateAPP()  # 爬虫整合应用类
+myWebAPP = MyWebCrawler.MyClass_Web_APPIntegration()  # 爬虫整合应用类
 myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 #------------------------------------------------------------
 
+# 创建Word对象
+myword.__init__("")
+myword.add_heading("三行情诗3",level=2)
+myword.add_paragraph_run('螃蟹在剥我的壳，笔记本在写我',size=26,RGB=(54, 95, 145))
+myword.add_paragraph_run('漫天的我落在枫叶上雪花上',bold=True,italic=True,underline=True)
+myword.add_paragraph_run('而你在想我',alignment="JUSTIFY")
+myword.add_paragraph_run('设置首行缩进示例文字',first_line_indent=0.32)
+myword.add_paragraph_run('设置行距示例文字',line_spacing=16)
+myword.add_paragraph_run('设置段前段后距示例文字',space=14)
 
+myword.add_paragraph_list('点序号', style='List Bullet')
+myword.add_paragraph_list('数字序号', style='List Number')
 
+table = myword.add_table(rows=2, cols=3, style='Light Shading Accent 1')
+table.cell(0, 0).text = '第一句'  # 第一行第一列
+table.cell(0, 1).text = '第二句'  # 第一行第二列
+table.cell(0, 2).text = '第三句'  # 第一行第三列
+table.cell(1, 0).text = '克制'  # 第二行第一列
+table.cell(1, 1).text = '再克制'  # 第二行第二列
+table.cell(1, 2).text = '"在吗"'  # 第三行第三列
+
+myword.add_picture('水墨.png',widthInches=3,heightInches=3,alignment="CENTER")
+myword.save("三行情书3.docx")
 
 
 

@@ -74,8 +74,8 @@ myWebAPP.news_baidu("阿里巴巴",rtt=1,scorekeyword=keywords,checkhref=True,wo
 myWebAPP.news_sogou("阿里巴巴",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
 myWebAPP.news_sina("阿里巴巴",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
 
-
+mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration()
 
 # 5.4.3 从数据库汇总每日评分
-myWebAPP.totalscore_daily("quant.news",word="阿里巴巴",today="2020-03-08")
+mySQLAPP.totalscore_daily("quant.news",word="阿里巴巴",today="2020-03-06")
 

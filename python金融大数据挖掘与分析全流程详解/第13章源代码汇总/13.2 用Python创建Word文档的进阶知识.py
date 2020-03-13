@@ -72,5 +72,5 @@ last_paragraph = file.paragraphs[-1]
 last_paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 # 保存，得首先创建出保存文件夹，且Word文件不要打开
-file.save("E:\\三行情书.docx")
+file.save("三行情书.docx")
 print('Word生成完毕！')

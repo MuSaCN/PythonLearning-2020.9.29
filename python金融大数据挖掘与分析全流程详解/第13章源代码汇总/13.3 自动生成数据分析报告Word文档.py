@@ -88,5 +88,5 @@ for i in range(num):  # 之前定义过num = len(data)
     tb.cell(i+1, 2).text = data[i][4]  # 提取新闻来源
 
 # 把Word文档保存，注意需提前创建好保存文件夹
-file.save('D:\\我的文档\\华小智舆情报告.docx')
+file.save('华小智舆情报告.docx')
 print('华小智舆情报告生成完毕')
