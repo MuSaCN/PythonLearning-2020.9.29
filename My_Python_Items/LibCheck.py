@@ -1,5 +1,5 @@
 # Author:Zhang Yuan
-""
+"第三库自动记录和升级"
 # ipython或cmd可直接运行
 # 检查安装哪些第三方库和版本
 'pip list'
