@@ -6,7 +6,7 @@
 # 生成到指定目录
 'pip freeze > "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt"'
 # 根据指定目录安装第三方库
-'pip install -r "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt"'
+'pip install -r "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt" -i https://pypi.tuna.tsinghua.edu.cn/simple'
 
 # ---cmd方式自动执行
 # 批量生成
@@ -21,7 +21,7 @@ exit
 '''
 @echo off
 pip list
-pip install -r "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt"
+pip install -r "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt"  -i https://pypi.tuna.tsinghua.edu.cn/simple
 taskkill /f /im cmd.exe
 exit
 '''
