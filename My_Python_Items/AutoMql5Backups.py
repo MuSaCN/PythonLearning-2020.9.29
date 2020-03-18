@@ -18,7 +18,7 @@ myMql5.dir_remove(myMql5.LogsPath,ignoreFolder=[])
 # ---MQL5文件夹备份到OneDrive的Work-Python备份文件夹
 print("------开始压缩MQL5文件夹------")
 needZip = Mql5Path # 需压缩的目录
-OneDrive_Mql5 = myMql5.myfile.zip_dir(needZip, zipPath=myMql5.mypath.get_onedrive_path() + "\\Work-Mql备份" , zipName=None, autoName=True)
+OneDrive_Mql5 = myMql5.myfile.zip_dir(needZip, zipPath=myMql5.mypath.get_onedrive_path() + "\\Work-Mql_backups" , zipName=None, autoName=True)
 print("MQL5压缩文件保存完成，{}".format(OneDrive_Mql5))
 
 # ---上传到Baidu云
