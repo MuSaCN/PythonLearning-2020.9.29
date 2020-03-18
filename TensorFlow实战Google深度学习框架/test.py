@@ -41,6 +41,10 @@ myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
 #------------------------------------------------------------
 
+import tensorflow as tf
+a = tf.constant([1,2])
+b = tf.constant([3,4])
+a+b
 
 
 
