@@ -55,7 +55,7 @@ stock_table['昨日10分钟成交量'] = stock_table['10分钟成交量'].shift(
 stock_table['成交量涨跌幅1(%)'] = (stock_table['10分钟成交量']-stock_table['昨日10分钟成交量'])/stock_table['昨日10分钟成交量']*100
 
 # 通过公式2获得成交量涨跌幅
-ten_mean = stock_table['10分钟成交量'].sort_index().rolling(10, min_periods=1).mean()
+ten_mean = stock_table['10分钟成交量'].sort_index().rolling(10).mean()
 stock_table['10分钟成交量10日均值'] = ten_mean
 stock_table['成交量涨跌幅2(%)'] = (stock_table['10分钟成交量']-stock_table['10分钟成交量10日均值'])/stock_table['10分钟成交量10日均值']*100
 
@@ -68,7 +68,7 @@ corr = pearsonr(abs(stock_table['股价涨跌幅(%)'][:-1]), abs(stock_table['�
 print('通过公式1计算的相关系数r值为' + str(corr[0]) + '，显著性水平P值为' + str(corr[1]))
 
 # 通过公式2计算的相关性
-corr = pearsonr(abs(stock_table['股价涨跌幅(%)']), abs(stock_table['成交量涨跌幅2(%)']))
+corr = pearsonr(abs(stock_table['股价涨跌幅(%)'][:-10]), abs(stock_table['成交量涨跌幅2(%)'][:-10]))
 print('通过公式2相关系数r值为' + str(corr[0]) + '，显著性水平P值为' + str(corr[1]))
 
 

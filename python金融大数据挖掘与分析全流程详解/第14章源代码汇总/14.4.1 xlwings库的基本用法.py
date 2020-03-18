@@ -6,13 +6,19 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 # 新建一个Excel文件，并设置为不可见
-app = xw.App(visible=False)
-wb = app.books.add()
+app = xw.App(visible=True,add_book=False)
+wb = app.books.open("华小智.xlsx")
+
+wb = app.books.add() # wb就是新建的工作簿
+
+wb = app.books[0]
 
 # 创建新工作表
-sht = wb.sheets.add('新工作表')
+sht = wb.sheets.add()
+sht = wb.sheets[0]
+
 # 将A1单元格改为华小智
-sht.range('A1').value = '华小智'
+sht.range('A1','A4').value = '23'
 
 # 导入表格
 df = pd.DataFrame([[1, 2], [3, 4]], columns=['a', 'b'])
@@ -27,8 +33,17 @@ plt.plot(x, y)
 sht.pictures.add(fig, name='图片1', update=True, left=500)
 
 # 保存生成的Excel文件
-wb.save(r'd:\华小智.xlsx')
+wb.save('华小智.xlsx')
 wb.close()  # 退出工作簿
 app.quit()  # 退出程序
 
 print('生成Excel文件成功')
+
+
+
+
+
+
+
+
+
