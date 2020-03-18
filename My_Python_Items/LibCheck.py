@@ -12,8 +12,11 @@
 # 批量生成
 '''
 @echo off
+set /p op="Note that non-host operations overwrite the file: yes/no"
+if "%op%" == "yes" (
 pip list
 pip freeze > "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt"
+) 
 taskkill /f /im cmd.exe
 exit
 '''
