@@ -28,3 +28,13 @@ pip install -r "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_r
 taskkill /f /im cmd.exe
 exit
 '''
+# anaconda批量安装
+'''
+@echo off
+set condaRoot=C:\Users\i2011\Anaconda3
+call %condaRoot%\Scripts\activate.bat
+pip install -r "C:\\Users\\i2011\\OneDrive\\Work-Python_backups\\site-packages_record.txt" -i https://pypi.tuna.tsinghua.edu.cn/simple
+set /p op="Update finished, Check message and exit: any input"
+taskkill /f /im cmd.exe
+exit
+'''
