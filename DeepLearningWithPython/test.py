@@ -209,30 +209,21 @@ model.predict(x_test)
 
 
 #%%
-
 import keras
 keras.__version__
-
 from keras.datasets import boston_housing
-
 (train_data, train_targets), (test_data, test_targets) =  boston_housing.load_data()
-
 train_data.shape
-
 test_data.shape
-
 train_targets
-
 
 mean = train_data.mean(axis=0)
 train_data -= mean
 std = train_data.std(axis=0)
 train_data /= std
-
 test_data -= mean
 test_data /= std
 
-#%%
 
 from keras import models
 from keras import layers
@@ -250,7 +241,6 @@ def build_model():
     return model
 
 #%%
-
 import numpy as np
 
 k = 4
@@ -262,7 +252,6 @@ for i in range(k):
     # Prepare the validation data: data from partition # k
     val_data = train_data[i * num_val_samples: (i + 1) * num_val_samples]
     val_targets = train_targets[i * num_val_samples: (i + 1) * num_val_samples]
-
     # Prepare the training data: data from all other partitions
     partial_train_data = np.concatenate(
         [train_data[:i * num_val_samples],
@@ -272,7 +261,6 @@ for i in range(k):
         [train_targets[:i * num_val_samples],
          train_targets[(i + 1) * num_val_samples:]],
         axis=0)
-
     # Build the Keras model (already compiled)
     model = build_model()
     # Train the model (in silent mode, verbose=0)
@@ -283,11 +271,9 @@ for i in range(k):
     all_scores.append(val_mae)
 
 all_scores
-
 np.mean(all_scores)
 
 #%%
-
 from keras import backend as K
 
 # Some memory clean-up
@@ -320,10 +306,8 @@ for i in range(k):
     mae_history = history.history['val_mean_absolute_error']
     all_mae_histories.append(mae_history)
 
-#%%
 
-average_mae_history = [
-    np.mean([x[i] for x in all_mae_histories]) for i in range(num_epochs)]
+average_mae_history = [np.mean([x[i] for x in all_mae_histories]) for i in range(num_epochs)]
 
 #%%
 
