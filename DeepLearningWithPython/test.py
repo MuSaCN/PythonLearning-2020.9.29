@@ -41,7 +41,7 @@ myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
 #------------------------------------------------------------
 
-
+#%%
 import keras
 keras.__version__
 from keras.datasets import mnist
@@ -52,7 +52,7 @@ train_labels
 test_images.shape
 len(test_labels)
 test_labels
-#%%
+
 from keras import models
 from keras import layers
 network = models.Sequential()
@@ -61,24 +61,20 @@ network.add(layers.Dense(10, activation='softmax'))
 network.compile(optimizer='rmsprop',
                 loss='categorical_crossentropy',
                 metrics=['accuracy'])
-#%%
+
 train_images = train_images.reshape((60000, 28 * 28))
 train_images = train_images.astype('float32') / 255
 test_images = test_images.reshape((10000, 28 * 28))
 test_images = test_images.astype('float32') / 255
-#%%
+
 from keras.utils import to_categorical
 train_labels = to_categorical(train_labels)
 test_labels = to_categorical(test_labels)
-#%%
+
 network.fit(train_images, train_labels, epochs=5, batch_size=128)
 test_loss, test_acc = network.evaluate(test_images, test_labels)
 print('test_acc:', test_acc)
 
-
-
-
-#%%
 import keras
 keras.__version__
 
@@ -88,7 +84,7 @@ train_data[0]
 train_labels[0]
 max([max(sequence) for sequence in train_data])
 
-#%%
+
 # word_index is a dictionary mapping words to an integer index
 word_index = imdb.get_word_index()
 # We reverse it, mapping integer indices to words
@@ -98,7 +94,7 @@ reverse_word_index = dict([(value, key) for (key, value) in word_index.items()])
 decoded_review = ' '.join([reverse_word_index.get(i - 3, '?') for i in train_data[0]])
 decoded_review
 
-#%%
+
 import numpy as np
 def vectorize_sequences(sequences, dimension=10000):
     # Create an all-zero matrix of shape (len(sequences), dimension)
@@ -112,12 +108,12 @@ x_train = vectorize_sequences(train_data)
 x_test = vectorize_sequences(test_data)
 
 x_train[0]
-#%%
+
 # Our vectorized labels
 y_train = np.asarray(train_labels).astype('float32')
 y_test = np.asarray(test_labels).astype('float32')
 
-#%%
+
 from keras import models
 from keras import layers
 
@@ -130,12 +126,12 @@ model.compile(optimizer='rmsprop',
               loss='binary_crossentropy',
               metrics=['accuracy'])
 
-#%%
+
 from keras import optimizers
 model.compile(optimizer=optimizers.RMSprop(lr=0.001),
               loss='binary_crossentropy',
               metrics=['accuracy'])
-#%%
+
 from keras import losses
 from keras import metrics
 
@@ -143,26 +139,25 @@ model.compile(optimizer=optimizers.RMSprop(lr=0.001),
               loss=losses.binary_crossentropy,
               metrics=[metrics.binary_accuracy])
 
-#%%
+
 x_val = x_train[:10000]
 partial_x_train = x_train[10000:]
 
 y_val = y_train[:10000]
 partial_y_train = y_train[10000:]
 
-#%%
+
 history = model.fit(partial_x_train,
                     partial_y_train,
                     epochs=20,
                     batch_size=512,
                     validation_data=(x_val, y_val))
-#%%
 
 history_dict = history.history
 history_dict.keys()
 
 #%%
-
+myplt.set_backend("tkagg")
 import matplotlib.pyplot as plt
 
 acc = history.history['binary_accuracy']
@@ -180,14 +175,13 @@ plt.title('Training and validation loss')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.legend()
-
 plt.show()
 
 #%%
 
 plt.clf()   # clear figure
-acc_values = history_dict['acc']
-val_acc_values = history_dict['val_acc']
+acc_values = history_dict['binary_accuracy']
+val_acc_values = history_dict['val_binary_accuracy']
 
 plt.plot(epochs, acc, 'bo', label='Training acc')
 plt.plot(epochs, val_acc, 'b', label='Validation acc')
@@ -213,10 +207,6 @@ model.fit(x_train, y_train, epochs=4, batch_size=512)
 results = model.evaluate(x_test, y_test)
 
 #%%
-
 results
-
-#%%
-
 model.predict(x_test)
 
