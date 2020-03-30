@@ -33,15 +33,16 @@ myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 
 # ---感知机模型
 # data
-train_data0 = myML.Neur.CreatTestData(n=20,no_linear=False,value0=10,value1=20,plot=False)
-train_data1 = myML.Neur.CreatTestData(n=20,no_linear=True,value0=10,value1=20,plot=False)
+train_data0 = myML.Neur.creat_testdata(n=20,no_linear=False,value0=10,value1=20,plot=False)
+train_data1 = myML.Neur.creat_testdata(n=20,no_linear=True,value0=10,value1=20,plot=False)
 
 # ---对线性可分数据集执行感知机的原始算法并绘制分离超平面
 data=train_data0 #产生线性可分数据集
 w_0= np.ones((3,1),dtype=float) # 初始化 权重
 w,b,num = myML.Neur.perceptron_algorithm(data,w_0,eta=0.1,b_0=1) # 执行感知机的原始形式
 ### 绘图
-myML.Neur.Plot_Samples(data,w=w,b=b)
+myplt.set_backend()
+myML.Neur.plot_samples(data,w=w,b=b)
 
 
 # ---对线性可分数据集执行感知机的原始算法和对偶形式算法，并绘制分离超平面
