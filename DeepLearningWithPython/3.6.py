@@ -39,6 +39,7 @@ myWebAPP = MyWebCrawler.MyClass_Web_APPIntegration()  # 爬虫整合应用类
 myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
+myKeras = MyDeepLearning.MyClass_Keras() # Keras综合类
 #------------------------------------------------------------
 
 

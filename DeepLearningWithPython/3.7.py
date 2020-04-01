@@ -39,6 +39,7 @@ myWebAPP = MyWebCrawler.MyClass_Web_APPIntegration()  # 爬虫整合应用类
 myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
+myKeras = MyDeepLearning.MyClass_Keras() # Keras综合类
 #------------------------------------------------------------
 
 
@@ -85,113 +86,22 @@ def build_model():
     return model
 
 #%%
-import numpy as np
-
-k = 4
-num_val_samples = len(train_data) // k
-num_epochs = 100
-all_scores = []
-for i in range(k):
-    print('processing fold #', i)
-    # Prepare the validation data: data from partition # k
-    val_data = train_data[i * num_val_samples: (i + 1) * num_val_samples]
-    val_targets = train_targets[i * num_val_samples: (i + 1) * num_val_samples]
-
-    # Prepare the training data: data from all other partitions
-    partial_train_data = np.concatenate(
-        [train_data[:i * num_val_samples],
-         train_data[(i + 1) * num_val_samples:]],
-        axis=0)
-    partial_train_targets = np.concatenate(
-        [train_targets[:i * num_val_samples],
-         train_targets[(i + 1) * num_val_samples:]],
-        axis=0)
-
-    # Build the Keras model (already compiled)
-    model = build_model()
-    # Train the model (in silent mode, verbose=0)
-    model.fit(partial_train_data, partial_train_targets,
-              epochs=num_epochs, batch_size=1, verbose=0)
-    # Evaluate the model on the validation data
-    val_mse, val_mae = model.evaluate(val_data, val_targets, verbose=0)
-    all_scores.append(val_mae)
+myKeras.clear_session()
+all_vali_metrics, all_histories = myKeras.k_fold(train_data,train_targets,build_model, num_k=4,num_epochs=20,batch_size=1)
+np.array(all_vali_metrics).mean(axis=0) # 11.79070581,  2.37512058
 
 #%%
-all_scores
+myKeras.clear_session()
+all_vali_metrics, all_histories = myKeras.k_fold(train_data,train_targets,build_model, num_k=4,num_epochs=100,batch_size=None,history_metrics="val_mae")
 
 #%%
-np.mean(all_scores)
-
-#%%
-from keras import backend as K
-# Some memory clean-up 有用于避免旧模型/网络层混乱。
-K.clear_session()
-
-#%%
-num_epochs = 100
-all_mae_histories = []
-for i in range(k):
-    print('processing fold #', i)
-    # Prepare the validation data: data from partition # k
-    val_data = train_data[i * num_val_samples: (i + 1) * num_val_samples]
-    val_targets = train_targets[i * num_val_samples: (i + 1) * num_val_samples]
-
-    # Prepare the training data: data from all other partitions
-    partial_train_data = np.concatenate(
-        [train_data[:i * num_val_samples],
-         train_data[(i + 1) * num_val_samples:]],
-        axis=0)
-    partial_train_targets = np.concatenate(
-        [train_targets[:i * num_val_samples],
-         train_targets[(i + 1) * num_val_samples:]],
-        axis=0)
-
-    # Build the Keras model (already compiled)
-    model = build_model()
-    # Train the model (in silent mode, verbose=0)
-    history = model.fit(partial_train_data, partial_train_targets,
-                        validation_data=(val_data, val_targets),
-                        epochs=num_epochs, batch_size=1, verbose=0)
-    mae_history = history.history['val_mae']
-    all_mae_histories.append(mae_history)
-
-#%%
-average_mae_history = [
-    np.mean([x[i] for x in all_mae_histories]) for i in range(num_epochs)]
-
-#%%
-import matplotlib.pyplot as plt
-myplt.set_backend()
-
-plt.plot(range(1, len(average_mae_history) + 1), average_mae_history)
-plt.xlabel('Epochs')
-plt.ylabel('Validation MAE')
-plt.show()
-
-#%%
-def smooth_curve(points, factor=0.9):
-  smoothed_points = []
-  for point in points:
-    if smoothed_points:
-      previous = smoothed_points[-1]
-      smoothed_points.append(previous * factor + point * (1 - factor))
-    else:
-      smoothed_points.append(point)
-  return smoothed_points
-
-smooth_mae_history = smooth_curve(average_mae_history[10:])
-
-plt.plot(range(1, len(smooth_mae_history) + 1), smooth_mae_history)
-plt.xlabel('Epochs')
-plt.ylabel('Validation MAE')
-plt.show()
+myKeras.plot_k_fold_mean_histories(all_histories)
 
 #%%
 # Get a fresh, compiled model.
 model = build_model()
 # Train it on the entirety of the data.
-model.fit(train_data, train_targets,
-          epochs=80, batch_size=16, verbose=0)
+model.fit(train_data, train_targets,epochs=80, batch_size=16, verbose=0)
 test_mse_score, test_mae_score = model.evaluate(test_data, test_targets)
 
 #%%
