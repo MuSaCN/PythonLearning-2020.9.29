@@ -259,7 +259,7 @@ K.clear_session()
 # Note that we are including the densely-connected classifier on top;
 # all previous times, we were discarding it.
 model = VGG16(weights='imagenet')
-
+model.summary()
 #%%
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input, decode_predictions
@@ -287,25 +287,9 @@ x = preprocess_input(x)
 preds = model.predict(x)
 print('Predicted:', decode_predictions(preds, top=3)[0])
 
-#%% md
-
-
-The top-3 classes predicted for this image are:
-
-* African elephant (with 92.5% probability)
-* Tusker (with 7% probability)
-* Indian elephant (with 0.4% probability)
-
-Thus our network has recognized our image as containing an undetermined quantity of African elephants. The entry in the prediction vector
-that was maximally activated is the one corresponding to the "African elephant" class, at index 386:
-
 #%%
 
 np.argmax(preds[0])
-
-#%% md
-
-To visualize which parts of our image were the most "African elephant"-like, let's set up the Grad-CAM process:
 
 #%%
 
@@ -342,20 +326,12 @@ for i in range(512):
 # is our heatmap of class activation
 heatmap = np.mean(conv_layer_output_value, axis=-1)
 
-#%% md
-
-For visualization purpose, we will also normalize the heatmap between 0 and 1:
-
 #%%
 
 heatmap = np.maximum(heatmap, 0)
 heatmap /= np.max(heatmap)
 plt.matshow(heatmap)
 plt.show()
-
-#%% md
-
-Finally, we will use OpenCV to generate an image that superimposes the original image with the heatmap we just obtained:
 
 #%%
 
@@ -378,20 +354,6 @@ superimposed_img = heatmap * 0.4 + img
 
 # Save the image to disk
 cv2.imwrite('/Users/fchollet/Downloads/elephant_cam.jpg', superimposed_img)
-
-#%% md
-
-![elephant cam](https://s3.amazonaws.com/book.keras.io/img/ch5/elephant_cam.jpg)
-
-#%% md
-
-This visualisation technique answers two important questions:
-
-* Why did the network think this image contained an African elephant?
-* Where is the African elephant located in the picture?
-
-In particular, it is interesting to note that the ears of the elephant cub are strongly activated: this is probably how the network can
-tell the difference between African and Indian elephants.
 
 
 
