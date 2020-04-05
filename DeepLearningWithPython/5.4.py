@@ -138,6 +138,7 @@ heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
 # 这里的 0.4 是热力图强度因子
 superimposed_img = heatmap * 0.4 + img
 
+myplt.set_style("defaults")
 plt.figure()
 plt.imshow(superimposed_img/255)
 plt.grid(False)
