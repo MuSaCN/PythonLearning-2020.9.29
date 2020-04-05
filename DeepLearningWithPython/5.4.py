@@ -85,3 +85,4 @@ last_conv_layer_name = "block5_conv3"
 myKeras.plot_class_activation_map(model,img_path,last_conv_layer_name,writefile="elephant_cam.jpg")
 
 
+
