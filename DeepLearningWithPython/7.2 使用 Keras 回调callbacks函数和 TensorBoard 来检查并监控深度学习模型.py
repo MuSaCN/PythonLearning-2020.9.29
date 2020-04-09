@@ -127,3 +127,6 @@ history = model.fit(x_train, y_train,epochs=20,batch_size=128, validation_split=
 # tensorboard --logdir="C:\\Users\\i2011\\.keras\\my_log_dir"
 #  http://localhost:6006
 
+
+
+
