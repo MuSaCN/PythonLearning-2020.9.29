@@ -93,17 +93,16 @@ class ActivationLogger(keras.callbacks.Callback):
 
 
 # -------------使用了 TensorBoard 的文本分类模型
-myKeras.clear_session()
-import keras
-from keras import layers
-from keras.datasets import imdb
-from keras.preprocessing import sequence
+import tensorflow.keras
+from tensorflow.keras import layers
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing import sequence
 max_features = 2000
 max_len = 500
 (x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features)
 x_train = sequence.pad_sequences(x_train, maxlen=max_len)
 x_test = sequence.pad_sequences(x_test, maxlen=max_len)
-model = keras.models.Sequential()
+model = tensorflow.keras.models.Sequential()
 model.add(layers.Embedding(max_features, 128,input_length=max_len,name='embed'))
 model.add(layers.Conv1D(32, 7, activation='relu'))
 model.add(layers.MaxPooling1D(5))
@@ -115,16 +114,16 @@ model.compile(optimizer='rmsprop',loss='binary_crossentropy',metrics=['acc'])
 
 # 为 TensorBoard 日志文件创建一个目录
 import os
-os.mkdir("my_log_dir")
+os.mkdir("C:\\Users\\i2011\\.keras\\my_log_dir")
 
 # 使用一个 TensorBoard 回调函数来训练模型
 # log_dir日志文件将被写入这个位置; histogram_freq每一轮之后记录激活直方图; embeddings_freq每一轮之后记录嵌入数据
 callbacks = [
-    keras.callbacks.TensorBoard(log_dir='my_log_dir',histogram_freq=1,embeddings_freq=1,)
+    tensorflow.keras.callbacks.TensorBoard(log_dir="C:\\Users\\i2011\\.keras\\my_log_dir",
+                                           histogram_freq=1,embeddings_freq=1,)
 ]
-history = model.fit(x_train, y_train,epochs=20,batch_size=128,
-                    validation_split=0.2,callbacks=callbacks)
+history = model.fit(x_train, y_train,epochs=20,batch_size=128, validation_split=0.2,callbacks=callbacks)
 
-
-#SS
+# tensorboard --logdir="C:\\Users\\i2011\\.keras\\my_log_dir"
+#  http://localhost:6006
 
