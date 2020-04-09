@@ -92,7 +92,7 @@ class ActivationLogger(keras.callbacks.Callback):
         f.close()
 
 
-# 使用了 TensorBoard 的文本分类模型
+# -------------使用了 TensorBoard 的文本分类模型
 myKeras.clear_session()
 import keras
 from keras import layers
