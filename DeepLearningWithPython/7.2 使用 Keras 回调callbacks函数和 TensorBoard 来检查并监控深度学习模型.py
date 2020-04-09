@@ -45,13 +45,13 @@ myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
 
 
 # 7.2　使用 Keras 回调callbacks函数和 TensorBoard 来检查并监控深度学习模型
-import keras
+
 # 1. ModelCheckpoint 与 EarlyStopping 回调函数
 # 如果监控的目标指标在设定的轮数内不再改善，可以用 EarlyStopping 回调函数来中断训练。比如，这个回调函数可以在刚开始过拟合的时候就中断训练，从而避免用更少的轮次重新训练模型。这个回调函数通常与 ModelCheckpoint 结合使用，后者可以在训练过程中持续不断地保存模型（你也可以选择只保存目前的最佳模型，即一轮结束后具有最佳性能的模型）。
+import keras
 callbacks_list = [
     # 如果不再改善，就中断训练
-    # monitor 监控模型的验证精度
-    # patience 如果精度在多于一轮的时间（即两轮）内不再改善，中断训练
+    # monitor 监控模型的验证精度；patience 如果精度在多于一轮的时间（即两轮）内不再改善，中断训练
     keras.callbacks.EarlyStopping(monitor='acc',patience=1,),
     # 在每轮过后保存当前权重
     # filepath 目标模型文件的保存路径
@@ -62,24 +62,69 @@ callbacks_list = [
 # metrics=['acc'] 你监控精度，所以它应该是模型指标的一部分
 model.compile(optimizer='rmsprop',loss='binary_crossentropy',metrics=['acc'])
 # 注意，由于回调函数要监控验证损失和验证精度，所以在调用 fit 时需要传入 validation_data （验证数据）
-model.fit(x, y,epochs=10,batch_size=32,callbacks=callbacks_list,validation_data=(x_val, y_val))
+model.fit(x, y,epochs=10,batch_size=32,callbacks=callbacks_list, validation_data=(x_val, y_val))
 
 
 # 2. ReduceLROnPlateau 回调函数
 # 如果验证损失不再改善，你可以使用这个回调函数来降低学习率。在训练过程中如果出现了损失平台（loss plateau），那么增大或减小学习率都是跳出局部最小值的有效策略。
-# monitor 监控模型的验证损失
-# factor 触发时将学习率除以 10
-# patience 如果验证损失在 10 轮内都没有改善，那么就触发这个回调函数
+# monitor 监控模型的验证损失；factor 触发时将学习率除以 10；patience 如果验证损失在 10 轮内都没有改善，那么就触发这个回调函数
 callbacks_list = [keras.callbacks.ReduceLROnPlateau(monitor='val_loss',factor=0.1,patience=10,)]
 # 注意，因为回调函数要监控验证损失，所以你需要在调用 fit 时传入 validation_data （验证数据）
 model.fit(x, y,epochs=10,batch_size=32,callbacks=callbacks_list,validation_data=(x_val, y_val))
 
 
+# 3. 编写你自己的回调函数
+import keras
+import numpy as np
+class ActivationLogger(keras.callbacks.Callback):
+    def set_model(self, model):
+        self.model = model
+        layer_outputs = [layer.output for layer in model.layers]
+        self.activations_model = keras.models.Model(model.input,
+        layer_outputs)
+    def on_epoch_end(self, epoch, logs=None):
+        if self.validation_data is None:
+            raise RuntimeError('Requires validation_data.')
+        validation_sample = self.validation_data[0][0:1]
+        activations = self.activations_model.predict(validation_sample)
+        f = open('activations_at_epoch_' + str(epoch) + '.npz', 'w')
+        np.savez(f, activations)
+        f.close()
 
 
+# 使用了 TensorBoard 的文本分类模型
+myKeras.clear_session()
+import keras
+from keras import layers
+from keras.datasets import imdb
+from keras.preprocessing import sequence
+max_features = 2000
+max_len = 500
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=max_features)
+x_train = sequence.pad_sequences(x_train, maxlen=max_len)
+x_test = sequence.pad_sequences(x_test, maxlen=max_len)
+model = keras.models.Sequential()
+model.add(layers.Embedding(max_features, 128,input_length=max_len,name='embed'))
+model.add(layers.Conv1D(32, 7, activation='relu'))
+model.add(layers.MaxPooling1D(5))
+model.add(layers.Conv1D(32, 7, activation='relu'))
+model.add(layers.GlobalMaxPooling1D())
+model.add(layers.Dense(1))
+model.summary()
+model.compile(optimizer='rmsprop',loss='binary_crossentropy',metrics=['acc'])
+
+# 为 TensorBoard 日志文件创建一个目录
+import os
+os.mkdir("my_log_dir")
+
+# 使用一个 TensorBoard 回调函数来训练模型
+# log_dir日志文件将被写入这个位置; histogram_freq每一轮之后记录激活直方图; embeddings_freq每一轮之后记录嵌入数据
+callbacks = [
+    keras.callbacks.TensorBoard(log_dir='my_log_dir',histogram_freq=1,embeddings_freq=1,)
+]
+history = model.fit(x_train, y_train,epochs=20,batch_size=128,
+                    validation_split=0.2,callbacks=callbacks)
 
 
-
-
-
+#SS
 
