@@ -42,8 +42,11 @@ myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
 myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
 #------------------------------------------------------------
 
-
-
-
+a= np.array([1,2,3,4,5,6,7,8])
+b = a.reshape([4,2])
+c = np.array([1,2]).reshape([1,2])
+b
+c
+b+c
 
 
