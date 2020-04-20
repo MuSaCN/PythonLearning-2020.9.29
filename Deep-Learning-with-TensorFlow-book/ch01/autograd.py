@@ -1,4 +1,4 @@
-import tensorflow as tf 
+import tensorflow as tf
 
 # 创建4个张量
 a = tf.constant(1.)
