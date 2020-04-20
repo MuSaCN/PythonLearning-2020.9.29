@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-´ÓMNISTÖĞ¶ÁÈ¡Ô­Ê¼Í¼Æ¬²¢±£´æ¡¢¶ÁÈ¡±êÇ©Êı¾İ²¢±£´æ¡£
-MNISTÎÄ¼ş½á¹¹·ÖÎö¿ÉÒÔ²Î¿¼£ºhttps://blog.csdn.net/justidle/article/details/103149253
+ï¿½ï¿½MNISTï¿½Ğ¶ï¿½È¡Ô­Ê¼Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½æ¡¢ï¿½ï¿½È¡ï¿½ï¿½Ç©ï¿½ï¿½ï¿½İ²ï¿½ï¿½ï¿½ï¿½æ¡£
+MNISTï¿½Ä¼ï¿½ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô²Î¿ï¿½ï¿½ï¿½https://blog.csdn.net/justidle/article/details/103149253
 """
 """
-Ê¹ÓÃ·½·¨£º
-1¡¢½«MNISTµÄÎÄ¼şÏÂÔØµ½±¾µØ¡£
-2¡¢ÔÚpyÎÄ¼şËùÔÚÄ¿Â¼ÏÂ£¬½¨Á¢mnist_dataÄ¿Â¼¡£È»ºó½«MNISTµÄËÄ¸öÎÄ¼ş¿½±´µ½mnist_dataÄ¿Â¼£¬²¢½âÑ¹
-3¡¢ÔÚpyÎÄ¼şËùÔÚÄ¿Â¼ÏÂ£¬½¨Á¢testÄ¿Â¼£¬¸ÄÄ¿Â¼ÓÃÓÚ´æ·Å½âÑ¹³öµÄÍ¼Æ¬ÎÄ¼şºÍ±êÇ©ÎÄ¼ş
+Ê¹ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½
+1ï¿½ï¿½ï¿½ï¿½MNISTï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Øµï¿½ï¿½ï¿½ï¿½Ø¡ï¿½
+2ï¿½ï¿½ï¿½ï¿½pyï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½Â£ï¿½ï¿½ï¿½ï¿½ï¿½mnist_dataÄ¿Â¼ï¿½ï¿½È»ï¿½ï¿½MNISTï¿½ï¿½ï¿½Ä¸ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½mnist_dataÄ¿Â¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¹
+3ï¿½ï¿½ï¿½ï¿½pyï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½Â£ï¿½ï¿½ï¿½ï¿½ï¿½testÄ¿Â¼ï¿½ï¿½ï¿½ï¿½Ä¿Â¼ï¿½ï¿½ï¿½Ú´ï¿½Å½ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½Ä¼ï¿½ï¿½Í±ï¿½Ç©ï¿½Ä¼ï¿½
 """
 
 import struct
@@ -17,28 +17,28 @@ import numpy as np
 import PIL.Image
     
 def read_image(filename):
-    #´ò¿ªÎÄ¼ş
+    #ï¿½ï¿½ï¿½Ä¼ï¿½
     f = open(filename, 'rb')
     
-    #¶ÁÈ¡ÎÄ¼şÄÚÈİ
+    #ï¿½ï¿½È¡ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
     index = 0
     buf = f.read()
     
-    #¹Ø±ÕÎÄ¼ş
+    #ï¿½Ø±ï¿½ï¿½Ä¼ï¿½
     f.close()
     
-    #½âÎöÎÄ¼şÄÚÈİ
-    #>IIII ±íÊ¾Ê¹ÓÃ´ó¶Ë¹æÔò£¬¶ÁÈ¡ËÄ¸öÕûĞÍ
+    #ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
+    #>IIII ï¿½ï¿½Ê¾Ê¹ï¿½Ã´ï¿½Ë¹ï¿½ï¿½ò£¬¶ï¿½È¡ï¿½Ä¸ï¿½ï¿½ï¿½ï¿½ï¿½
     magic, numImages, rows, columns = struct.unpack_from('>IIII', buf, index)
     index += struct.calcsize('>IIII')
     
     for i in range(0, numImages):
-        # L´ú±í»Ò¶ÈÍ¼Æ¬
+        # Lï¿½ï¿½ï¿½ï¿½Ò¶ï¿½Í¼Æ¬
         image = PIL.Image.new('L', (columns, rows))
         
         for x in range(rows):
             for y in range(columns):
-                # ¡®>B' ¶ÁÈ¡Ò»¸ö×Ö½Ú
+                # ï¿½ï¿½>B' ï¿½ï¿½È¡Ò»ï¿½ï¿½ï¿½Ö½ï¿½
                 image.putpixel((y,x), int(struct.unpack_from('>B', buf, index)[0]))
                 index += struct.calcsize('>B')
                 
@@ -67,7 +67,7 @@ def read_label(filename, saveFilename):
     print('save labels success')
 
 if __name__ == '__main__':
-    #×¢Òât10k-images-idx3-ubyteÀïÃæÒ»¹²ÓĞ10,000ÕÅÍ¼Æ¬
+    #×¢ï¿½ï¿½t10k-images-idx3-ubyteï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½10,000ï¿½ï¿½Í¼Æ¬
     read_image('mnist_data/t10k-images-idx3-ubyte')
     read_label('mnist_data/t10k-labels-idx1-ubyte', 'mnist_data/test/label.txt')
     
