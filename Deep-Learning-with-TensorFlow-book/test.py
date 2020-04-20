@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPath.MyClass_Path("\\Hands-On Machine Learning")  # 路径类
+__mypath__ = MyPath.MyClass_Path("\\Deep-Learning-with-TensorFlow-book")  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
 myword = MyFile.MyClass_Word()  # word生成类
 myexcel = MyFile.MyClass_Excel()  # excel生成类
