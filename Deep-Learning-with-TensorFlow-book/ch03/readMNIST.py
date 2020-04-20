@@ -15,7 +15,7 @@ MNIST�ļ��ṹ�������Բο���https://blog.csdn.net/justi
 import struct
 import numpy as np
 import PIL.Image
-    
+
 def read_image(filename):
     #���ļ�
     f = open(filename, 'rb')
