@@ -14,8 +14,6 @@ import tensorflow as tf
 import timeit
 
 
-
-
 cpu_data = []
 gpu_data = []
 for n in range(9):
