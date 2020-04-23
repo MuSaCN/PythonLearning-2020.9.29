@@ -11,8 +11,8 @@ from scipy import stats
 #------------------------------------------------------------
 __mypath__ = MyPath.MyClass_Path("\\Hands-On Machine Learning")  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
-myword = MyFile.MyClass_Word() # word生成类
-myexcel = MyFile.MyClass_Excel() # excel生成类
+myword = MyFile.MyClass_Word()  # word生成类
+myexcel = MyFile.MyClass_Excel()  # excel生成类
 mytime = MyTime.MyClass_Time()  # 时间类
 myplt = MyPlot.MyClass_Plot()  # 直接绘图类(单个图窗)
 mypltpro = MyPlot.MyClass_PlotPro()  # Plot高级图系列
@@ -31,20 +31,24 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
-mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration() # 数据库应用整合
+mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration()  # 数据库应用整合
 myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
 myWebAPP = MyWebCrawler.MyClass_Web_APPIntegration()  # 爬虫整合应用类
 myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
-myFactorD = MyQuant.MyClass_Factor_Detection() # 因子检测类
-myKeras = MyDeepLearning.MyClass_Keras() # Keras综合类
+myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
+myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
+myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 #------------------------------------------------------------
 
-import tensorflow as tf
-from tensorflow import keras
-tf.__version__
-keras.__version__
+
+
+
+
+
+
+
 
 
