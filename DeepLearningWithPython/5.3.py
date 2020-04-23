@@ -42,12 +42,9 @@ myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
 myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
 #------------------------------------------------------------
 
-#%%
-import keras
-keras.__version__
 
 #%%
-from keras.applications import VGG16
+from tensorflow.keras.applications import VGG16
 conv_base = VGG16(weights='imagenet',
                   include_top=False,
                   input_shape=(150, 150, 3))
@@ -78,9 +75,9 @@ validation_features = np.reshape(validation_features, (1000, reshapecount))
 test_features = np.reshape(test_features, (1000, reshapecount))
 
 #%%
-from keras import models
-from keras import layers
-from keras import optimizers
+from tensorflow.keras import models
+from tensorflow.keras import layers
+from tensorflow.keras import optimizers
 
 model = models.Sequential()
 model.add(layers.Dense(256, activation='relu', input_dim=4 * 4 * 512))
@@ -99,8 +96,9 @@ myKeras.plot_acc_loss(history)
 
 
 #%%
-from keras import models
-from keras import layers
+myKeras.clear_session()
+from tensorflow.keras import models
+from tensorflow.keras import layers
 
 model = models.Sequential()
 model.add(conv_base)

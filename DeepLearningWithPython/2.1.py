@@ -43,9 +43,9 @@ myKeras = MyDeepLearning.MyClass_Keras() # Keras综合类
 #------------------------------------------------------------
 
 #%%
-import keras
+from tensorflow import keras
 keras.__version__
-from keras.datasets import mnist
+from tensorflow.keras.datasets import mnist
 (train_images, train_labels), (test_images, test_labels) = mnist.load_data()
 train_images.shape
 len(train_labels)

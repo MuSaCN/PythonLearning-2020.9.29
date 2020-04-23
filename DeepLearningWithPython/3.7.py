@@ -44,11 +44,11 @@ myKeras = MyDeepLearning.MyClass_Keras() # Keras综合类
 
 
 #%%
-import keras
+from tensorflow import keras
 keras.__version__
 
 #%%
-from keras.datasets import boston_housing
+from tensorflow.keras.datasets import boston_housing
 (train_data, train_targets), (test_data, test_targets) =  boston_housing.load_data()
 
 #%%
@@ -70,8 +70,8 @@ test_data -= mean
 test_data /= std
 
 #%%
-from keras import models
-from keras import layers
+from tensorflow.keras import models
+from tensorflow.keras import layers
 
 def build_model():
     # Because we will need to instantiate

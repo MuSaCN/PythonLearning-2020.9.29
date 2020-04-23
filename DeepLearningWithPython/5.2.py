@@ -45,7 +45,7 @@ myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
 
 
 #%%
-import keras
+from tensorflow import keras
 keras.__version__
 import os, shutil
 
@@ -146,8 +146,8 @@ print('total test cat images:', len(os.listdir(test_cats_dir)))
 print('total test dog images:', len(os.listdir(test_dogs_dir)))
 
 #%%
-from keras import layers
-from keras import models
+from tensorflow.keras import layers
+from tensorflow.keras import models
 
 model = models.Sequential()
 model.add(layers.Conv2D(32, (3, 3), activation='relu',input_shape=(150, 150, 3)))
@@ -166,7 +166,7 @@ model.add(layers.Dense(1, activation='sigmoid'))
 model.summary()
 
 #%%
-from keras import optimizers
+from tensorflow.keras import optimizers
 model.compile(loss='binary_crossentropy',
               optimizer=optimizers.RMSprop(lr=1e-4),
               metrics=['acc'])

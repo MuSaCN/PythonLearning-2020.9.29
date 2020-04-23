@@ -44,9 +44,6 @@ myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
 
 
 #%%
-import keras
-keras.__version__
-
 import os
 original_dataset_dir = os.path.expandvars('%USERPROFILE%')+'\\.kaggle\\dogs-vs-cats'
 base_dir = original_dataset_dir+'\\cats_and_dogs_small'
@@ -59,7 +56,7 @@ img_path = base_dir+'\\test\\cats\\cat.1700.jpg'
 myKeras.plot_cnn2D_layers(model,img_path,plot_origin=True,layerslimit=8,layerlevel=2)
 
 #%%
-from keras.applications import VGG16
+from tensorflow.keras.applications import VGG16
 model = VGG16(weights='imagenet', include_top=False)
 layer_name = 'block3_conv1'
 filter_index = 0
@@ -80,7 +77,7 @@ model = VGG16(weights='imagenet')
 model.summary()
 
 # The local path to our target image
-img_path = 'creative_commons_elephant.jpg'
+img_path = r'C:\Users\i2011\PycharmProjects\PythonLearning\DeepLearningWithPython\creative_commons_elephant.jpg'
 last_conv_layer_name = "block5_conv3"
 myKeras.plot_class_activation_map(model,img_path,last_conv_layer_name,writefile="elephant_cam.jpg")
 

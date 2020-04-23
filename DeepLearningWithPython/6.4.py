@@ -97,9 +97,9 @@ delay = 144
 batch_size = 128
 
 #%%
-from keras.models import Sequential
-from keras import layers
-from keras.optimizers import RMSprop
+from tensorflow.keras.models import Sequential
+from tensorflow.keras import layers
+from tensorflow.keras.optimizers import RMSprop
 model = Sequential()
 model.add(layers.Conv1D(32, 5, activation='relu', input_shape=(None, float_data.shape[-1])))
 model.add(layers.MaxPooling1D(3))
