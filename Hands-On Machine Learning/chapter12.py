@@ -219,57 +219,27 @@ np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-# keras.losses.Huber
-def huber_fn(y_true, y_pred):
-    error = y_true - y_pred
-    is_small_error = tf.abs(error) < 1
-    squared_loss = tf.square(error) / 2
-    linear_loss  = tf.abs(error) - 0.5
-    return tf.where(is_small_error, squared_loss, linear_loss)
-
-#%%
+myKeras.clear_session()
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="selu", kernel_initializer="lecun_normal",
                        input_shape=input_shape),
     keras.layers.Dense(1),
 ])
-model.compile(loss=huber_fn, optimizer="nadam", metrics=["mae"])
-
 #%%
-model.fit(X_train_scaled, y_train, epochs=2, validation_data=(X_valid_scaled, y_valid))
-
-#%% md
-## Saving/Loading Models with Custom Objects
-model.save("my_model_with_a_custom_loss.h5")
-model = keras.models.load_model("my_model_with_a_custom_loss.h5",
-                                custom_objects={"huber_fn": huber_fn})
-model.fit(X_train_scaled, y_train, epochs=2, validation_data=(X_valid_scaled, y_valid))
-
-#%%
-# 指向函数本身，但又要有超参数，所以用高阶。
-def create_huber(threshold=1.0):
-    def huber_fn(y_true, y_pred):
-        error = y_true - y_pred
-        is_small_error = tf.abs(error) < threshold
-        squared_loss = tf.square(error) / 2
-        linear_loss  = threshold * tf.abs(error) - threshold**2 / 2
-        return tf.where(is_small_error, squared_loss, linear_loss)
-    return huber_fn
-model.compile(loss=create_huber(2.0), optimizer="nadam", metrics=["mae"])
-
-#%%
+model.compile(loss=myKeras.custom.loss.create_huber(2.0), optimizer="nadam", metrics=["mae"])
 model.fit(X_train_scaled, y_train, epochs=2, validation_data=(X_valid_scaled, y_valid))
 model.save("my_model_with_a_custom_loss_threshold_2.h5")
+model.predict(X_test)  #[412.9197],[453.22357],..., [329.56628]
 
 #%%
 model = keras.models.load_model("my_model_with_a_custom_loss_threshold_2.h5",
-                                custom_objects={"huber_fn": create_huber(2.0)})
-model.fit(X_train_scaled, y_train, epochs=2, validation_data=(X_valid_scaled, y_valid))
+                                custom_objects={"huber_fn": myKeras.custom.loss.create_huber(2.0)})
+model.predict(X_test) #[412.9197],[453.22357],..., [329.56628]
 
 #%%
 import tensorflow as tf
 from tensorflow import keras
-
+keras.backend.clear_session()
 class HuberLoss(keras.losses.Loss):
     def __init__(self, threshold=1.0, **kwargs):
         self.threshold = threshold
@@ -299,44 +269,31 @@ class HuberLoss(keras.losses.Loss):
         plt.title("Huber loss", fontsize=14)
         plt.show()
 
-
-#%%
-myKeras.clear_session()
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="selu", kernel_initializer="lecun_normal",
                        input_shape=input_shape),
     keras.layers.Dense(1),
 ])
+
+#%%
 model.compile(loss=HuberLoss(2.), optimizer="nadam", metrics=["mae"])
 
-#%%
 model.fit(X_train_scaled, y_train, epochs=2, validation_data=(X_valid_scaled, y_valid))
 model.save("my_model_with_a_custom_loss_class.h5")
+model.loss
 
-#%%
-model = keras.models.load_model("my_model_with_a_custom_loss_class.h5", # TODO: check PR #25956
-                               custom_objects={"HuberLoss": HuberLoss})
-
-#%%
-
+# 有错误！！！！！！！！！！！！！！！！！！！
+# model = keras.models.load_model("my_model_with_a_custom_loss_class.h5", # TODO: check PR #25956
+#                                custom_objects={"HuberLoss": HuberLoss})
 model.fit(X_train_scaled, y_train, epochs=2,
           validation_data=(X_valid_scaled, y_valid))
-
-#%%
-
 #model = keras.models.load_model("my_model_with_a_custom_loss_class.h5",  # TODO: check PR #25956
 #                                custom_objects={"HuberLoss": HuberLoss})
+# model.loss.threshold
 
-#%%
-
-model.loss.threshold
 
 #%% md
-
 ## Other Custom Functions
-
-#%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
@@ -356,20 +313,15 @@ def my_l1_regularizer(weights):
 def my_positive_weights(weights): # return value is just tf.nn.relu(weights)
     return tf.where(weights < 0., tf.zeros_like(weights), weights)
 
-#%%
-
 layer = keras.layers.Dense(1, activation=my_softplus,
                            kernel_initializer=my_glorot_initializer,
                            kernel_regularizer=my_l1_regularizer,
                            kernel_constraint=my_positive_weights)
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
-
-#%%
 
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="selu", kernel_initializer="lecun_normal",
@@ -379,13 +331,9 @@ model = keras.models.Sequential([
                        kernel_constraint=my_positive_weights,
                        kernel_initializer=my_glorot_initializer),
 ])
-
-#%%
-
 model.compile(loss="mse", optimizer="nadam", metrics=["mae"])
 
 #%%
-
 model.fit(X_train_scaled, y_train, epochs=2,
           validation_data=(X_valid_scaled, y_valid))
 
@@ -415,7 +363,6 @@ class MyL1Regularizer(keras.regularizers.Regularizer):
         return {"factor": self.factor}
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
@@ -430,22 +377,15 @@ model = keras.models.Sequential([
                        kernel_constraint=my_positive_weights,
                        kernel_initializer=my_glorot_initializer),
 ])
-
-#%%
-
 model.compile(loss="mse", optimizer="nadam", metrics=["mae"])
 
 #%%
-
-model.fit(X_train_scaled, y_train, epochs=2,
-          validation_data=(X_valid_scaled, y_valid))
-
+model.fit(X_train_scaled, y_train, epochs=2, validation_data=(X_valid_scaled, y_valid))
+model.predict(X_train_scaled) # [2.8334846] ... [2.852897 ]
 #%%
-
 model.save("my_model_with_many_custom_parts.h5")
 
 #%%
-
 model = keras.models.load_model(
     "my_model_with_many_custom_parts.h5",
     custom_objects={
@@ -454,47 +394,29 @@ model = keras.models.load_model(
        "my_glorot_initializer": my_glorot_initializer,
        "my_softplus": my_softplus,
     })
+model.predict(X_train_scaled) # [2.8334846] ... [2.852897 ]
 
 #%% md
 
 ## Custom Metrics
-
-#%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="selu", kernel_initializer="lecun_normal",
                        input_shape=input_shape),
     keras.layers.Dense(1),
 ])
+model.compile(loss="mse", optimizer="nadam", metrics=[myKeras.custom.loss.create_huber(2.0)])
 
 #%%
-
-model.compile(loss="mse", optimizer="nadam", metrics=[create_huber(2.0)])
-
-#%%
-
 model.fit(X_train_scaled, y_train, epochs=2)
 
-#%% md
-
-**Warning**: if you use the same function as the loss and a metric, you may be surprised to see different results. This is generally just due to floating point precision errors: even though the mathematical equations are equivalent, the operations are not run in the same order, which can lead to small differences. Moreover, when using sample weights, there's more than just precision errors:
-* the loss since the start of the epoch is the mean of all batch losses seen so far. Each batch loss is the sum of the weighted instance losses divided by the _batch size_ (not the sum of weights, so the batch loss is _not_ the weighted mean of the losses).
-* the metric since the start of the epoch is equal to the sum of weighted instance losses divided by sum of all weights seen so far. In other words, it is the weighted mean of all the instance losses. Not the same thing.
-
-If you do the math, you will find that loss = metric * mean of sample weights (plus some floating point precision error).
-
 #%%
-
-model.compile(loss=create_huber(2.0), optimizer="nadam", metrics=[create_huber(2.0)])
-
-#%%
-
+model.compile(loss=myKeras.custom.loss.create_huber(2.0), optimizer="nadam",
+              metrics=[myKeras.custom.loss.create_huber(2.0)])
 sample_weight = np.random.rand(len(y_train))
 history = model.fit(X_train_scaled, y_train, epochs=2, sample_weight=sample_weight)
 
@@ -505,34 +427,15 @@ history.history["loss"][0], history.history["huber_fn"][0] * sample_weight.mean(
 #%% md
 
 ### Streaming metrics
-
-#%%
-
 precision = keras.metrics.Precision()
 precision([0, 1, 1, 1, 0, 1, 0, 1], [1, 1, 0, 1, 0, 1, 0, 1])
-
-#%%
-
 precision([0, 1, 0, 0, 1, 0, 1, 1], [1, 0, 1, 1, 0, 0, 0, 0])
-
-#%%
-
 precision.result()
-
-#%%
-
 precision.variables
-
-#%%
-
 precision.reset_states()
 
-#%% md
-
-Creating a streaming metric:
-
 #%%
-
+# Creating a streaming metric:
 class HuberMetric(keras.metrics.Metric):
     def __init__(self, threshold=1.0, **kwargs):
         super().__init__(**kwargs) # handles base args (e.g., dtype)
@@ -556,91 +459,54 @@ class HuberMetric(keras.metrics.Metric):
         base_config = super().get_config()
         return {**base_config, "threshold": self.threshold}
 
-#%% md
-
-**Warning**: when running the following cell, if you get autograph warnings such as `WARNING:tensorflow:AutoGraph could not transform [...] and will run it as-is`, then please install version 0.2.2 of the gast library (e.g., by running `!pip install gast==0.2.2`), then restart the kernel and run this notebook again from the beginning (see [autograph issue #1](https://github.com/tensorflow/autograph/issues/1) for more details):
-
 #%%
-
 m = HuberMetric(2.)
-
 # total = 2 * |10 - 2| - 2²/2 = 14
 # count = 1
 # result = 14 / 1 = 14
 m(tf.constant([[2.]]), tf.constant([[10.]]))
 
 #%%
-
 # total = total + (|1 - 0|² / 2) + (2 * |9.25 - 5| - 2² / 2) = 14 + 7 = 21
 # count = count + 2 = 3
 # result = total / count = 21 / 3 = 7
 m(tf.constant([[0.], [5.]]), tf.constant([[1.], [9.25]]))
-
 m.result()
-
-#%%
-
 m.variables
-
-#%%
-
 m.reset_states()
 m.variables
 
-#%% md
-
-Let's check that the `HuberMetric` class works well:
-
 #%%
-
+# Let's check that the `HuberMetric` class works well:
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="selu", kernel_initializer="lecun_normal",
                        input_shape=input_shape),
     keras.layers.Dense(1),
 ])
-
-#%%
-
-model.compile(loss=create_huber(2.0), optimizer="nadam", metrics=[HuberMetric(2.0)])
-
-#%%
-
+model.compile(loss=myKeras.custom.loss.create_huber(2.0), optimizer="nadam", metrics=[HuberMetric(2.0)])
 model.fit(X_train_scaled.astype(np.float32), y_train.astype(np.float32), epochs=2)
 
 #%%
-
 model.save("my_model_with_a_custom_metric.h5")
-
-#%%
-
-#model = keras.models.load_model("my_model_with_a_custom_metric.h5",           # TODO: check PR #25956
-#                                custom_objects={"huber_fn": create_huber(2.0),
+# model = keras.models.load_model("my_model_with_a_custom_metric.h5", # TODO: check PR #25956
+#                                custom_objects={"huber_fn": myKeras.custom.loss.create_huber(2.0),
 #                                                "HuberMetric": HuberMetric})
 
 #%%
-
 model.fit(X_train_scaled.astype(np.float32), y_train.astype(np.float32), epochs=2)
-
-#%%
-
 model.metrics[0].threshold
 
-#%% md
-
-Looks like it works fine! More simply, we could have created the class like this:
-
 #%%
-
+# Looks like it works fine! More simply, we could have created the class like this:
 class HuberMetric(keras.metrics.Mean):
     def __init__(self, threshold=1.0, name='HuberMetric', dtype=None):
         self.threshold = threshold
-        self.huber_fn = create_huber(threshold)
+        self.huber_fn = myKeras.custom.loss.create_huber(threshold)
         super().__init__(name=name, dtype=dtype)
     def update_state(self, y_true, y_pred, sample_weight=None):
         metric = self.huber_fn(y_true, y_pred)
@@ -649,18 +515,13 @@ class HuberMetric(keras.metrics.Mean):
         base_config = super().get_config()
         return {**base_config, "threshold": self.threshold}
 
-#%% md
-
-This class handles shapes better, and it also supports sample weights.
-
 #%%
-
+# This class handles shapes better, and it also supports sample weights.
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="selu", kernel_initializer="lecun_normal",
                        input_shape=input_shape),
@@ -668,60 +529,37 @@ model = keras.models.Sequential([
 ])
 
 #%%
-
 model.compile(loss=keras.losses.Huber(2.0), optimizer="nadam", weighted_metrics=[HuberMetric(2.0)])
 
 #%%
-
 sample_weight = np.random.rand(len(y_train))
 history = model.fit(X_train_scaled.astype(np.float32), y_train.astype(np.float32),
                     epochs=2, sample_weight=sample_weight)
 
-#%%
-
 history.history["loss"][0], history.history["HuberMetric"][0] * sample_weight.mean()
 
 #%%
-
 model.save("my_model_with_a_custom_metric_v2.h5")
 
 #%%
-
-#model = keras.models.load_model("my_model_with_a_custom_metric_v2.h5",        # TODO: check PR #25956
+# model = keras.models.load_model("my_model_with_a_custom_metric_v2.h5", # TODO: check PR #25956
 #                                custom_objects={"HuberMetric": HuberMetric})
 
 #%%
-
 model.fit(X_train_scaled.astype(np.float32), y_train.astype(np.float32), epochs=2)
-
-#%%
-
 model.metrics[0].threshold
 
-#%% md
-
+#%%
 ## Custom Layers
-
-#%%
-
 exponential_layer = keras.layers.Lambda(lambda x: tf.exp(x))
-
-#%%
-
 exponential_layer([-1., 0., 1.])
 
-#%% md
-
-Adding an exponential layer at the output of a regression model can be useful if the values to predict are positive and with very different scales (e.g., 0.001, 10., 10000):
-
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="relu", input_shape=input_shape),
     keras.layers.Dense(1),
@@ -733,13 +571,12 @@ model.fit(X_train_scaled, y_train, epochs=5,
 model.evaluate(X_test_scaled, y_test)
 
 #%%
-
 class MyDense(keras.layers.Layer):
     def __init__(self, units, activation=None, **kwargs):
         super().__init__(**kwargs)
         self.units = units
         self.activation = keras.activations.get(activation)
-
+    # 这是你定义权重的地方
     def build(self, batch_input_shape):
         self.kernel = self.add_weight(
             name="kernel", shape=[batch_input_shape[-1], self.units],
@@ -747,44 +584,39 @@ class MyDense(keras.layers.Layer):
         self.bias = self.add_weight(
             name="bias", shape=[self.units], initializer="zeros")
         super().build(batch_input_shape) # must be at the end
-
+    # 这里是编写层的功能逻辑的地方
     def call(self, X):
         return self.activation(X @ self.kernel + self.bias)
-
+    # 如果你的层更改了输入张量的形状，在这里定义形状变化的逻辑，这让Keras能够自动推断各层的形状.
     def compute_output_shape(self, batch_input_shape):
         return tf.TensorShape(batch_input_shape.as_list()[:-1] + [self.units])
-
+    # 自定保存超参数，让load_model读取时不需要指定超参数.
     def get_config(self):
         base_config = super().get_config()
         return {**base_config, "units": self.units,
                 "activation": keras.activations.serialize(self.activation)}
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = keras.models.Sequential([
     MyDense(30, activation="relu", input_shape=input_shape),
     MyDense(1)
 ])
 
 #%%
-
 model.compile(loss="mse", optimizer="nadam")
 model.fit(X_train_scaled, y_train, epochs=2,
           validation_data=(X_valid_scaled, y_valid))
 model.evaluate(X_test_scaled, y_test)
 
 #%%
-
 model.save("my_model_with_a_custom_layer.h5")
 
 #%%
-
 model = keras.models.load_model("my_model_with_a_custom_layer.h5",
                                 custom_objects={"MyDense": MyDense})
 
@@ -794,7 +626,6 @@ class MyMultiLayer(keras.layers.Layer):
     def call(self, X):
         X1, X2 = X
         return X1 + X2, X1 * X2
-
     def compute_output_shape(self, batch_input_shape):
         batch_input_shape1, batch_input_shape2 = batch_input_shape
         return [batch_input_shape1, batch_input_shape2]
@@ -806,29 +637,22 @@ np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 inputs1 = keras.layers.Input(shape=[2])
 inputs2 = keras.layers.Input(shape=[2])
 outputs1, outputs2 = MyMultiLayer()((inputs1, inputs2))
 
-#%% md
-
-Let's create a layer with a different behavior during training and testing:
-
 #%%
-
+# Let's create a layer with a different behavior during training and testing。 keras.layers.GaussianNoise
 class AddGaussianNoise(keras.layers.Layer):
     def __init__(self, stddev, **kwargs):
         super().__init__(**kwargs)
         self.stddev = stddev
-
     def call(self, X, training=None):
         if training:
             noise = tf.random.normal(tf.shape(X), stddev=self.stddev)
             return X + noise
         else:
             return X
-
     def compute_output_shape(self, batch_input_shape):
         return batch_input_shape
 
@@ -857,13 +681,11 @@ class ResidualBlock(keras.layers.Layer):
         self.hidden = [keras.layers.Dense(n_neurons, activation="elu",
                                           kernel_initializer="he_normal")
                        for _ in range(n_layers)]
-
     def call(self, inputs):
         Z = inputs
         for layer in self.hidden:
             Z = layer(Z)
-        return inputs + Z
-
+        return inputs + Z # 最终输出包括了input
     def get_config(self):                                               # not shown
         base_config = super().get_config()                              # not shown
         return {**base_config,                                          # not shown
@@ -910,27 +732,18 @@ y_pred = model.predict(X_new_scaled)
 #%%
 
 model.save("my_custom_model.ckpt")
-
-#%%
-
 model = keras.models.load_model("my_custom_model.ckpt")
 
 #%%
-
 history = model.fit(X_train_scaled, y_train, epochs=5)
 
-#%% md
-
-We could have defined the model using the sequential API instead:
-
 #%%
-
+# We could have defined the model using the sequential API instead:
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 block1 = ResidualBlock(2, 30)
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="elu", kernel_initializer="he_normal"),
@@ -940,18 +753,14 @@ model = keras.models.Sequential([
 ])
 
 #%%
-
 model.compile(loss="mse", optimizer="nadam")
 history = model.fit(X_train_scaled, y_train, epochs=5)
 score = model.evaluate(X_test_scaled, y_test)
 y_pred = model.predict(X_new_scaled)
 
-#%% md
-
-## Losses and Metrics Based on Model Internals
-
 #%%
-
+dfsadfsadsafdasffdsadfsa
+## Losses and Metrics Based on Model Internals
 class ReconstructingRegressor(keras.models.Model):
     def __init__(self, output_dim, **kwargs):
         super().__init__(**kwargs)
