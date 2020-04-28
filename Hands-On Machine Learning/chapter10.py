@@ -499,7 +499,7 @@ def build_model(n_hidden=1, n_neurons=30, learning_rate=3e-3, input_shape=[8]):
     return model
 
 #%%
-keras_reg = myKeras.modeleval.KerasRegressor(build_model)
+keras_reg = myKeras.evaluate.KerasRegressor(build_model)
 keras_reg = keras.wrappers.scikit_learn.KerasRegressor(build_model)
 
 #%%

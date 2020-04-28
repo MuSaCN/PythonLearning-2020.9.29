@@ -645,14 +645,15 @@ history = model.fit(X_train_scaled, y_train)
 tf.random.set_seed(42)
 np.random.seed(42)
 
-y_proba,y_std,y_pred = myKeras.custom.MyClass_MonteCarlo_Dropout().monte_carlo_dropout(model, X_test_scaled)
+y_proba,y_std,y_pred = myKeras.evaluate.MyClass_MonteCarlo_Dropout().monte_carlo_dropout(model, X_test_scaled)
+myKeras.custom
 accuracy = np.sum(y_pred == y_test) / len(y_test)
 accuracy
 
 #%%
 tf.random.set_seed(42)
 np.random.seed(42)
-mc_model, out = myKeras.custom.MyClass_MonteCarlo_Dropout().monte_carlo_dropout_one(model,X_test_scaled[:1])
+mc_model, out = myKeras.evaluate.MyClass_MonteCarlo_Dropout().monte_carlo_dropout_one(model,X_test_scaled[:1])
 mc_model.summary()
 
 
