@@ -759,7 +759,6 @@ score = model.evaluate(X_test_scaled, y_test)
 y_pred = model.predict(X_new_scaled)
 
 #%%
-dfsadfsadsafdasffdsadfsa
 ## Losses and Metrics Based on Model Internals
 class ReconstructingRegressor(keras.models.Model):
     def __init__(self, output_dim, **kwargs):
@@ -782,7 +781,7 @@ class ReconstructingRegressor(keras.models.Model):
             Z = layer(Z)
         reconstruction = self.reconstruct(Z)
         recon_loss = tf.reduce_mean(tf.square(reconstruction - inputs))
-        self.add_loss(0.05 * recon_loss)
+        self.add_loss(0.05 * recon_loss) # 核心
         #if training:
         #    result = self.reconstruction_mean(recon_loss)
         #    self.add_metric(result)
@@ -802,37 +801,19 @@ history = model.fit(X_train_scaled, y_train, epochs=2)
 y_pred = model.predict(X_test_scaled)
 
 #%% md
-
 ## Computing Gradients with Autodiff
-
-#%%
-
 def f(w1, w2):
     return 3 * w1 ** 2 + 2 * w1 * w2
-
-#%%
 
 w1, w2 = 5, 3
 eps = 1e-6
 (f(w1 + eps, w2) - f(w1, w2)) / eps
-
-#%%
-
 (f(w1, w2 + eps) - f(w1, w2)) / eps
-
-#%%
 
 w1, w2 = tf.Variable(5.), tf.Variable(3.)
 with tf.GradientTape() as tape:
     z = f(w1, w2)
-
 gradients = tape.gradient(z, [w1, w2])
-
-#%%
-
-gradients
-
-#%%
 
 with tf.GradientTape() as tape:
     z = f(w1, w2)
@@ -843,64 +824,37 @@ try:
 except RuntimeError as ex:
     print(ex)
 
-#%%
-
 with tf.GradientTape(persistent=True) as tape:
     z = f(w1, w2)
-
 dz_dw1 = tape.gradient(z, w1)
 dz_dw2 = tape.gradient(z, w2) # works now!
 del tape
 
-#%%
-
-dz_dw1, dz_dw2
-
-#%%
-
 c1, c2 = tf.constant(5.), tf.constant(3.)
 with tf.GradientTape() as tape:
     z = f(c1, c2)
-
 gradients = tape.gradient(z, [c1, c2])
-
-#%%
-
-gradients
-
-#%%
+gradients # [None, None]
 
 with tf.GradientTape() as tape:
     tape.watch(c1)
     tape.watch(c2)
     z = f(c1, c2)
-
 gradients = tape.gradient(z, [c1, c2])
-
-#%%
-
-gradients
-
-#%%
 
 with tf.GradientTape() as tape:
     z1 = f(w1, w2 + 2.)
     z2 = f(w1, w2 + 5.)
     z3 = f(w1, w2 + 7.)
-
 tape.gradient([z1, z2, z3], [w1, w2])
-
-#%%
 
 with tf.GradientTape(persistent=True) as tape:
     z1 = f(w1, w2 + 2.)
     z2 = f(w1, w2 + 5.)
     z3 = f(w1, w2 + 7.)
-
 tf.reduce_sum(tf.stack([tape.gradient(z, [w1, w2]) for z in (z1, z2, z3)]), axis=0)
 del tape
 
-#%%
 
 with tf.GradientTape(persistent=True) as hessian_tape:
     with tf.GradientTape() as jacobian_tape:
@@ -909,47 +863,30 @@ with tf.GradientTape(persistent=True) as hessian_tape:
 hessians = [hessian_tape.gradient(jacobian, [w1, w2])
             for jacobian in jacobians]
 del hessian_tape
-
-#%%
-
 jacobians
-
-#%%
-
 hessians
 
 #%%
-
+w1, w2 = tf.Variable(5.), tf.Variable(3.)
 def f(w1, w2):
     return 3 * w1 ** 2 + tf.stop_gradient(2 * w1 * w2)
-
 with tf.GradientTape() as tape:
     z = f(w1, w2)
-
 tape.gradient(z, [w1, w2])
-
-#%%
 
 x = tf.Variable(100.)
 with tf.GradientTape() as tape:
     z = my_softplus(x)
-
 tape.gradient(z, [x])
 
-#%%
-
 tf.math.log(tf.exp(tf.constant(30., dtype=tf.float32)) + 1.)
-
-#%%
 
 x = tf.Variable([100.])
 with tf.GradientTape() as tape:
     z = my_softplus(x)
-
 tape.gradient(z, [x])
 
 #%%
-
 @tf.custom_gradient
 def my_better_softplus(z):
     exp = tf.exp(z)
@@ -957,31 +894,39 @@ def my_better_softplus(z):
         return grad / (1 + 1 / exp)
     return tf.math.log(exp + 1), my_softplus_gradients
 
-#%%
-
 def my_better_softplus(z):
     return tf.where(z > 30., z, tf.math.log(tf.exp(z) + 1.))
-
-#%%
 
 x = tf.Variable([1000.])
 with tf.GradientTape() as tape:
     z = my_better_softplus(x)
-
 z, tape.gradient(z, [x])
 
-#%% md
+#%%
+@tf.custom_gradient
+def my_custom_gradient(w,x):
+    y = x*w+1
+    def my_gradients(grad):
+        print(grad)
+        return grad -y, grad+y
+    return y, my_gradients
 
-# Computing Gradients Using Autodiff
+w = tf.Variable([5.])
+x = tf.Variable([10.])
+with tf.GradientTape() as tape:
+    z = my_custom_gradient(w,x)
+tape.gradient(z, [w, x])
+
+
 
 #%%
-
+# Custom Training Loops
+# Computing Gradients Using Autodiff
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 l2_reg = keras.regularizers.l2(0.05)
 model = keras.models.Sequential([
     keras.layers.Dense(30, activation="elu", kernel_initializer="he_normal",
@@ -989,25 +934,21 @@ model = keras.models.Sequential([
     keras.layers.Dense(1, kernel_regularizer=l2_reg)
 ])
 
-#%%
-
 def random_batch(X, y, batch_size=32):
     idx = np.random.randint(len(X), size=batch_size)
     return X[idx], y[idx]
 
 #%%
-
+# metrics 以 list形式输入
 def print_status_bar(iteration, total, loss, metrics=None):
-    metrics = " - ".join(["{}: {:.4f}".format(m.name, m.result())
-                         for m in [loss] + (metrics or [])])
+    metrics = " - ".join(["{}: {:.4f}".format(m.name, m.result()) # 获得结果
+                          for m in [loss] + (metrics or [])])     # 列表叠加
     end = "" if iteration < total else "\n"
-    print("\r{}/{} - ".format(iteration, total) + metrics,
-          end=end)
+    # 使用 \r 与 end="" 一起确保状态栏总是打印在同一行上。
+    print("\r{}/{} - ".format(iteration, total) + metrics, end=end)
 
 #%%
-
 import time
-
 mean_loss = keras.metrics.Mean(name="loss")
 mean_square = keras.metrics.Mean(name="mean_square")
 for i in range(1, 50 + 1):
@@ -1017,12 +958,8 @@ for i in range(1, 50 + 1):
     print_status_bar(i, 50, mean_loss, [mean_square])
     time.sleep(0.05)
 
-#%% md
-
-A fancier version with a progress bar:
-
 #%%
-
+# A fancier version with a progress bar:
 def progress_bar(iteration, total, size=30):
     running = iteration < total
     c = ">" if running else "="
@@ -1031,12 +968,9 @@ def progress_bar(iteration, total, size=30):
     params = [iteration, total, "=" * p + c + "." * (size - p - 1)]
     return fmt.format(*params)
 
-#%%
-
 progress_bar(3500, 10000, size=6)
 
 #%%
-
 def print_status_bar(iteration, total, loss, metrics=None, size=30):
     metrics = " - ".join(["{}: {:.4f}".format(m.name, m.result())
                          for m in [loss] + (metrics or [])])
@@ -1044,7 +978,6 @@ def print_status_bar(iteration, total, loss, metrics=None, size=30):
     print("\r{} - {}".format(progress_bar(iteration, total), metrics), end=end)
 
 #%%
-
 mean_loss = keras.metrics.Mean(name="loss")
 mean_square = keras.metrics.Mean(name="mean_square")
 for i in range(1, 50 + 1):
@@ -1055,13 +988,11 @@ for i in range(1, 50 + 1):
     time.sleep(0.05)
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 n_epochs = 5
 batch_size = 32
 n_steps = len(X_train) // batch_size
@@ -1071,7 +1002,6 @@ mean_loss = keras.metrics.Mean()
 metrics = [keras.metrics.MeanAbsoluteError()]
 
 #%%
-
 for epoch in range(1, n_epochs + 1):
     print("Epoch {}/{}".format(epoch, n_epochs))
     for step in range(1, n_steps + 1):
@@ -1082,9 +1012,11 @@ for epoch in range(1, n_epochs + 1):
             loss = tf.add_n([main_loss] + model.losses)
         gradients = tape.gradient(loss, model.trainable_variables)
         optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
         for variable in model.variables:
             if variable.constraint is not None:
                 variable.assign(variable.constraint(variable))
+
         mean_loss(loss)
         for metric in metrics:
             metric(y_batch, y_pred)
@@ -1124,107 +1056,52 @@ try:
 except ImportError as ex:
     print("To run this cell, please install tqdm, ipywidgets and restart Jupyter")
 
-#%% md
-
-## TensorFlow Functions
 
 #%%
-
+## TensorFlow Functions
 def cube(x):
     return x ** 3
+cube(2)
+cube(tf.constant(2.0))
 
-#%%
-
+@tf.function
+def cube(x):
+    return x ** 3
 cube(2)
 
 #%%
-
-cube(tf.constant(2.0))
-
-#%%
-
+# use tf.function() to convert this Python function to a TensorFlow Function:
 tf_cube = tf.function(cube)
 tf_cube
-
-#%%
-
 tf_cube(2)
-
-#%%
-
 tf_cube(tf.constant(2.0))
 
-#%% md
-
-### TF Functions and Concrete Functions
-
 #%%
-
+### TF Functions and Concrete Functions
 concrete_function = tf_cube.get_concrete_function(tf.constant(2.0))
 concrete_function.graph
-
-#%%
-
 concrete_function(tf.constant(2.0))
-
-#%%
-
 concrete_function is tf_cube.get_concrete_function(tf.constant(2.0))
 
-#%% md
-
+#%%
 ### Exploring Function Definitions and Graphs
-
-#%%
-
 concrete_function.graph
-
-#%%
-
 ops = concrete_function.graph.get_operations()
 ops
-
-#%%
-
 pow_op = ops[2]
 list(pow_op.inputs)
-
-#%%
-
 pow_op.outputs
-
-#%%
-
 concrete_function.graph.get_operation_by_name('x')
-
-#%%
-
 concrete_function.graph.get_tensor_by_name('Identity:0')
-
-#%%
-
 concrete_function.function_def.signature
 
-#%% md
-
-### How TF Functions Trace Python Functions to Extract Their Computation Graphs
-
 #%%
-
+### How TF Functions Trace Python Functions to Extract Their Computation Graphs
 @tf.function
 def tf_cube(x):
     print("print:", x)
     return x ** 3
-
-#%%
-
 result = tf_cube(tf.constant(2.0))
-
-#%%
-
-result
-
-#%%
 
 result = tf_cube(2)
 result = tf_cube(3)
@@ -1232,25 +1109,18 @@ result = tf_cube(tf.constant([[1., 2.]])) # New shape: trace!
 result = tf_cube(tf.constant([[3., 4.], [5., 6.]])) # New shape: trace!
 result = tf_cube(tf.constant([[7., 8.], [9., 10.], [11., 12.]])) # no trace
 
-#%% md
-
-It is also possible to specify a particular input signature:
-
-#%%
-
+# It is also possible to specify a particular input signature:
 @tf.function(input_signature=[tf.TensorSpec([None, 28, 28], tf.float32)])
 def shrink(images):
     print("Tracing", images)
     return images[:, ::2, ::2] # drop half the rows and columns
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 img_batch_1 = tf.random.uniform(shape=[100, 28, 28])
 img_batch_2 = tf.random.uniform(shape=[50, 28, 28])
 preprocessed_images = shrink(img_batch_1) # Traces the function.
@@ -1264,57 +1134,27 @@ try:
 except ValueError as ex:
     print(ex)
 
-#%% md
-
-### Using Autograph To Capture Control Flow
-
-#%% md
-
-A "static" `for` loop using `range()`:
-
 #%%
-
+### Using Autograph To Capture Control Flow
 @tf.function
 def add_10(x):
     for i in range(10):
         x += 1
     return x
-
-#%%
-
 add_10(tf.constant(5))
-
-#%%
-
 add_10.get_concrete_function(tf.constant(5)).graph.get_operations()
 
-#%% md
-
-A "dynamic" loop using `tf.while_loop()`:
-
 #%%
-
 @tf.function
 def add_10(x):
     condition = lambda i, x: tf.less(i, 10)
     body = lambda i, x: (tf.add(i, 1), tf.add(x, 1))
     final_i, final_x = tf.while_loop(condition, body, [tf.constant(0), x])
     return final_x
-
-#%%
-
 add_10(tf.constant(5))
-
-#%%
-
 add_10.get_concrete_function(tf.constant(5)).graph.get_operations()
 
-#%% md
-
-A "dynamic" `for` loop using `tf.range()` (captured by autograph):
-
 #%%
-
 @tf.function
 def add_10(x):
     for i in tf.range(10):
@@ -1322,15 +1162,10 @@ def add_10(x):
     return x
 
 #%%
-
 add_10.get_concrete_function(tf.constant(0)).graph.get_operations()
 
-#%% md
-
-### Handling Variables and Other Resources in TF Functions
-
 #%%
-
+### Handling Variables and Other Resources in TF Functions
 counter = tf.Variable(0)
 
 @tf.function
@@ -1408,27 +1243,20 @@ display_tf_code(add_10)
 
 ## Using TF Functions with tf.keras (or Not)
 
-#%% md
-
-By default, tf.keras will automatically convert your custom code into TF Functions, no need to use
-`tf.function()`:
-
 #%%
-
+# By default, tf.keras will automatically convert your custom code into TF Functions, no need to use `tf.function()`:
 # Custom loss function
 def my_mse(y_true, y_pred):
     print("Tracing loss my_mse()")
     return tf.reduce_mean(tf.square(y_pred - y_true))
 
 #%%
-
 # Custom metric function
 def my_mae(y_true, y_pred):
     print("Tracing metric my_mae()")
     return tf.reduce_mean(tf.abs(y_pred - y_true))
 
 #%%
-
 # Custom layer
 class MyDense(keras.layers.Layer):
     def __init__(self, units, activation=None, **kwargs):
@@ -1452,13 +1280,11 @@ class MyDense(keras.layers.Layer):
         return self.activation(X @ self.kernel + self.biases)
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 # Custom model
 class MyModel(keras.models.Model):
     def __init__(self, **kwargs):
@@ -1487,68 +1313,42 @@ model.fit(X_train_scaled, y_train, epochs=2,
           validation_data=(X_valid_scaled, y_valid))
 model.evaluate(X_test_scaled, y_test)
 
-#%% md
-
-You can turn this off by creating the model with `dynamic=True` (or calling `super().__init__(dynamic=True, **kwargs)` in the model's constructor):
-
 #%%
-
+# You can turn this off by creating the model with `dynamic=True` (or calling `super().__init__(dynamic=True, **kwargs)` in the model's constructor):
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = MyModel(dynamic=True)
-
-#%%
-
 model.compile(loss=my_mse, optimizer="nadam", metrics=[my_mae])
-
-#%% md
-
-Not the custom code will be called at each iteration. Let's fit, validate and evaluate with tiny datasets to avoid getting too much output:
-
 #%%
-
+# Not the custom code will be called at each iteration. Let's fit, validate and evaluate with tiny datasets to avoid getting too much output:
 model.fit(X_train_scaled[:64], y_train[:64], epochs=1,
           validation_data=(X_valid_scaled[:64], y_valid[:64]), verbose=0)
 model.evaluate(X_test_scaled[:64], y_test[:64], verbose=0)
 
-#%% md
-
-Alternatively, you can compile a model with `run_eagerly=True`:
-
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = MyModel()
-
-#%%
-
 model.compile(loss=my_mse, optimizer="nadam", metrics=[my_mae], run_eagerly=True)
 
 #%%
-
 model.fit(X_train_scaled[:64], y_train[:64], epochs=1,
           validation_data=(X_valid_scaled[:64], y_valid[:64]), verbose=0)
 model.evaluate(X_test_scaled[:64], y_test[:64], verbose=0)
 
-#%% md
-
+#%%
 ## Custom Optimizers
 
-#%% md
-
-Defining custom optimizers is not very common, but in case you are one of the happy few who gets to write one, here is an example:
+#%%
+# Defining custom optimizers is not very common, but in case you are one of the happy few who gets to write one, here is an example:
 
 #%%
-
 class MyMomentumOptimizer(keras.optimizers.Optimizer):
     def __init__(self, learning_rate=0.001, momentum=0.9, name="MyMomentumOptimizer", **kwargs):
         """Call super().__init__() and use _set_hyper() to store hyperparameters"""
@@ -1604,111 +1404,63 @@ model.fit(X_train_scaled, y_train, epochs=5)
 
 # Exercises
 
-#%% md
-
-## 1. to 11.
-See Appendix A.
+# 12. Implement a custom layer that performs _Layer Normalization_ _We will use this type of layer in Chapter 15 when using Recurrent Neural Networks._
 
 #%% md
-
-# 12. Implement a custom layer that performs _Layer Normalization_
-_We will use this type of layer in Chapter 15 when using Recurrent Neural Networks._
-
-#%% md
-
-### a.
-_Exercise: The `build()` method should define two trainable weights *α* and *β*, both of shape `input_shape[-1:]` and data type `tf.float32`. *α* should be initialized with 1s, and *β* with 0s._
-
-#%% md
-
-Solution: see below.
-
-#%% md
-
-### b.
-_Exercise: The `call()` method should compute the mean_ μ _and standard deviation_ σ _of each instance's features. For this, you can use `tf.nn.moments(inputs, axes=-1, keepdims=True)`, which returns the mean μ and the variance σ<sup>2</sup> of all instances (compute the square root of the variance to get the standard deviation). Then the function should compute and return *α*⊗(*X* - μ)/(σ + ε) + *β*, where ⊗ represents itemwise multiplication (`*`) and ε is a smoothing term (small constant to avoid division by zero, e.g., 0.001)._
+### a._Exercise: The `build()` method should define two trainable weights *α* and *β*, both of shape `input_shape[-1:]` and data type `tf.float32`. *α* should be initialized with 1s, and *β* with 0s._
+### b._Exercise: The `call()` method should compute the mean_ μ _and standard deviation_ σ _of each instance's features. For this, you can use `tf.nn.moments(inputs, axes=-1, keepdims=True)`, which returns the mean μ and the variance σ<sup>2</sup> of all instances (compute the square root of the variance to get the standard deviation). Then the function should compute and return *α*⊗(*X* - μ)/(σ + ε) + *β*, where ⊗ represents itemwise multiplication (`*`) and ε is a smoothing term (small constant to avoid division by zero, e.g., 0.001)._
 
 #%%
-
 class LayerNormalization(keras.layers.Layer):
     def __init__(self, eps=0.001, **kwargs):
         super().__init__(**kwargs)
         self.eps = eps
-
     def build(self, batch_input_shape):
-        self.alpha = self.add_weight(
-            name="alpha", shape=batch_input_shape[-1:],
-            initializer="ones")
-        self.beta = self.add_weight(
-            name="beta", shape=batch_input_shape[-1:],
-            initializer="zeros")
+        self.alpha = self.add_weight(name="alpha", shape=batch_input_shape[-1:],initializer="ones")
+        self.beta = self.add_weight(name="beta", shape=batch_input_shape[-1:],initializer="zeros")
         super().build(batch_input_shape) # must be at the end
-
     def call(self, X):
         mean, variance = tf.nn.moments(X, axes=-1, keepdims=True)
         return self.alpha * (X - mean) / (tf.sqrt(variance + self.eps)) + self.beta
-
     def compute_output_shape(self, batch_input_shape):
         return batch_input_shape
-
     def get_config(self):
         base_config = super().get_config()
         return {**base_config, "eps": self.eps}
 
-#%% md
+#%%
+# Note that making _ε_ a hyperparameter (`eps`) was not compulsory. Also note that it's preferable to compute `tf.sqrt(variance + self.eps)` rather than `tf.sqrt(variance) + self.eps`. Indeed, the derivative of sqrt(z) is undefined when z=0, so training will bomb whenever the variance vector has at least one component equal to 0. Adding _ε_ within the square root guarantees that this will never happen.
 
-Note that making _ε_ a hyperparameter (`eps`) was not compulsory. Also note that it's preferable to compute `tf.sqrt(variance + self.eps)` rather than `tf.sqrt(variance) + self.eps`. Indeed, the derivative of sqrt(z) is undefined when z=0, so training will bomb whenever the variance vector has at least one component equal to 0. Adding _ε_ within the square root guarantees that this will never happen.
+### c._Exercise: Ensure that your custom layer produces the same (or very nearly the same) output as the `keras.layers.LayerNormalization` layer._
 
-#%% md
-
-### c.
-_Exercise: Ensure that your custom layer produces the same (or very nearly the same) output as the `keras.layers.LayerNormalization` layer._
-
-#%% md
-
-Let's create one instance of each class, apply them to some data (e.g., the training set), and ensure that the difference is negligeable.
+# Let's create one instance of each class, apply them to some data (e.g., the training set), and ensure that the difference is negligeable.
 
 #%%
-
 X = X_train.astype(np.float32)
 
 custom_layer_norm = LayerNormalization()
 keras_layer_norm = keras.layers.LayerNormalization()
 
-tf.reduce_mean(keras.losses.mean_absolute_error(
-    keras_layer_norm(X), custom_layer_norm(X)))
+tf.reduce_mean(keras.losses.mean_absolute_error(keras_layer_norm(X), custom_layer_norm(X)))
 
-#%% md
-
-Yep, that's close enough. To be extra sure, let's make alpha and beta completely random and compare again:
-
+#Yep, that's close enough. To be extra sure, let's make alpha and beta completely random and compare again:
 #%%
-
 random_alpha = np.random.rand(X.shape[-1])
 random_beta = np.random.rand(X.shape[-1])
 
 custom_layer_norm.set_weights([random_alpha, random_beta])
 keras_layer_norm.set_weights([random_alpha, random_beta])
 
-tf.reduce_mean(keras.losses.mean_absolute_error(
-    keras_layer_norm(X), custom_layer_norm(X)))
+tf.reduce_mean(keras.losses.mean_absolute_error(keras_layer_norm(X), custom_layer_norm(X)))
 
-#%% md
+#Still a negligeable difference! Our custom layer works fine.
 
-Still a negligeable difference! Our custom layer works fine.
-
-#%% md
-
-## 13. Train a model using a custom training loop to tackle the Fashion MNIST dataset
-_The Fashion MNIST dataset was introduced in Chapter 10._
-
-#%% md
-
-### a.
-_Exercise: Display the epoch, iteration, mean training loss, and mean accuracy over each epoch (updated at each iteration), as well as the validation loss and accuracy at the end of each epoch._
+# ## 13. Train a model using a custom training loop to tackle the Fashion MNIST dataset _The Fashion MNIST dataset was introduced in Chapter 10._
 
 #%%
+### a._Exercise: Display the epoch, iteration, mean training loss, and mean accuracy over each epoch (updated at each iteration), as well as the validation loss and accuracy at the end of each epoch._
 
+#%%
 (X_train_full, y_train_full), (X_test, y_test) = keras.datasets.fashion_mnist.load_data()
 X_train_full = X_train_full.astype(np.float32) / 255.
 X_valid, X_train = X_train_full[:5000], X_train_full[5000:]
@@ -1716,13 +1468,11 @@ y_valid, y_train = y_train_full[:5000], y_train_full[5000:]
 X_test = X_test.astype(np.float32) / 255.
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 model = keras.models.Sequential([
     keras.layers.Flatten(input_shape=[28, 28]),
     keras.layers.Dense(100, activation="relu"),
@@ -1730,7 +1480,6 @@ model = keras.models.Sequential([
 ])
 
 #%%
-
 n_epochs = 5
 batch_size = 32
 n_steps = len(X_train) // batch_size
@@ -1740,7 +1489,6 @@ mean_loss = keras.metrics.Mean()
 metrics = [keras.metrics.SparseCategoricalAccuracy()]
 
 #%%
-
 with trange(1, n_epochs + 1, desc="All epochs") as epochs:
     for epoch in epochs:
         with trange(1, n_steps + 1, desc="Epoch {}/{}".format(epoch, n_epochs)) as steps:
@@ -1771,19 +1519,15 @@ with trange(1, n_epochs + 1, desc="All epochs") as epochs:
             metric.reset_states()
 
 
-#%% md
-
-### b.
-_Exercise: Try using a different optimizer with a different learning rate for the upper layers and the lower layers._
+#%%
+### b._Exercise: Try using a different optimizer with a different learning rate for the upper layers and the lower layers._
 
 #%%
-
 keras.backend.clear_session()
 np.random.seed(42)
 tf.random.set_seed(42)
 
 #%%
-
 lower_layers = keras.models.Sequential([
     keras.layers.Flatten(input_shape=[28, 28]),
     keras.layers.Dense(100, activation="relu"),
@@ -1801,7 +1545,6 @@ lower_optimizer = keras.optimizers.SGD(lr=1e-4)
 upper_optimizer = keras.optimizers.Nadam(lr=1e-3)
 
 #%%
-
 n_epochs = 5
 batch_size = 32
 n_steps = len(X_train) // batch_size
@@ -1810,7 +1553,6 @@ mean_loss = keras.metrics.Mean()
 metrics = [keras.metrics.SparseCategoricalAccuracy()]
 
 #%%
-
 with trange(1, n_epochs + 1, desc="All epochs") as epochs:
     for epoch in epochs:
         with trange(1, n_steps + 1, desc="Epoch {}/{}".format(epoch, n_epochs)) as steps:
