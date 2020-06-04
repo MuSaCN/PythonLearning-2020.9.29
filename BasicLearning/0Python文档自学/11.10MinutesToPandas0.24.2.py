@@ -312,7 +312,7 @@ plt.legend(loc='best');plt.show()
 import os
 # 目录引导结果在Console和run结果不同
 print("os.getcwd():",os.getcwd())
-print("abspath:",os.path.abspath("11.10MinutesToPandas0.24.2.py"))
+print("abspath:", os.path.abspath("11.10MinutesToPandas0.24.2.py"))
 
 # 12.1.1 写入 csv 文件：
 df.to_csv("foo.csv")
