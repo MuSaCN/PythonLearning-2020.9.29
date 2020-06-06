@@ -45,7 +45,7 @@ myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 
 # ---获取数据
 myMT5 = MyMql.MyClass_ConnectMT5(connect=True) # Python链接MetaTrader5客户端类
-eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[1990,1,1,0,0,0],[2020,1,1,0,0,0])
+eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[2010,1,1,0,0,0],[2020,1,1,0,0,0])
 eurusd = myMT5.rates_to_DataFrame(eurusd,True)
 myMT5.shutdown()
 
@@ -57,12 +57,19 @@ eurusd["rate"] = eurusd["close"].pct_change(periods=1) # 增加一期收盘价�
 # ---数据解读
 eurusd.dtypes
 myDA.describe(eurusd)
+myDA.candle_ohlc(eurusd)
+data = pd.DataFrame([eurusd["open"],eurusd["high"],eurusd["low"],eurusd["close"]],
+                     columns=["Open","High","Low","Close"])
+
 
 # ---波动率分析
-rate = eurusd["rate"]
+rate = pd.concat([eurusd["rate"], eurusd["rate"].shift(1), eurusd["rate"].shift(2),
+                  eurusd["rate"].shift(3),eurusd["rate"].shift(4)], axis=1)
+rate.columns = ["rate","rate_s1","rate_s2","rate_s3","rate_s4"]
 
-
-
+myDA.tsa_auto_test(rate["rate"][1:])
+myDA.tsa_auto_ARIMA(rate["rate"][1:])
+myDA.tsa_auto_ARCH(rate["rate"][1:])
 
 
 
