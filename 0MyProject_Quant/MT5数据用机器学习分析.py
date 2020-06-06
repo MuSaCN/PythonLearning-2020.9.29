@@ -47,20 +47,19 @@ myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 myMT5 = MyMql.MyClass_ConnectMT5(connect=True) # Python链接MetaTrader5客户端类
 eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[2010,1,1,0,0,0],[2020,1,1,0,0,0])
 eurusd = myMT5.rates_to_DataFrame(eurusd,True)
+eurusd.index = eurusd["time"]
 myMT5.shutdown()
 
 # ---数据清洗
-mypd.__init__(0,None) # 让数据行不全部显示
 eurusd.isnull().sum() # 是否有缺失值
 eurusd["rate"] = eurusd["close"].pct_change(periods=1) # 增加一期收盘价收益率
 
 # ---数据解读
 eurusd.dtypes
 myDA.describe(eurusd)
-myDA.candle_ohlc(eurusd)
-data = pd.DataFrame([eurusd["open"],eurusd["high"],eurusd["low"],eurusd["close"]],
-                     columns=["Open","High","Low","Close"])
-
+data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
+                     "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
+myDA.candle_ohlc(data)
 
 # ---波动率分析
 rate = pd.concat([eurusd["rate"], eurusd["rate"].shift(1), eurusd["rate"].shift(2),
