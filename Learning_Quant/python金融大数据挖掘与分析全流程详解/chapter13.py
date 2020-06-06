@@ -29,8 +29,8 @@ myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
-mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
-mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration() # 数据库应用整合
+mySQL = MyDataBase.MyClass_MySQL(connect=False)  # MySQL类
+mySQLAPP = MyDataBase.MyClass_SQL_APPIntegration() # 数据库应用整合
 myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类

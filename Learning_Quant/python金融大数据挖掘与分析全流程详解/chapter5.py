@@ -30,7 +30,7 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
-mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
+mySQL = MyDataBase.MyClass_MySQL(connect=False)  # MySQL类
 myWebAPP = MyWebCrawler.MyClass_APPIntegration() # 整合应用类
 #------------------------------------------------------------
 
@@ -74,7 +74,7 @@ myWebAPP.news_baidu("阿里巴巴",rtt=1,scorekeyword=keywords,checkhref=True,wo
 myWebAPP.news_sogou("阿里巴巴",sort=0,scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
 myWebAPP.news_sina("阿里巴巴",sort="time",scorekeyword=keywords,checkhref=True,word_href=None,database="quant.news")
 
-mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration()
+mySQLAPP = MyDataBase.MyClass_SQL_APPIntegration()
 
 # 5.4.3 从数据库汇总每日评分
 mySQLAPP.totalscore_daily("quant.news",word="阿里巴巴",today="2020-03-06")

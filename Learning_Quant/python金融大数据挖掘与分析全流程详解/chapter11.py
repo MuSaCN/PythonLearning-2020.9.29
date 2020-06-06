@@ -28,7 +28,7 @@ myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
-mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
+mySQL = MyDataBase.MyClass_MySQL(connect=False)  # MySQL类
 myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
@@ -65,7 +65,7 @@ myEmail.send_message()
 # 11.2.1 案例实战-自动发送数据分析邮件
 company = "阿里巴巴"
 date = "2020-03-08"
-mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration()
+mySQLAPP = MyDataBase.MyClass_SQL_APPIntegration()
 mySQLAPP.send_email_database(database="quant.news",word=company,date=date,to=None)
 
 import schedule

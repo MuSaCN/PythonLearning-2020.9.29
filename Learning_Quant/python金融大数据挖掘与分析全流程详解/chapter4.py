@@ -30,7 +30,7 @@ myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
 myWebC = MyWebCrawler.MyClass_WebCrawler()  # 综合网络爬虫类
-mySQL = MyDatabase.MyClass_MySQL(connect=False) # MySQL类
+mySQL = MyDataBase.MyClass_MySQL(connect=False) # MySQL类
 #------------------------------------------------------------
 
 

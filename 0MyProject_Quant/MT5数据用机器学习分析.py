@@ -30,8 +30,8 @@ myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
 myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 myML = MyMachineLearning.MyClass_MachineLearning()  # 机器学习综合类
-mySQL = MyDatabase.MyClass_MySQL(connect=False)  # MySQL类
-mySQLAPP = MyDatabase.MyClass_SQL_APPIntegration()  # 数据库应用整合
+mySQL = MyDataBase.MyClass_MySQL(connect=False)  # MySQL类
+mySQLAPP = MyDataBase.MyClass_SQL_APPIntegration()  # 数据库应用整合
 myWebQD = MyWebCrawler.MyClass_QuotesDownload(tushare=False)  # 金融行情下载类
 myWebR = MyWebCrawler.MyClass_Requests()  # Requests爬虫类
 myWebS = MyWebCrawler.MyClass_Selenium(openChrome=False)  # Selenium模拟浏览器类
@@ -43,18 +43,23 @@ myKeras = MyDeepLearning.MyClass_tfKeras()  # tfKeras综合类
 myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 #------------------------------------------------------------
 
+# ---获取数据
 myMT5 = MyMql.MyClass_ConnectMT5(connect=True) # Python链接MetaTrader5客户端类
-import time
-
-start = time.process_time()
-data1 = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_M2,[2020,1,1,0,0,0],[2020,6,1,0,0,0])
-print("Time used:", (time.process_time() - start)) # Time used: 0.09375
-data1 = myMT5.rates_to_DataFrame(data1,True)
-
-
+eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[1990,1,1,0,0,0],[2020,1,1,0,0,0])
+eurusd = myMT5.rates_to_DataFrame(eurusd,True)
 myMT5.shutdown()
 
+# ---数据清洗
+mypd.__init__(0,None) # 让数据行不全部显示
+eurusd.isnull().sum() # 是否有缺失值
+eurusd["rate"] = eurusd["close"].pct_change(periods=1) # 增加一期收盘价收益率
 
+# ---数据解读
+eurusd.dtypes
+myDA.describe(eurusd)
+
+# ---波动率分析
+rate = eurusd["rate"]
 
 
 
