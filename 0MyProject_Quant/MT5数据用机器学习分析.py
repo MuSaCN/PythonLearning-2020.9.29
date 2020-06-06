@@ -43,6 +43,16 @@ myKeras = MyDeepLearning.MyClass_tfKeras()  # tfKeras综合类
 myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 #------------------------------------------------------------
 
+myMT5 = MyMql.MyClass_ConnectMT5(connect=True) # Python链接MetaTrader5客户端类
+import time
+
+start = time.process_time()
+data1 = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_M2,[2020,1,1,0,0,0],[2020,6,1,0,0,0])
+print("Time used:", (time.process_time() - start)) # Time used: 0.09375
+data1 = myMT5.rates_to_DataFrame(data1,True)
+
+
+myMT5.shutdown()
 
 
 
