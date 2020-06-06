@@ -91,7 +91,7 @@ def overlap_process(event):
         axes[1].plot(mama, 'r-')
         axes[1].plot(fama, 'g-')
     elif overlap == '变周期移动平均线':
-        real = ta.MAVP(close, periods, minperiod=2, maxperiod=30, matype=0)
+        real = ta.MAVP(close, minperiod=2, maxperiod=30, matype=0)
         axes[1].plot(real, 'r-')
     elif overlap == '简单移动平均线':
         real = ta.SMA(close, timeperiod=30)
