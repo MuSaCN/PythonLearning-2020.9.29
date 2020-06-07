@@ -52,7 +52,12 @@ myMT5.shutdown()
 # ---数据清洗
 eurusd.isnull().sum() # 是否有缺失值
 eurusd["rate"] = eurusd["close"].pct_change(periods=1) # 增加一期收盘价收益率
+eurusd["rateInt"] = 0
+eurusd["rateInt"][np.isnan(eurusd["rate"])] = np.NAN
+eurusd["rateInt"][eurusd["rate"]>0] =1
+eurusd["rateInt"][eurusd["rate"]<0] =-1
 rate1 = eurusd["rate"]
+
 
 # ---数据解读
 eurusd.dtypes
@@ -66,11 +71,23 @@ myDA.tsa_auto_test(rate1[1:])
 myDA.tsa_auto_ARIMA(rate1[1:])
 myDA.tsa_auto_ARCH(rate1[1:])
 
-# ---序列自相关系数分析：1期波动与其滞后n期的相关系数曲线
+# ---序列自相关系数分析：1期波动与其滞后的相关系数曲线
 myDA.tsa.plot_selfcorrelation(rate1,count=500)
 
 # ---序列惯性分析：1期波动与n期波动的相关系数
-myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500)
+myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500,shift=1)
+
+
+## ---转换技术指标
+
+
+
+
+
+
+
+
+
 
 
 
