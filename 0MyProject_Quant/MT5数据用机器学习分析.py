@@ -43,6 +43,7 @@ myKeras = MyDeepLearning.MyClass_tfKeras()  # tfKeras综合类
 myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 #------------------------------------------------------------
 
+#%%
 # ---获取数据
 myMT5 = MyMql.MyClass_ConnectMT5(connect=True) # Python链接MetaTrader5客户端类
 eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[2010,1,1,0,0,0],[2020,1,1,0,0,0])
@@ -58,7 +59,7 @@ eurusd["rateInt"][eurusd["rate"]>0] =1
 eurusd["rateInt"][eurusd["rate"]<0] =-1
 rate1 = eurusd["rate"]
 
-
+#%%
 # ---数据解读
 eurusd.dtypes
 myDA.describe(eurusd)
@@ -77,17 +78,13 @@ myDA.tsa.plot_selfcorrelation(rate1,count=500)
 # ---序列惯性分析：1期波动与n期波动的相关系数
 myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500,shift=1)
 
-
+#%%
 ## ---转换技术指标
+close = eurusd["close"]
+rsi = myDA.indi.rsi(close,period=13)
+sma = myDA.indi.sma(close,period=13)
 
 
-
-
-
-
-
-
-
-
-
+import talib
+rsi1 = talib.RSI(close,timeperiod=13)
 
