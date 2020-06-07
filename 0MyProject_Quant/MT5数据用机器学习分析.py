@@ -49,27 +49,28 @@ eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[2010,1,1,0,0,0]
 eurusd = myMT5.rates_to_DataFrame(eurusd,True)
 eurusd.index = eurusd["time"]
 myMT5.shutdown()
-
 # ---数据清洗
 eurusd.isnull().sum() # 是否有缺失值
 eurusd["rate"] = eurusd["close"].pct_change(periods=1) # 增加一期收盘价收益率
+rate1 = eurusd["rate"]
 
 # ---数据解读
 eurusd.dtypes
 myDA.describe(eurusd)
 data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
                      "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
-myDA.candle_ohlc(data)
+myDA.indi.candle_ohlc(data)
 
 # ---波动率分析
-rate1 = eurusd["rate"]
 myDA.tsa_auto_test(rate1[1:])
 myDA.tsa_auto_ARIMA(rate1[1:])
 myDA.tsa_auto_ARCH(rate1[1:])
 
-# ---波动率惯性分析：1期波动与n期波动的秩相关系数曲线
-rate1.corr(rate1.shift(1),method="pearson")
-rate1.corr(rate1.shift(1),method="kendall")
-rate1.corr(rate1.shift(1),method="spearman")
+# ---序列自相关系数分析：1期波动与其滞后n期的相关系数曲线
+myDA.tsa.plot_selfcorrelation(rate1,count=500)
+
+# ---序列惯性分析：1期波动与n期波动的相关系数
+myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500)
+
 
 
