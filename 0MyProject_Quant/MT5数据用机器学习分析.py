@@ -62,16 +62,14 @@ data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
 myDA.candle_ohlc(data)
 
 # ---波动率分析
-rate = pd.concat([eurusd["rate"], eurusd["rate"].shift(1), eurusd["rate"].shift(2),
-                  eurusd["rate"].shift(3),eurusd["rate"].shift(4)], axis=1)
-rate.columns = ["rate","rate_s1","rate_s2","rate_s3","rate_s4"]
-
-myDA.tsa_auto_test(rate["rate"][1:])
-myDA.tsa_auto_ARIMA(rate["rate"][1:])
-myDA.tsa_auto_ARCH(rate["rate"][1:])
+rate1 = eurusd["rate"]
+myDA.tsa_auto_test(rate1[1:])
+myDA.tsa_auto_ARIMA(rate1[1:])
+myDA.tsa_auto_ARCH(rate1[1:])
 
 # ---波动率惯性分析：1期波动与n期波动的秩相关系数曲线
-
-
+rate1.corr(rate1.shift(1),method="pearson")
+rate1.corr(rate1.shift(1),method="kendall")
+rate1.corr(rate1.shift(1),method="spearman")
 
 
