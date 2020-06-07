@@ -80,11 +80,27 @@ myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500,shift=1)
 
 #%%
 ## ---转换技术指标
+rate1 = eurusd["rate"]
 close = eurusd["close"]
-rsi = myDA.indi.rsi(close,period=13)
-sma = myDA.indi.sma(close,period=13)
-
-
 import talib
-rsi1 = talib.RSI(close,timeperiod=13)
+rsi = talib.RSI(close,timeperiod=13)
+myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
+
+
+rate1.corr(rsi.shift(-1), method="pearson")  #！！！当天波动与明天rsi指标关系 0.329
+rate1.corr(rsi.shift(-1), method="kendall")  #！！！当天波动与明天rsi指标关系 0.329
+rate1.corr(rsi.shift(-1), method="spearman") #！！！当天波动与明天rsi指标关系 0.329
+
+rsi_rate = rsi.pct_change(periods=1)
+rate1.corr(rsi_rate.shift(1), method="pearson")
+
+
+# 两天波动的信息包括今天和昨天，所以今天的波动与两天的波动、昨天的波动与两天的波动 相关性都大。
+# 其实无意义，两天波动可以通过运用公式，把一天的波动作为变量来算出。
+rate2 = close.pct_change(periods=2)
+rate1.corr(rate2.shift(-1), method="pearson")
+rate2.corr(rate1.shift(1), method="pearson")
+
+
+
 
