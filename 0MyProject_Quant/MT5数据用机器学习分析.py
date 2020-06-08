@@ -96,7 +96,14 @@ rate2.corr(rate1.shift(1), method="pearson")
 # 以时间向量的方式，获取指定时间之前(包括指定时间)的n个波动率
 data0 = myPjMT5.getvolatility_beforetime(rate1.index,"EURUSD","TIMEFRAME_H1",count=5)
 
-#%%
+#%% ##############################################
+# 获取非共线性的技术指标
+rate1 = eurusd["rate"]
+close = eurusd["close"]
+import talib
+rsi = talib.RSI(close,timeperiod=13)
+myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
+
 
 
 
