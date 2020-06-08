@@ -92,17 +92,36 @@ rate2 = close.pct_change(periods=2)
 rate1.corr(rate2.shift(-1), method="pearson")
 rate2.corr(rate1.shift(1), method="pearson")
 
-#%%
-# 获取指定时间向量之前/之后的n个波动率
+#%% ##############################################
+# 获取指定时间向量之前(包括指定时间)的n个波动率
+count = 5
+timeframe = "TIMEFRAME_H1"
+myMT5.__init__(True)
+before = myMT5.copy_rates_from("EURUSD",eval("myMT5.mt5."+timeframe),from_=rate1.index[-1],count=count+1)
+myMT5.shutdown()
+# 转成时间序列
+before = myMT5.rates_to_DataFrame(before,parse_time=True)
+# before.index = before["time"]
+# 增加一期收盘价收益率
+before["rate"] = before["close"].pct_change(periods=1)
+# 转成一行
+data = pd.DataFrame(before["rate"]).T
+# 索引和列名都重新命名，且丢弃NaN
+data = data.rename({"rate":before["time"].iloc[-1]})
+data.columns = [timeframe.split("_")[1]+"_before%s"%(count-i) for i in range(count+1)]
+data = data.dropna(axis=1)
 
 
 
-
-
-
-
-
-
+myMT5.__init__(True)
+before2 = myMT5.copy_rates_from("EURUSD",myMT5.mt5.TIMEFRAME_H1,from_=rate1.index[-2],count=5)
+myMT5.shutdown()
+# 转成时间序列
+before2 = myMT5.rates_to_DataFrame(before2,parse_time=True)
+before2.index = before2["time"]
+# 增加一期收盘价收益率
+before2["rate"] = before2["close"].pct_change(periods=1)
+before2["rate"]
 
 
 
