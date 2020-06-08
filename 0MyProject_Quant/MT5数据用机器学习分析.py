@@ -23,7 +23,6 @@ mypd = MyArray.MyClass_Pandas()  # 矩阵数组类(整合Pandas)
 mypdpro = MyArray.MyClass_PandasPro()  # 高级矩阵数组类
 myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 # myMql = MyMql.MyClass_MqlBackups() # Mql备份类
-# myMT5 = MyMql.MyClass_ConnectMT5(connect=False) # Python链接MetaTrader5客户端类
 # myDefault = MyDefault.MyClass_Default_Matplotlib() # matplotlib默认设置
 # myBaidu = MyWebCrawler.MyClass_BaiduPan() # Baidu网盘交互类
 # myImage = MyImage.MyClass_ImageProcess()  # 图片处理类
@@ -41,22 +40,14 @@ myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
 myKeras = MyDeepLearning.MyClass_tfKeras()  # tfKeras综合类
 myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
+myMT5 = MyMql.MyClass_ConnectMT5(connect=False) # Python链接MetaTrader5客户端类
+myPjMT5 = MyProject.MT5_MLLearning() # MT5机器学习项目类
 #------------------------------------------------------------
 
-#%%
+#%% ###################################
 # ---获取数据
-myMT5 = MyMql.MyClass_ConnectMT5(connect=True) # Python链接MetaTrader5客户端类
-eurusd = myMT5.copy_rates_range("EURUSD",myMT5.mt5.TIMEFRAME_D1,[2010,1,1,0,0,0],[2020,1,1,0,0,0])
-eurusd = myMT5.rates_to_DataFrame(eurusd,True)
-eurusd.index = eurusd["time"]
-myMT5.shutdown()
-# ---数据清洗
-eurusd.isnull().sum() # 是否有缺失值
-eurusd["rate"] = eurusd["close"].pct_change(periods=1) # 增加一期收盘价收益率
-eurusd["rateInt"] = 0
-eurusd["rateInt"][np.isnan(eurusd["rate"])] = np.NAN
-eurusd["rateInt"][eurusd["rate"]>0] =1
-eurusd["rateInt"][eurusd["rate"]<0] =-1
+eurusd = myPjMT5.getsymbolrates("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0])
+close = eurusd["close"]
 rate1 = eurusd["rate"]
 
 #%%
@@ -103,6 +94,20 @@ rate2.corr(rate1.shift(1), method="pearson")
 
 #%%
 # 获取指定时间向量之前/之后的n个波动率
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
