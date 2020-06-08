@@ -46,7 +46,7 @@ myPjMT5 = MyProject.MT5_MLLearning() # MT5机器学习项目类
 
 #%% ###################################
 # ---获取数据
-eurusd = myPjMT5.getsymbolrates("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0])
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
 close = eurusd["close"]
 rate1 = eurusd["rate"]
 
@@ -93,37 +93,10 @@ rate1.corr(rate2.shift(-1), method="pearson")
 rate2.corr(rate1.shift(1), method="pearson")
 
 #%% ##############################################
-# 获取指定时间向量之前(包括指定时间)的n个波动率
-count = 5
-timeframe = "TIMEFRAME_H1"
-myMT5.__init__(True)
-before = myMT5.copy_rates_from("EURUSD",eval("myMT5.mt5."+timeframe),from_=rate1.index[-1],count=count+1)
-myMT5.shutdown()
-# 转成时间序列
-before = myMT5.rates_to_DataFrame(before,parse_time=True)
-# before.index = before["time"]
-# 增加一期收盘价收益率
-before["rate"] = before["close"].pct_change(periods=1)
-# 转成一行
-data = pd.DataFrame(before["rate"]).T
-# 索引和列名都重新命名，且丢弃NaN
-data = data.rename({"rate":before["time"].iloc[-1]})
-data.columns = [timeframe.split("_")[1]+"_before%s"%(count-i) for i in range(count+1)]
-data = data.dropna(axis=1)
+# 以时间向量的方式，获取指定时间之前(包括指定时间)的n个波动率
+data0 = myPjMT5.getvolatility_beforetime(rate1.index,"EURUSD","TIMEFRAME_H1",count=5)
 
-
-
-myMT5.__init__(True)
-before2 = myMT5.copy_rates_from("EURUSD",myMT5.mt5.TIMEFRAME_H1,from_=rate1.index[-2],count=5)
-myMT5.shutdown()
-# 转成时间序列
-before2 = myMT5.rates_to_DataFrame(before2,parse_time=True)
-before2.index = before2["time"]
-# 增加一期收盘价收益率
-before2["rate"] = before2["close"].pct_change(periods=1)
-before2["rate"]
-
-
+#%%
 
 
 
