@@ -55,7 +55,10 @@ rate = eurusd["rate"]
 
 #%% ##############################################
 # 以时间向量的方式，获取指定时间之前(包括指定时间)的n个波动率
-data0 = myPjMT5.getvolatility_beforetime(eurusd["time"],"EURUSD","TIMEFRAME_H1",count=5, updatetimeindex=True)
+beforevola = myPjMT5.getvolatility_beforetime(eurusd["time"],"EURUSD","TIMEFRAME_H1",count=5, updatetimeindex=False)
+
+data = pd.concat([eurusd, beforevola], axis=1, join="outer")
+(data == np.NaN).sum()
 
 #%%
 # ---数据解读
@@ -85,60 +88,123 @@ data0 = myPjMT5.getvolatility_beforetime(eurusd["time"],"EURUSD","TIMEFRAME_H1",
 #%% ##############################################
 # 获取非共线性的技术指标
 import talib
-#%%
+
 ## RSI - Relative Strength Index
 rsi = talib.RSI(close,timeperiod=13)
-myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
+rsi.name = "rsi"
+# myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
+#
+# rate.corr(rsi.shift(-1), method="pearson")  #！！！当天波动与明天rsi指标关系 0.329
+# rate.corr(rsi.shift(-1), method="kendall")  #！！！当天波动与明天rsi指标关系 0.329
+# rate.corr(rsi.shift(-1), method="spearman") #！！！当天波动与明天rsi指标关系 0.329
+#
+# rsi_rate = rsi.pct_change(periods=1)
+# rate.corr(rsi_rate.shift(1), method="pearson") # -0.029
 
-rate.corr(rsi.shift(-1), method="pearson")  #！！！当天波动与明天rsi指标关系 0.329
-rate.corr(rsi.shift(-1), method="kendall")  #！！！当天波动与明天rsi指标关系 0.329
-rate.corr(rsi.shift(-1), method="spearman") #！！！当天波动与明天rsi指标关系 0.329
-
-rsi_rate = rsi.pct_change(periods=1)
-rate.corr(rsi_rate.shift(1), method="pearson") # -0.029
-#%%
 ## ATR - Average True Range
 atr = talib.ATR(high, low, close, timeperiod=1)
-myDA.tsa_auto_test(atr.dropna())  # 平稳过程，可以分析
+atr.name="atr"
+# myDA.tsa_auto_test(atr.dropna())  # 平稳过程，可以分析
+#
+# rate.corr(atr, method="pearson")
+# rate.corr(atr, method="kendall")
+# rate.corr(atr, method="spearman")
 
-rate.corr(atr, method="pearson")
-rate.corr(atr, method="kendall")
-rate.corr(atr, method="spearman")
-#%%
 ## CCI - Commodity Channel Index
 cci = talib.CCI(high, low, close, timeperiod=13)
-myDA.tsa_auto_test(cci.dropna())  # 平稳过程，可以分析
+cci.name = "cci"
+# myDA.tsa_auto_test(cci.dropna())  # 平稳过程，可以分析
+#
+# rate.corr(cci, method="pearson")
+# rate.corr(cci, method="kendall")
+# rate.corr(cci, method="spearman")
 
-rate.corr(cci, method="pearson")
-rate.corr(cci, method="kendall")
-rate.corr(cci, method="spearman")
-#%%
 ## MACD - Moving Average Convergence/Divergence
 macd, _, _ = talib.MACD(close, fastperiod=12, slowperiod=26, signalperiod=9)
-myDA.tsa_auto_test(macd.dropna())  # 平稳过程，可以分析
+macd.name = "macd"
+# myDA.tsa_auto_test(macd.dropna())  # 平稳过程，可以分析
+#
+# rate.corr(macd, method="pearson")
+# rate.corr(macd, method="kendall")
+# rate.corr(macd, method="spearman")
 
-rate.corr(macd, method="pearson")
-rate.corr(macd, method="kendall")
-rate.corr(macd, method="spearman")
-#%%
 ## SAR - Parabolic SAR
 sar = talib.SAR(high, low, acceleration=0.02, maximum=0.2)
-myDA.tsa_auto_test(sar.dropna())  # 非平稳过程
+# myDA.tsa_auto_test(sar.dropna())  # 非平稳过程
 sar_diff = sar.diff(1)            # 算一阶差分
-myDA.tsa_auto_test(sar_diff.dropna())  # 平稳过程
-#%%
+sar_diff.name = "sar_diff"
+# myDA.tsa_auto_test(sar_diff.dropna())  # 平稳过程
+
 ## BBANDS - Bollinger Bands
 upperband, middleband, lowerband = talib.BBANDS(close, timeperiod=14, nbdevup=2, nbdevdn=2, matype=0)
 uplowerdiff = upperband-lowerband
-myDA.tsa_auto_test(uplowerdiff.dropna())  # 非平稳过程
-
-
+uplowerdiff.name = "uplowerdiff"
+# myDA.tsa_auto_test(uplowerdiff.dropna())  # 非平稳过程
+#
 #%% #######################################################
-# 建模分析
+# 特征整合
+data["rate_b1"]=data["rate"].shift(1)
+data["rate_b2"]=data["rate"].shift(2)
+data["rate_b3"]=data["rate"].shift(3)
+data["rate_b4"]=data["rate"].shift(4)
+data["rate_b5"]=data["rate"].shift(5)
+## 我们希望昨天的特征能与今天的波动匹配，这样今天的特征就可以预测明天的波动。
+data["rateInt"] = data["rateInt"].shift(-1)
+
+totaldata = pd.concat([data,rsi,atr,cci,macd,sar_diff,uplowerdiff],axis=1)
+totaldata.dropna(axis=0,inplace=True)
+orderX = ["rate","rate_b1","rate_b2","rate_b3","rate_b4","rate_b5","close","H1_before0","H1_before1","H1_before2","H1_before3","H1_before4","rsi","atr","cci","macd","sar_diff","uplowerdiff"]
+len(orderX)   # 18
+orderY = ["rateInt"]
+dataX = totaldata[orderX]
+dataY = totaldata[orderY]
+dataY[dataY==-1] = 0
+#%%
+# 建模
+from tensorflow.keras import models
+model = models.Sequential() # 顺序模型
+
+from tensorflow.keras import layers
+model.add(layers.Dense(64,activation='relu',input_shape=(18,)))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(64, activation='relu'))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation='sigmoid'))
+model.compile(loss='binary_crossentropy',
+              optimizer='rmsprop',
+              metrics=['accuracy'])
+model.fit(dataX, dataY, epochs=20, batch_size=32)
 
 
 
+#%%
+dataX.shape # (2556, 18)
+X = dataX.values.reshape(2556,1,18)
+X.shape
+X[0]
+dataY.shape # (2556, 1)
+Y = dataY.values
+Y.shape
+Y[0]
 
+
+from tensorflow.keras import models
+model = models.Sequential() # 顺序模型
+
+from tensorflow.keras import layers
+model.add(layers.LSTM(64, input_shape=(1,18), return_sequences=True))
+model.add(layers.Dropout(0.5))
+model.add(layers.LSTM(64, return_sequences=True))
+model.add(layers.Dropout(0.5))
+model.add(layers.LSTM(64,return_sequences=True))
+model.add(layers.Dropout(0.5))
+model.add(layers.Dense(1, activation='sigmoid'))
+model.compile(loss='binary_crossentropy',
+              optimizer='rmsprop',
+              metrics=['accuracy'])
+model.fit(X, Y, epochs=20, batch_size=32)
 
 
 
