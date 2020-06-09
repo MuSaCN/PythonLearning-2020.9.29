@@ -47,62 +47,94 @@ myPjMT5 = MyProject.MT5_MLLearning() # MT5机器学习项目类
 #%% ###################################
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
+open = eurusd["open"]
+high = eurusd["high"]
+low = eurusd["low"]
 close = eurusd["close"]
-rate1 = eurusd["rate"]
-
-#%%
-# ---数据解读
-eurusd.dtypes
-myDA.describe(eurusd)
-data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
-                     "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
-myDA.indi.candle_ohlc(data)
-
-# ---波动率分析
-myDA.tsa_auto_test(rate1[1:])
-myDA.tsa_auto_ARIMA(rate1[1:])
-myDA.tsa_auto_ARCH(rate1[1:])
-
-# ---序列自相关系数分析：1期波动与其滞后的相关系数曲线
-myDA.tsa.plot_selfcorrelation(rate1,count=500)
-
-# ---序列惯性分析：1期波动与n期波动的相关系数
-myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500,shift=1)
-
-#%%
-## ---转换技术指标
-rate1 = eurusd["rate"]
-close = eurusd["close"]
-import talib
-rsi = talib.RSI(close,timeperiod=13)
-myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
-
-
-rate1.corr(rsi.shift(-1), method="pearson")  #！！！当天波动与明天rsi指标关系 0.329
-rate1.corr(rsi.shift(-1), method="kendall")  #！！！当天波动与明天rsi指标关系 0.329
-rate1.corr(rsi.shift(-1), method="spearman") #！！！当天波动与明天rsi指标关系 0.329
-
-rsi_rate = rsi.pct_change(periods=1)
-rate1.corr(rsi_rate.shift(1), method="pearson")
-
-
-# 两天波动的信息包括今天和昨天，所以今天的波动与两天的波动、昨天的波动与两天的波动 相关性都大。
-# (其实无意义，两天波动可以通过运用公式，把一天的波动作为变量来算出。)
-rate2 = close.pct_change(periods=2)
-rate1.corr(rate2.shift(-1), method="pearson")
-rate2.corr(rate1.shift(1), method="pearson")
+rate = eurusd["rate"]
 
 #%% ##############################################
 # 以时间向量的方式，获取指定时间之前(包括指定时间)的n个波动率
-data0 = myPjMT5.getvolatility_beforetime(rate1.index,"EURUSD","TIMEFRAME_H1",count=5)
+data0 = myPjMT5.getvolatility_beforetime(eurusd["time"],"EURUSD","TIMEFRAME_H1",count=5, updatetimeindex=True)
+
+#%%
+# ---数据解读
+# eurusd.dtypes
+# myDA.describe(eurusd)
+# data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
+#                      "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
+# myDA.indi.candle_ohlc(data)
+#
+# # ---波动率分析
+# myDA.tsa_auto_test(rate1[1:])
+# myDA.tsa_auto_ARIMA(rate1[1:])
+# myDA.tsa_auto_ARCH(rate1[1:])
+#
+# # ---序列自相关系数分析：1期波动与其滞后的相关系数曲线
+# myDA.tsa.plot_selfcorrelation(rate1,count=500)
+#
+# # ---序列惯性分析：1期波动与n期波动的相关系数
+# myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500,shift=1)
+#
+# 两天波动的信息包括今天和昨天，所以今天的波动与两天的波动、昨天的波动与两天的波动 相关性都大。
+# (其实无意义，两天波动可以通过运用公式，把一天的波动作为变量来算出。)
+# rate2 = close.pct_change(periods=2)
+# rate.corr(rate2.shift(-1), method="pearson") # 0.7017
+# rate2.corr(rate.shift(1), method="pearson") # 0.7017
 
 #%% ##############################################
 # 获取非共线性的技术指标
-rate1 = eurusd["rate"]
-close = eurusd["close"]
 import talib
+#%%
+## RSI - Relative Strength Index
 rsi = talib.RSI(close,timeperiod=13)
 myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
+
+rate.corr(rsi.shift(-1), method="pearson")  #！！！当天波动与明天rsi指标关系 0.329
+rate.corr(rsi.shift(-1), method="kendall")  #！！！当天波动与明天rsi指标关系 0.329
+rate.corr(rsi.shift(-1), method="spearman") #！！！当天波动与明天rsi指标关系 0.329
+
+rsi_rate = rsi.pct_change(periods=1)
+rate.corr(rsi_rate.shift(1), method="pearson") # -0.029
+#%%
+## ATR - Average True Range
+atr = talib.ATR(high, low, close, timeperiod=1)
+myDA.tsa_auto_test(atr.dropna())  # 平稳过程，可以分析
+
+rate.corr(atr, method="pearson")
+rate.corr(atr, method="kendall")
+rate.corr(atr, method="spearman")
+#%%
+## CCI - Commodity Channel Index
+cci = talib.CCI(high, low, close, timeperiod=13)
+myDA.tsa_auto_test(cci.dropna())  # 平稳过程，可以分析
+
+rate.corr(cci, method="pearson")
+rate.corr(cci, method="kendall")
+rate.corr(cci, method="spearman")
+#%%
+## MACD - Moving Average Convergence/Divergence
+macd, _, _ = talib.MACD(close, fastperiod=12, slowperiod=26, signalperiod=9)
+myDA.tsa_auto_test(macd.dropna())  # 平稳过程，可以分析
+
+rate.corr(macd, method="pearson")
+rate.corr(macd, method="kendall")
+rate.corr(macd, method="spearman")
+#%%
+## SAR - Parabolic SAR
+sar = talib.SAR(high, low, acceleration=0.02, maximum=0.2)
+myDA.tsa_auto_test(sar.dropna())  # 非平稳过程
+sar_diff = sar.diff(1)            # 算一阶差分
+myDA.tsa_auto_test(sar_diff.dropna())  # 平稳过程
+#%%
+## BBANDS - Bollinger Bands
+upperband, middleband, lowerband = talib.BBANDS(close, timeperiod=14, nbdevup=2, nbdevdn=2, matype=0)
+uplowerdiff = upperband-lowerband
+myDA.tsa_auto_test(uplowerdiff.dropna())  # 非平稳过程
+
+
+#%% #######################################################
+# 建模分析
 
 
 
