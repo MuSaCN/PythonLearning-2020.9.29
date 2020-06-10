@@ -36,5 +36,3 @@ while True:
     msg = mySMT5.receive()
     print("接收到的信息为：",msg)
     mySMT5.send(input("input your message to send: "))
-
-
