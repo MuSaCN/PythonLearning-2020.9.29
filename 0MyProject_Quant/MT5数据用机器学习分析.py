@@ -88,10 +88,13 @@ data = pd.concat([eurusd, beforevola], axis=1, join="outer")
 #%% ##############################################
 # 获取非共线性的技术指标
 import talib
-
+len(close)
 ## RSI - Relative Strength Index
+import time
+t0 = time.process_time()
 rsi = talib.RSI(close,timeperiod=13)
 rsi.name = "rsi"
+print(time.process_time()-t0)
 # myDA.tsa_auto_test(rsi.dropna())  # 平稳过程，可以分析
 #
 # rate.corr(rsi.shift(-1), method="pearson")  #！！！当天波动与明天rsi指标关系 0.329
