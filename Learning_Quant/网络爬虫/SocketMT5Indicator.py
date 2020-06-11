@@ -45,7 +45,7 @@ myPjMT5 = MyProject.MT5_MLLearning() # MT5机器学习项目类
 #------------------------------------------------------------
 
 #%%
-# 通过Socket方式只能分块获取数据，速度太慢
+# (淘汰)通过Socket方式只能分块获取数据，速度太慢，且非常容易出错。
 # SocketIndicator
 mySMT5 = MyMql.MyClass_SocketMT5(address='127.0.0.1', port=9090)
 
@@ -57,9 +57,9 @@ symbol = "EURUSD"
 period = "PERIOD_M1"
 
 import time
-t0 = time.process_time()
+tp = time.process_time()
 data = mySMT5.interaction_indicator(param,indicator,t0,t1,symbol,period)
-print(time.process_time()-t0)
+print("传输数据耗时：",time.process_time()-tp)
 
 
 
