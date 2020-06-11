@@ -32,36 +32,9 @@ myBTV = MyBackTest.MyClass_BackTestVector()  # 向量型回测类
 #%%
 mySMT5 = MyMql.MyClass_SocketMT5(address='127.0.0.1', port=9090)
 
-while True:
-    msg = mySMT5.receive(bufsize = 40000000000)
-    print("接收到的信息为：",msg)
-    mySMT5.send(input("input your message to send: "))
-
-#%%
-# 通过Socket方式只能分块获取数据，速度太慢，淘汰
-# SocketIndicator
-
-mySMT5 = MyMql.MyClass_SocketMT5(address='127.0.0.1', port=9090)
-
+# while True:
 msg = mySMT5.receive(bufsize = 30000000000)
-print("接收到的信息为：", msg)
-mySMT5.send("Request SocketIndicator")
-
-data = []
-i=0
-while True:
-    msg = mySMT5.receive(bufsize = 30000000000)
-    print("接收到的信息为：", msg)
-    if msg == "OK":
-        break
-    data.append(msg)
-    mySMT5.send("next: "+str(i)+"/"+str(data[0]))
-    i += 1
-
-#%%
-len(data)
-
-
-
+print("接收到的信息为：",msg)
+mySMT5.send(input("input your message to send: "))
 
 
