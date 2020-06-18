@@ -62,11 +62,11 @@ data = pd.concat([eurusd, beforevola], axis=1, join="outer")
 
 #%%
 # ---数据解读
-# eurusd.dtypes
-# myDA.describe(eurusd)
-# data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
-#                      "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
-# myDA.indi.candle_ohlc(data)
+eurusd.dtypes
+myDA.describe(eurusd)
+data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
+                     "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
+myDA.indi.candle_ohlc(data[-100:-1])
 #
 # # ---波动率分析
 # myDA.tsa_auto_test(rate1[1:])
