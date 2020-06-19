@@ -44,7 +44,48 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
+# # 第十一章 特征工程之数据预处理（11.5）
+# # 11.5 特征筛选：WOE值与IV值
+# 11.5.3 WOE值与IV值的代码实现
+# 构造数据
+data = pd.DataFrame([[22,1],[25,1],[20,0],[35,0],[32,1],[38,0],[50,0],[46,1]], columns=['年龄', '是否违约'])
+feature = data['年龄']
+y = data['是否违约']
+myDA.woe_iv(feature,y,cutbins=3, showprint=True)
 
+
+# # 11.6 多重共线性的分析与处理
+import pandas as pd
+filepath = r"C:\Users\i2011\PycharmProjects\PythonLearning\Python大数据分析与机器学习 商业案例实战\第11章 特征工程之数据预处理\源代码汇总_PyCharm格式\数据.xlsx"
+df = pd.read_excel(filepath)
+df.head()
+X = df.drop(columns='Y')
+y = df['Y']
+myDA.multicollinearity(X)
+
+
+# # 11.7 过采样和欠采样
+# 11.7.1 过采样
+import pandas as pd
+filepath = r"C:\Users\i2011\PycharmProjects\PythonLearning\Python大数据分析与机器学习 商业案例实战\第11章 特征工程之数据预处理\源代码汇总_PyCharm格式\信用卡数据.xlsx"
+data = pd.read_excel(filepath)
+data.head()
+X = data.drop(columns='分类')
+y = data['分类']
+myDA.Counter(y)
+
+X_oversampled, y_oversampled = myDA.RandomOverSampler(X,y,random_state=0)
+print(myDA.Counter(y_oversampled))
+print(X_oversampled.shape)
+
+# SMOTE法 过采样，它是一种针对随机过采样容易导致过拟合问题的改进方案。它随机选取少数类中一个样本点，然后找到离该样本最近的n=4个样本点。在选中的样本点和最近的4个样本点分别连成的4条线段上随机选取4点生成新样本点。
+X_smotesampled, y_smotesampled = myDA.SMOTE(X,y)
+print(myDA.Counter(y_smotesampled))
+
+# 欠采样
+X_undersampled, y_undersampled = myDA.RandomUnderSampler(X,y)
+print(myDA.Counter(y_undersampled))
+print(X_undersampled.shape)
 
 
 
