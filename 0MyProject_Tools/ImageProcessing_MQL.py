@@ -1,5 +1,6 @@
 # Author:Zhang Yuan
 # ------------------使用说明------------------------------------------------
+# 放到桌面的 abc文件夹 下
 # 文件命名规则：
 #   logo原始文件命名规则：abc_logo.png --> abc_logo_*_DEMO.png / abc_logo_*_Paid.png
 #   screenshot原始文件(无_logo标识符)命名规则：abc.png --> abc_640_480.png
