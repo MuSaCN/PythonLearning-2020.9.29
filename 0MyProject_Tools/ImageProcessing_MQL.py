@@ -18,9 +18,9 @@ filepath = mypath.get_desktop_path()+"\\abc"
 
 # ---需要添加到logo图片的指标字样
 # IndicatorName = ["AC","Alligator","AO","BWMFI","Fractals","Gator","ATR","BearsPower","BullsPower","CCI","Chaikin","DeMarker","Force","MACD","Momentum","OsMA","RSI","RSV","Stochastic","TriX","WPR","AD","MFI","OBV","Volumes","ADX","ADXWilder","AMA","Bands","DEMA","Envelopes","FrAMA","Ichimoku","MA","SAR","StdDev","TEMA","VIDyA"]  # ***每次需修改***
-IndicatorName = ["Pro-MT5","Pro-MT4"]
+IndicatorName = ["MT5","MT4"]
 
 myIMql.__init__(filepath)
 myIMql.screen_shot()
-myIMql.logo(IndicatorName,y=115,size=30)
+myIMql.logo(IndicatorName,y=160,size=30)
 
