@@ -43,20 +43,44 @@ myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
 #------------------------------------------------------------
 
 
+timesteps = 100
+input_features = 32
+output_features = 64
+inputs = np.random.random((timesteps, input_features)) # (100, 32)
+inputs.shape
+state_t = np.zeros((output_features,)) # (64,)
+state_t.shape
+
+W = np.random.random((output_features, input_features))  # (64, 32)
+U = np.random.random((output_features, output_features)) # (64, 64)
+b = np.random.random((output_features,)) # (64,)
+
+successive_outputs = []
+for input_t in inputs:
+    output_t = np.tanh(np.dot(W, input_t) + np.dot(U, state_t) + b)
+    successive_outputs.append(output_t)
+    state_t = output_t
+final_output_sequence = np.stack(successive_outputs, axis=0) # (100, 64)
+final_output_sequence.shape
 
 #%%
-
-import keras
+from tensorflow import keras
 keras.__version__
 
 #%%
-from keras.models import Sequential
-from keras.layers import Embedding, SimpleRNN
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
 
 model = Sequential()
 model.add(Embedding(10000, 32))
 model.add(SimpleRNN(32))
 model.summary()
+
+model = Sequential()
+model.add(SimpleRNN(2, return_sequences=True, input_shape=(3, 2)))
+model.add(SimpleRNN(3))
+model.summary()
+
 
 #%%
 
@@ -76,8 +100,8 @@ model.summary()
 
 #%%
 
-from keras.datasets import imdb
-from keras.preprocessing import sequence
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing import sequence
 
 max_features = 10000  # 作为特征的单词个数
 maxlen = 500  # 在这么多单词之后截断文本（这些单词都属于前 max_features 个最常见的单词）
@@ -87,6 +111,7 @@ print('Loading data...')
 (input_train, y_train), (input_test, y_test) = imdb.load_data(num_words=max_features)
 print(len(input_train), 'train sequences')
 print(len(input_test), 'test sequences')
+input_train.shape
 np.array(input_train[0]).shape
 
 print('Pad sequences (samples x time)')

@@ -23,7 +23,6 @@ mypd = MyArray.MyClass_Pandas()  # 矩阵数组类(整合Pandas)
 mypdpro = MyArray.MyClass_PandasPro()  # 高级矩阵数组类
 myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
 # myMql = MyMql.MyClass_MqlBackups() # Mql备份类
-# myMT5 = MyMql.MyClass_ConnectMT5(connect=False) # Python链接MetaTrader5客户端类
 # myDefault = MyDefault.MyClass_Default_Matplotlib() # matplotlib默认设置
 # myBaidu = MyWebCrawler.MyClass_BaiduPan() # Baidu网盘交互类
 # myImage = MyImage.MyClass_ImageProcess()  # 图片处理类
@@ -39,16 +38,19 @@ myWebAPP = MyWebCrawler.MyClass_Web_APPIntegration()  # 爬虫整合应用类
 myEmail = MyWebCrawler.MyClass_Email()  # 邮箱交互类
 myReportA = MyQuant.MyClass_ReportAnalysis()  # 研报分析类
 myFactorD = MyQuant.MyClass_Factor_Detection()  # 因子检测类
-myKeras = MyDeepLearning.MyClass_Keras()  # Keras综合类
+myKeras = MyDeepLearning.MyClass_tfKeras()  # tfKeras综合类
+myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
+myMT5 = MyMql.MyClass_ConnectMT5(connect=False) # Python链接MetaTrader5客户端类
+myPjMT5 = MyProject.MT5_MLLearning() # MT5机器学习项目类
 #------------------------------------------------------------
 
 
 
 #%%
-import keras
+from tensorflow import keras
 keras.__version__
 data_dir = 'C:\\Users\\i2011\\.keras\\jena_climate_2009_2016.csv'
-float_data = myKeras.read_csv_and_standardization(data_dir,traincount=200000)
+float_data = myKeras.cnn1d.read_csv_and_standardization(data_dir,traincount=200000)
 float_data.shape
 
 #%%
@@ -56,9 +58,9 @@ lookback = 1440
 step = 6
 delay = 144
 batch_size = 128
-from keras.models import Sequential
-from keras import layers
-from keras.optimizers import RMSprop
+from tensorflow.keras.models import Sequential
+from tensorflow.keras import layers
+from tensorflow.keras.optimizers import RMSprop
 model = Sequential()
 model.add(layers.Flatten(input_shape=(lookback // step, float_data.shape[-1])))
 model.add(layers.Dense(32, activation='relu'))
