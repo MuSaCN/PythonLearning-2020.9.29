@@ -184,7 +184,7 @@ model.fit(dataX, dataY, epochs=20, batch_size=32)
 
 #%%
 dataX.shape # (2556, 18)
-X = dataX.values.reshape(2556,1,18)
+X = dataX.values.reshape(2556,1,18)  # rnn需要设置timestep，这里为1
 X.shape
 X[0]
 dataY.shape # (2556, 1)
