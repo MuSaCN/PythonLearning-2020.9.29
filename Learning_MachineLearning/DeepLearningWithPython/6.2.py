@@ -118,8 +118,8 @@ print('Pad sequences (samples x time)')
 # pad_sequences 将多个序列截断或补齐为相同长度。
 input_train = sequence.pad_sequences(input_train, maxlen=maxlen) # 原长218，先长 maxlen
 input_test = sequence.pad_sequences(input_test, maxlen=maxlen)
-print('input_train shape:', input_train.shape)
-print('input_test shape:', input_test.shape)
+print('input_train shape:', input_train.shape)  #  (25000, 500)
+print('input_test shape:', input_test.shape)  #  (25000, 500)
 
 
 #%%
