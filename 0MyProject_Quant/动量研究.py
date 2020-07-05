@@ -62,9 +62,10 @@ signaldata = pd.concat([price, price.shift(k), pd.Series(0,index=eurusd.index)],
 signaldata.columns = ["price","price_shift","signal"]
 # 仅分析上涨信号
 shift = signaldata["price"] > signaldata["price_shift"]
+shift[6:] = False
 signaldata["signal"][shift] = 1
 
 #%%
 outStrat, outSignal = myBTV.signal_quality(signaldata["signal"], price_DataFrame=eurusd, holding=1, lag_trade=1, plotRet=False, plotStrat=True)
 
-
+# 检测下空头是否正确
