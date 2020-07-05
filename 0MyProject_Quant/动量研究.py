@@ -9,7 +9,7 @@ import statsmodels.api as sm
 from scipy import stats
 
 #------------------------------------------------------------
-__mypath__ = MyPath.MyClass_Path("\\0MyProject_Quant")  # 路径类
+__mypath__ = MyPath.MyClass_Path("")  # 路径类
 myfile = MyFile.MyClass_File()  # 文件操作类
 myword = MyFile.MyClass_Word()  # word生成类
 myexcel = MyFile.MyClass_Excel()  # excel生成类
@@ -45,19 +45,26 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
 #%% ###################################
+import warnings
+warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
-open = eurusd["open"]
-high = eurusd["high"]
-low = eurusd["low"]
-close = eurusd["close"]
-rate = eurusd["rate"]
+
+#%%
+# ---计算信号
+price = eurusd.close   # 设定价格为考虑收盘价
 
 
+#%%
+k = 1                  # 动量的向左时期
+# 信号分析数据
+signaldata = pd.concat([price, price.shift(k), pd.Series(0,index=eurusd.index)],axis=1)
+signaldata.columns = ["price","price_shift","signal"]
+# 仅分析上涨信号
+shift = signaldata["price"] > signaldata["price_shift"]
+signaldata["signal"][shift] = 1
 
-
-
-
-
+#%%
+outStrat, outSignal = myBTV.signal_quality(signaldata["signal"], price_DataFrame=eurusd, holding=1, lag_trade=1, plotRet=False, plotStrat=True)
 
 
