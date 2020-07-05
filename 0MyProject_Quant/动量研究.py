@@ -44,6 +44,14 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
+#%% ###################################
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
+open = eurusd["open"]
+high = eurusd["high"]
+low = eurusd["low"]
+close = eurusd["close"]
+rate = eurusd["rate"]
 
 
 
