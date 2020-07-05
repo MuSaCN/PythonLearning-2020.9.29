@@ -55,17 +55,16 @@ eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,
 price = eurusd.close   # 设定价格为考虑收盘价
 
 
-#%%
 k = 1                  # 动量的向左时期
 # 信号分析数据
 signaldata = pd.concat([price, price.shift(k), pd.Series(0,index=eurusd.index)],axis=1)
 signaldata.columns = ["price","price_shift","signal"]
 # 仅分析上涨信号
 shift = signaldata["price"] > signaldata["price_shift"]
-shift[6:] = False
 signaldata["signal"][shift] = 1
 
 #%%
 outStrat, outSignal = myBTV.signal_quality(signaldata["signal"], price_DataFrame=eurusd, holding=1, lag_trade=1, plotRet=False, plotStrat=True)
 
-# 检测下空头是否正确
+
+
