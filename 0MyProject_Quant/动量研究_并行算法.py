@@ -107,7 +107,7 @@ if __name__ == '__main__':
     t1 = timeit.default_timer()
     print("\n",'multi processing 耗时为：', t1 - t0)  # 耗时为：95.5032736
     print(result)
-    folder = __mypath__.get_desktop_path() + "\\动量研究"
+    folder = __mypath__.get_desktop_path() + "\\__动量研究__"
     __mypath__.makedirs(folder, True)
     result.to_excel(folder+"\\result.xlsx")
 
