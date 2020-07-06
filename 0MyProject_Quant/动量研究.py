@@ -53,17 +53,23 @@ eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,
 #%%
 # ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
+# 外部参数
+k_end = 300
+holding_end = 50
+
 # 原始计算
-import time
-t0 = time.process_time()
-temp = 0
+import timeit
+t0 = timeit.default_timer()
+
+temp = 0 # 用于打印进度
 result = pd.DataFrame() # 要放到外面
-for k in range(1, 30 + 1):
-    for holding in range(1, 10 + 1):
-        if holding > k: continue
-        temp += 1
+for k in range(1, k_end + 1):
+    for holding in range(1, holding_end + 1):
         # 打印进度
-        print("\r", "{}/{}".format(temp, 15000), end="", flush=True)
+        temp += 1
+        print("\r", "{}/{}".format(temp, k_end * holding_end), end="", flush=True)
+        # 退出条件
+        if holding > k: continue
         # 获取信号数据
         signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
         # 信号分析
@@ -83,67 +89,10 @@ for k in range(1, 30 + 1):
         # ---
         if cumRet > marketRet and cumRet > 0 and sharpe > 0:
             result = result.append(out, ignore_index=True)
-t1 = time.process_time()
-print(t1 - t0)
+
+t1 = timeit.default_timer()
+print("耗时为：",t1 - t0) # 耗时为： 363.2092888
 result
-
-
-#%%
-# map()算法
-price = eurusd.close   # 设定价格为考虑收盘价
-temp = 0
-def func(k, holding):
-    global temp
-    temp += 1
-    # 打印进度
-    print("\r", "{}/{}".format(temp, 15000), end="", flush=True)
-    #
-    if holding > k: return None
-    # 获取信号数据
-    signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
-    # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
-    # 设置信号统计
-    out = outStrat["BuyOnly"]
-    winRate = out["winRate"]
-    cumRet = out["cumRet"]
-    sharpe = out["sharpe"]
-    maxDD = out["maxDD"]
-    count = out["TradeCount"]
-    marketRet = outSignal["市场收益率"]
-    annRet = outSignal["平均单期的年化收益率"]
-    out["k"] = k
-    out["holding"] = holding
-    out["annRet"] = annRet
-    # ---
-    result = pd.DataFrame()  # 要放到里面
-    if cumRet > marketRet and cumRet > 0 and sharpe > 0:
-        result = result.append(out, ignore_index=True)
-    return result
-
-import time
-t0 = time.process_time()
-para1=[]
-para2=[]
-for k in range(1, 30 + 1):
-    for holding in range(1, 10 + 1):
-        if holding > k: continue
-        para1.append(k)
-        para2.append(holding)
-b = map(func,para1,para2)
-b = list(b)
-t1 = time.process_time()
-print(t1 - t0)
-result = pd.concat(b,ignore_index=True) # 可以过滤None
-
-
-
-
-
-
-
-
-
 
 
 

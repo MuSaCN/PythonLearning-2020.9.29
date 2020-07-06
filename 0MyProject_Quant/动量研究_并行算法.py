@@ -45,28 +45,28 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
 
-
-#%% ###################################
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
 
 
-
-#%%
 # ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
-# 并行算法
-temp = 0
-# 必须把总结果写成函数
-def func(k):
-    holding = 1
+# 外部参数
+k_end = 300
+holding_end = 50
+
+# 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递
+temp = 0 # 用来显示进度
+def func(para):
+    k = para[0]
+    holding = para[1]
+    # 打印进度
     global temp
     temp += 1
-    # 打印进度
-    print("\r", "{}/{}".format(temp, 15000), end="", flush=True)
-    #
+    print("\r", "{}/{}".format(temp, k_end * holding_end / 8), end="", flush=True)
+    # 退出条件
     if holding > k: return None
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
@@ -90,16 +90,17 @@ def func(k):
         result = result.append(out, ignore_index=True)
     return result
 
+import timeit
+t0 = timeit.default_timer()
+
 # 多进程必须要在这里写
 if __name__ == '__main__':
+    # ---必须要写在里面
     import multiprocessing
     cores = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=cores)
-    import time
-    t0 = time.process_time()
     # ---设定参数
-    para = [(k, holding) for k in range(1, 1 + 1) for  holding in range(1, 1 + 1)]
-    para = [k for k  in range(1,3+1)]
+    para = [(k,holding) for k  in range(1,k_end+1) for holding in range(1, holding_end + 1)]
     result = []
     out = pool.map(func, para) # out结果为list
     # ---由于out结果为list，需要分开添加
@@ -108,9 +109,9 @@ if __name__ == '__main__':
     # ---
     pool.close()
     pool.join()
-    t1 = time.process_time()
-    print('multi processing time:', str(t1 - t0), 's')
     result = pd.concat(result, ignore_index=True) # 可以自动过滤None
+    t1 = timeit.default_timer()
+    print('multi processing 耗时为：', t1 - t0)     # 耗时为：103.4396599
     print(result)
 
 
