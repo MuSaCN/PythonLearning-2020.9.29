@@ -105,7 +105,7 @@ if __name__ == '__main__':
         result.append(i)
     result = pd.concat(result, ignore_index=True)  # 可以自动过滤None
     t1 = timeit.default_timer()
-    print("\n",'multi processing 耗时为：', t1 - t0)  # 耗时为：99.0931081
+    print("\n",'multi processing 耗时为：', t1 - t0)  # 耗时为：95.5032736
     print(result)
     folder = __mypath__.get_desktop_path() + "\\动量研究"
     __mypath__.makedirs(folder, True)
