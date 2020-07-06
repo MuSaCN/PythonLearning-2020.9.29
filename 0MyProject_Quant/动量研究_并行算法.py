@@ -111,28 +111,6 @@ if __name__ == '__main__':
     print(result)
     result.to_excel(__mypath__.get_desktop_path()+"\\result.xlsx")
 
-'''
-# 多进程必须要在这里写
-if __name__ == '__main__':
-    # ---必须要写在里面
-    import multiprocessing
-    cores = multiprocessing.cpu_count()
-    pool = multiprocessing.Pool(processes=cores)
-    # ---设定参数
-    para = [(k,holding) for k in range(1,k_end+1) for holding in range(1, holding_end + 1)]
-    out = pool.map(func, para) # out结果为list
-    pool.close()
-    pool.join()
-    # ---由于out结果为list，需要分开添加
-    result = []
-    for i in out:
-        result.append(i)
-    result = pd.concat(result, ignore_index=True) # 可以自动过滤None
-    t1 = timeit.default_timer()
-    print('multi processing 耗时为：', t1 - t0)     # 耗时为：103.4396599
-    print(result)
-'''
-
 
 
 
