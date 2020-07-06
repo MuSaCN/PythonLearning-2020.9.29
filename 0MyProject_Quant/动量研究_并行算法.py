@@ -65,7 +65,7 @@ def func(para):
     # 打印进度
     global temp
     temp += 1
-    print("\r", "{}/{}".format(temp, k_end * holding_end / 8), end="", flush=True)
+    print("\r", "{}/{}".format(temp*8, k_end * holding_end), end="", flush=True)
     # 退出条件
     if holding > k: return None
     # 获取信号数据
@@ -90,9 +90,28 @@ def func(para):
         result = result.append(out, ignore_index=True)
     return result
 
+
+# 设定参数
+para = [(k, holding) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1)]
+
+
 import timeit
 t0 = timeit.default_timer()
+# 多进程必须要在这里写
+if __name__ == '__main__':
+    # 必须要写在里面
+    out = myBTV.multi_processing(func , para)
+    # 由于out结果为list，需要分开添加
+    result = []
+    for i in out:
+        result.append(i)
+    result = pd.concat(result, ignore_index=True)  # 可以自动过滤None
+    t1 = timeit.default_timer()
+    print("\n",'multi processing 耗时为：', t1 - t0)  # 耗时为：99.0931081
+    print(result)
+    result.to_excel(__mypath__.get_desktop_path()+"\\result.xlsx")
 
+'''
 # 多进程必须要在这里写
 if __name__ == '__main__':
     # ---必须要写在里面
@@ -100,20 +119,19 @@ if __name__ == '__main__':
     cores = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(processes=cores)
     # ---设定参数
-    para = [(k,holding) for k  in range(1,k_end+1) for holding in range(1, holding_end + 1)]
-    result = []
+    para = [(k,holding) for k in range(1,k_end+1) for holding in range(1, holding_end + 1)]
     out = pool.map(func, para) # out结果为list
-    # ---由于out结果为list，需要分开添加
-    for i in out:
-        result.append(i)
-    # ---
     pool.close()
     pool.join()
+    # ---由于out结果为list，需要分开添加
+    result = []
+    for i in out:
+        result.append(i)
     result = pd.concat(result, ignore_index=True) # 可以自动过滤None
     t1 = timeit.default_timer()
     print('multi processing 耗时为：', t1 - t0)     # 耗时为：103.4396599
     print(result)
-
+'''
 
 
 
