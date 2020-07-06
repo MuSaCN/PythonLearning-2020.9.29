@@ -44,55 +44,24 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
+
+
 #%% ###################################
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
 
+
+
 #%%
 # ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
-# 原始计算
-import time
-t0 = time.process_time()
+# 并行算法
 temp = 0
-result = pd.DataFrame() # 要放到外面
-for k in range(1, 30 + 1):
-    for holding in range(1, 10 + 1):
-        if holding > k: continue
-        temp += 1
-        # 打印进度
-        print("\r", "{}/{}".format(temp, 15000), end="", flush=True)
-        # 获取信号数据
-        signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
-        # 信号分析
-        outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
-        # 设置信号统计
-        out = outStrat["BuyOnly"]
-        winRate = out["winRate"]
-        cumRet = out["cumRet"]
-        sharpe = out["sharpe"]
-        maxDD = out["maxDD"]
-        count = out["TradeCount"]
-        marketRet = outSignal["市场收益率"]
-        annRet = outSignal["平均单期的年化收益率"]
-        out["k"] = k
-        out["holding"] = holding
-        out["annRet"] = annRet
-        # ---
-        if cumRet > marketRet and cumRet > 0 and sharpe > 0:
-            result = result.append(out, ignore_index=True)
-t1 = time.process_time()
-print(t1 - t0)
-result
-
-
-#%%
-# map()算法
-price = eurusd.close   # 设定价格为考虑收盘价
-temp = 0
-def func(k, holding):
+# 必须把总结果写成函数
+def func(k):
+    holding = 1
     global temp
     temp += 1
     # 打印进度
@@ -121,23 +90,28 @@ def func(k, holding):
         result = result.append(out, ignore_index=True)
     return result
 
-import time
-t0 = time.process_time()
-para1=[]
-para2=[]
-for k in range(1, 30 + 1):
-    for holding in range(1, 10 + 1):
-        if holding > k: continue
-        para1.append(k)
-        para2.append(holding)
-b = map(func,para1,para2)
-b = list(b)
-t1 = time.process_time()
-print(t1 - t0)
-result = pd.concat(b,ignore_index=True) # 可以过滤None
-
-
-
+# 多进程必须要在这里写
+if __name__ == '__main__':
+    import multiprocessing
+    cores = multiprocessing.cpu_count()
+    pool = multiprocessing.Pool(processes=cores)
+    import time
+    t0 = time.process_time()
+    # ---设定参数
+    para = [(k, holding) for k in range(1, 1 + 1) for  holding in range(1, 1 + 1)]
+    para = [k for k  in range(1,3+1)]
+    result = []
+    out = pool.map(func, para) # out结果为list
+    # ---由于out结果为list，需要分开添加
+    for i in out:
+        result.append(i)
+    # ---
+    pool.close()
+    pool.join()
+    t1 = time.process_time()
+    print('multi processing time:', str(t1 - t0), 's')
+    result = pd.concat(result, ignore_index=True) # 可以自动过滤None
+    print(result)
 
 
 
