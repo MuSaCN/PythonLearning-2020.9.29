@@ -53,6 +53,19 @@ eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,
 #%%
 # ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
+
+#%%
+holding = 1
+k = 109
+# 获取信号数据
+signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+# 信号分析
+outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=True)
+
+
+#%%
+# ---计算信号，仅分析做多信号
+price = eurusd.close   # 设定价格为考虑收盘价
 # 外部参数
 k_end = 300
 holding_end = 50
