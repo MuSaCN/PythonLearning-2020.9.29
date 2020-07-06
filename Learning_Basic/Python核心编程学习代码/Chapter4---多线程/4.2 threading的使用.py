@@ -1,6 +1,9 @@
 # Author:Zhang Yuan
 #threading模块不需要繁琐的设置就可以轻松关闭线程。
 
+
+
+
 #可调用的函数实例----------------------------------------------------
 import threading
 import time

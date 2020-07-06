@@ -31,3 +31,5 @@ if __name__ == '__main__':
         plist[i].start()
     for i in range(pnum):
         plist[i].join()
+
+

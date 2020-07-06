@@ -51,20 +51,73 @@ warnings.filterwarnings('ignore')
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
 
 #%%
-# ---计算信号
+# ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
 
+temp = 0
+def func(k, holding):
+    global temp
+    temp += 1
+    # 打印进度
+    print("\r", "{}/{}".format(temp, 15000), end="", flush=True)
+    #
+    if holding > k: return None
+    # 获取信号数据
+    signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+    # 信号分析
+    outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+    # 设置信号统计
+    out = outStrat["BuyOnly"]
+    winRate = out["winRate"]
+    cumRet = out["cumRet"]
+    sharpe = out["sharpe"]
+    maxDD = out["maxDD"]
+    count = out["TradeCount"]
+    marketRet = outSignal["市场收益率"]
+    annRet = outSignal["平均单期的年化收益率"]
+    out["k"] = k
+    out["holding"] = holding
+    out["annRet"] = annRet
+    # ---
+    result = pd.DataFrame()
+    # if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+    result = result.append(out, ignore_index=True)
+    return result
 
-k = 1                  # 动量的向左时期
-# 信号分析数据
-signaldata = pd.concat([price, price.shift(k), pd.Series(0,index=eurusd.index)],axis=1)
-signaldata.columns = ["price","price_shift","signal"]
-# 仅分析上涨信号
-shift = signaldata["price"] > signaldata["price_shift"]
-signaldata["signal"][shift] = 1
+para1 = [k for k in range(1, 10 + 1)]
+para2 = [holding for holding in range(1, 5 + 1)]
 
-#%%
-outStrat, outSignal = myBTV.signal_quality(signaldata["signal"], price_DataFrame=eurusd, holding=1, lag_trade=1, plotRet=False, plotStrat=True)
+
+import time
+start = time.process_time()
+# map() 这个函数能够将for循环的串行计算改变成并行计算。
+b = map(func,para1,para2)
+end = time.process_time()
+print('Parallel Computing time:\t',end - start)
+
+result = list(b)
+len(result)
+pd.concat(result,axis=0)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
