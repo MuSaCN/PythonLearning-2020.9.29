@@ -80,10 +80,8 @@ def func(para):
     maxDD = out["maxDD"]
     count = out["TradeCount"]
     marketRet = outSignal["市场收益率"]
-    annRet = outSignal["平均单期的年化收益率"]
     out["k"] = k
     out["holding"] = holding
-    out["annRet"] = annRet
     # ---
     result = pd.DataFrame()  # 要放到里面
     if cumRet > marketRet and cumRet > 0 and sharpe > 0:
@@ -109,7 +107,9 @@ if __name__ == '__main__':
     t1 = timeit.default_timer()
     print("\n",'multi processing 耗时为：', t1 - t0)  # 耗时为：99.0931081
     print(result)
-    result.to_excel(__mypath__.get_desktop_path()+"\\result.xlsx")
+    folder = __mypath__.get_desktop_path() + "\\动量研究"
+    __mypath__.makedirs(folder, True)
+    result.to_excel(folder+"\\result.xlsx")
 
 
 
