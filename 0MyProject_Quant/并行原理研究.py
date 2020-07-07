@@ -64,7 +64,6 @@ warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
 
-
 # ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
 # 外部参数
@@ -102,7 +101,6 @@ def func(para):
         result = result.append(out, ignore_index=True)
     return result
 
-
 # 设定参数
 para = [(k, holding) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1)]
 
@@ -128,8 +126,8 @@ if __name__ == '__main__':
     print("第二次并行！！！！！！！！！！！！！！")  # 主程序执行，只执行1次。
 
     t0 = timeit.default_timer()  # 主程序执行，只执行1次。
-    k_end = 10
-    holding_end = 10
+    k_end = 10                   # 主程序执行，并行不执行
+    holding_end = 10             # 主程序执行，并行不执行
     out = myBTV.multi_processing(func, para)  # 并行执行，由于先运行main外部代码，然后直接跳到这句。所以总次数依然为1000，而不是100。
     print("计算次数为 = ",k_end * holding_end) # 主程序执行，所以结果为100
     # 由于out结果为list，需要分开添加
