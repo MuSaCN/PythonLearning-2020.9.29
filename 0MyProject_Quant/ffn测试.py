@@ -49,19 +49,30 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 import ffn
 # download price data from Yahoo! Finance. By default,
 # the Adj. Close will be used.
-prices = ffn.get('aapl,msft', start='2010-01-01')
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
+data = eurusd[["open","high","low","close"]]
+prices = data
 type(prices)  # pandas.core.frame.DataFrame
 # let's compare the relative performance of each stock
 # we will rebase here to get a common starting point for both securities
 ax = prices.rebase().plot()
+plt.show()
 # now what do the return distributions look like?
 returns = prices.to_returns().dropna()
 ax = returns.hist()
+plt.show()
 # ok now what about some performance metrics?
 stats = prices.calc_stats()
 stats.display()
 # what about the drawdowns?
+prices.to_drawdown_series()
+myDA.fin.to_drawdown_series(prices=prices)
+myDA.fin.calc_max_drawdown(prices, datamode="p")
+r = prices.to_returns()
+p = myDA.fin.r_to_price(r,"r")
+p.to_drawdown_series()
 ax = stats.prices.to_drawdown_series().plot()
+plt.show()
 
 #%%
 import ffn
@@ -116,9 +127,40 @@ myDA.fin.calc_max_drawdown(r,datamode="r")
 myDA.fin.calc_information_ratio(r, 0)
 myDA.fin.calc_sortino_ratio(r)
 
-# 从上方研究回撤细节
 # 输入回撤数据
-ffn.drawdown_details(r)
+drawdown = myDA.fin.to_drawdown_series(returns=r)
+ffn.drawdown_details(drawdown)
+
+myDA.fin.to_ulcer_index(prices=prices)
+ffn.to_ulcer_index(prices)
+myDA.fin.to_ulcer_index(returns=r)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
