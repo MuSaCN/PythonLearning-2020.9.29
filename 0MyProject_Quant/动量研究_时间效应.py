@@ -46,6 +46,7 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #------------------------------------------------------------
 
 
+
 #%%
 ########## 单次测试部分 #################
 import warnings
@@ -63,7 +64,6 @@ lag_trade = 1
 # 获取信号数据
 signaldata_buy = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
 # 信号分析
-outStrat, outSignal = myBTV.signal_quality(signaldata_buy["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 outStrat, outSignal = myBTV.signal_time_quality(signaldata_buy["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 
 myBTV.signal_quality_explain()
@@ -77,7 +77,7 @@ lag_trade = 5
 # 获取信号数据
 signaldata_sell = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
 # 信号分析
-outStrat, outSignal = myBTV.signal_quality(signaldata_sell["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
+outStrat, outSignal = myBTV.signal_time_quality(signaldata_sell["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 myBTV.signal_quality_explain()
 
 
@@ -89,7 +89,7 @@ lag_trade = 5
 # 获取信号数据
 signaldata_all = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
 # 信号分析
-outStrat, outSignal = myBTV.signal_quality(signaldata_all["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
+outStrat, outSignal = myBTV.signal_time_quality(signaldata_all["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 myBTV.signal_quality_explain()
 
 
@@ -99,6 +99,12 @@ signal_add = signaldata_buy["buysignal"] + signaldata_sell["sellsignal"]
 holding = 1
 lag_trade = 5
 # 信号分析
-outStrat, outSignal = myBTV.signal_quality(signal_add, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
+outStrat, outSignal = myBTV.signal_time_quality(signal_add, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 myBTV.signal_quality_explain()
+
+
+
+
+
+
 

@@ -53,10 +53,10 @@ price = eurusd.close   # 设定价格为考虑收盘价
 
 
 # 外部参数
+holding_end = 1        # 固定为1，或参数不能大
 k_end = 300
-holding_end = 1        # 固定为1就行
-lag_trade_end = 5      # 滞后期数
-cpu_core = 6
+lag_trade_end = 5      # 参数不能大
+cpu_core = 4
 
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递
 temp = 0 # 用来显示进度
@@ -77,18 +77,15 @@ def func_buy(para):
     outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["BuyOnly"]
-    winRate = out["winRate"]
     cumRet = out["cumRet"]
     sharpe = out["sharpe"]
     maxDD = out["maxDD"]
-    count = out["TradeCount"]
-    marketRet = outSignal["市场收益率"]
     out["k"] = k
     out["holding"] = holding
     out["lag_trade"] = lag_trade
     # ---
     result = pd.DataFrame()  # 要放到里面
-    if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+    if cumRet > 0 and sharpe > 0 and maxDD < 0.5:
         result = result.append(out, ignore_index=True)
     return result
 # ---计算信号，仅分析做空信号
@@ -111,13 +108,12 @@ def func_sell(para):
     cumRet = out["cumRet"]
     sharpe = out["sharpe"]
     maxDD = out["maxDD"]
-    marketRet = outSignal["市场收益率"]
     out["k"] = k
     out["holding"] = holding
     out["lag_trade"] = lag_trade
     # ---
     result = pd.DataFrame()  # 要放到里面
-    if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+    if cumRet > 0 and sharpe > 0 and maxDD < 0.5:
         result = result.append(out, ignore_index=True)
     return result
 # ---计算信号，分析做多做空信号
@@ -140,13 +136,12 @@ def func_all(para):
     cumRet = out["cumRet"]
     sharpe = out["sharpe"]
     maxDD = out["maxDD"]
-    marketRet = outSignal["市场收益率"]
     out["k"] = k
     out["holding"] = holding
     out["lag_trade"] = lag_trade
     # ---
     result = pd.DataFrame()  # 要放到里面
-    if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+    if cumRet > 0 and sharpe > 0 and maxDD < 0.5:
         result = result.append(out, ignore_index=True)
     return result
 
