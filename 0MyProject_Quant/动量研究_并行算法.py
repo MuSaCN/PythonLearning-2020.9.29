@@ -85,6 +85,7 @@ def func_buy(para):
     marketRet = outSignal["市场收益率"]
     out["k"] = k
     out["holding"] = holding
+    out["lag_trade"] = lag_trade
     # ---
     result = pd.DataFrame()  # 要放到里面
     if cumRet > marketRet and cumRet > 0 and sharpe > 0:
@@ -113,6 +114,7 @@ def func_sell(para):
     marketRet = outSignal["市场收益率"]
     out["k"] = k
     out["holding"] = holding
+    out["lag_trade"] = lag_trade
     # ---
     result = pd.DataFrame()  # 要放到里面
     if cumRet > marketRet and cumRet > 0 and sharpe > 0:
@@ -141,6 +143,7 @@ def func_all(para):
     marketRet = outSignal["市场收益率"]
     out["k"] = k
     out["holding"] = holding
+    out["lag_trade"] = lag_trade
     # ---
     result = pd.DataFrame()  # 要放到里面
     if cumRet > marketRet and cumRet > 0 and sharpe > 0:
