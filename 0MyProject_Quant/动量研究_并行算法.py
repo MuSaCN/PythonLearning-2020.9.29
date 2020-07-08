@@ -121,7 +121,7 @@ def func_sell(para):
 if __name__ == '__main__':
     # 设定并行参数
     para = [(k, holding) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1)]
-    # ---
+    # ---分析做多信号
     import timeit
     t0 = timeit.default_timer()
     # 必须要写在里面
@@ -136,7 +136,7 @@ if __name__ == '__main__':
     folder = __mypath__.get_desktop_path() + "\\__动量研究__"
     __mypath__.makedirs(folder, True)
     result_buy.to_excel(folder + "\\result_buy.xlsx")
-    # ---
+    # ---分析做空信号
     t0 = timeit.default_timer()
     out_sell = myBTV.multi_processing(func_sell, para, core_num=4)
     result_sell = []

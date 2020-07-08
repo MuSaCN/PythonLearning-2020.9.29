@@ -22,8 +22,8 @@ mynp = MyArray.MyClass_NumPy()  # 多维数组类(整合Numpy)
 mypd = MyArray.MyClass_Pandas()  # 矩阵数组类(整合Pandas)
 mypdpro = MyArray.MyClass_PandasPro()  # 高级矩阵数组类
 myDA = MyDataAnalysis.MyClass_DataAnalysis()  # 数据分析类
-myDefault = MyDefault.MyClass_Default_Matplotlib()  # 画图恢复默认设置类
 # myMql = MyMql.MyClass_MqlBackups() # Mql备份类
+# myDefault = MyDefault.MyClass_Default_Matplotlib() # matplotlib默认设置
 # myBaidu = MyWebCrawler.MyClass_BaiduPan() # Baidu网盘交互类
 # myImage = MyImage.MyClass_ImageProcess()  # 图片处理类
 myBT = MyBackTest.MyClass_BackTestEvent()  # 事件驱动型回测类
@@ -42,11 +42,7 @@ myKeras = MyDeepLearning.MyClass_tfKeras()  # tfKeras综合类
 myTensor = MyDeepLearning.MyClass_TensorFlow()  # Tensorflow综合类
 myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户端类
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
-myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
-
-
-
 
 #%%
 ########## 单次测试部分 #################
@@ -67,6 +63,54 @@ outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFr
 myBTV.signal_quality_explain()
 
 
+#%%
+######### 优化部分 ##############
+import warnings
+warnings.filterwarnings('ignore')
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
+price = eurusd.close   # 设定价格为考虑收盘价
+
+#%%
+# ---计算信号，仅分析做多信号
+# 外部参数
+k_end = 300
+holding_end = 50
+
+# 原始计算
+import timeit
+t0 = timeit.default_timer()
+
+temp = 0 # 用于打印进度
+result = pd.DataFrame() # 要放到外面
+for k in range(1, k_end + 1):
+    for holding in range(1, holding_end + 1):
+        # 打印进度
+        temp += 1
+        print("\r", "{}/{}".format(temp, k_end * holding_end), end="", flush=True)
+        # 退出条件
+        if holding > k: continue
+        # 获取信号数据
+        signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+        # 信号分析
+        outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+        # 设置信号统计
+        out = outStrat["BuyOnly"]
+        winRate = out["winRate"]
+        cumRet = out["cumRet"]
+        sharpe = out["sharpe"]
+        maxDD = out["maxDD"]
+        count = out["TradeCount"]
+        marketRet = outSignal["市场收益率"]
+        out["k"] = k
+        out["holding"] = holding
+        # ---
+        if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+            result = result.append(out, ignore_index=True)
+
+t1 = timeit.default_timer()
+print("\n","耗时为：",t1 - t0) # 耗时为： 363.2092888
+result
 
 
 
