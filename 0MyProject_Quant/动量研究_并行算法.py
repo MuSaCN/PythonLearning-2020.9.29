@@ -55,6 +55,7 @@ price = eurusd.close   # 设定价格为考虑收盘价
 # 外部参数
 k_end = 300
 holding_end = 50
+cpu_core = 6
 
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递
 temp = 0 # 用来显示进度
@@ -65,7 +66,7 @@ def func_buy(para):
     # 打印进度
     global temp
     temp += 1
-    print("\r", "{}/{}".format(temp*8, k_end * holding_end), end="", flush=True)
+    print("\r", "{}/{}".format(temp*cpu_core, k_end * holding_end), end="", flush=True)
     # 退出条件
     if holding > k: return None
     # 获取信号数据
@@ -94,7 +95,7 @@ def func_sell(para):
     # 打印进度
     global temp
     temp += 1
-    print("\r", "{}/{}".format(temp*8, k_end * holding_end), end="", flush=True)
+    print("\r", "{}/{}".format(temp*cpu_core, k_end * holding_end), end="", flush=True)
     # 退出条件
     if holding > k: return None
     # 获取信号数据
@@ -125,7 +126,7 @@ if __name__ == '__main__':
     import timeit
     t0 = timeit.default_timer()
     # 必须要写在里面
-    out_buy = myBTV.multi_processing(func_buy , para, core_num=4)
+    out_buy = myBTV.multi_processing(func_buy , para, core_num=cpu_core)
     # 由于out结果为list，需要分开添加
     result_buy = []
     for i in out_buy:
@@ -138,7 +139,7 @@ if __name__ == '__main__':
     result_buy.to_excel(folder + "\\result_buy.xlsx")
     # ---分析做空信号
     t0 = timeit.default_timer()
-    out_sell = myBTV.multi_processing(func_sell, para, core_num=4)
+    out_sell = myBTV.multi_processing(func_sell, para, core_num=cpu_core)
     result_sell = []
     for i in out_sell:
         result_sell.append(i)
