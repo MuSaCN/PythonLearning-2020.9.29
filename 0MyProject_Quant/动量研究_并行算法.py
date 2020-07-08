@@ -49,17 +49,17 @@ import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
-
-
-# ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
+
+
 # 外部参数
 k_end = 300
 holding_end = 50
 
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递
 temp = 0 # 用来显示进度
-def func(para):
+# ---计算信号，仅分析做多信号
+def func_buy(para):
     k = para[0]
     holding = para[1]
     # 打印进度
@@ -87,29 +87,70 @@ def func(para):
     if cumRet > marketRet and cumRet > 0 and sharpe > 0:
         result = result.append(out, ignore_index=True)
     return result
+# ---计算信号，仅分析做空信号
+def func_sell(para):
+    k = para[0]
+    holding = para[1]
+    # 打印进度
+    global temp
+    temp += 1
+    print("\r", "{}/{}".format(temp*8, k_end * holding_end), end="", flush=True)
+    # 退出条件
+    if holding > k: return None
+    # 获取信号数据
+    signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
+    # 信号分析
+    outStrat, outSignal = myBTV.signal_quality(signaldata["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+    # 设置信号统计
+    out = outStrat["SellOnly"]
+    cumRet = out["cumRet"]
+    sharpe = out["sharpe"]
+    maxDD = out["maxDD"]
+    marketRet = outSignal["市场收益率"]
+    out["k"] = k
+    out["holding"] = holding
+    # ---
+    result = pd.DataFrame()  # 要放到里面
+    if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+        result = result.append(out, ignore_index=True)
+    return result
 
 
-# 设定参数
-para = [(k, holding) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1)]
 
-
-import timeit
-t0 = timeit.default_timer()
 # 多进程必须要在这里写
 if __name__ == '__main__':
+    # 设定并行参数
+    para = [(k, holding) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1)]
+    # ---
+    import timeit
+    t0 = timeit.default_timer()
     # 必须要写在里面
-    out = myBTV.multi_processing(func , para)
+    out_buy = myBTV.multi_processing(func_buy , para, core_num=4)
     # 由于out结果为list，需要分开添加
-    result = []
-    for i in out:
-        result.append(i)
-    result = pd.concat(result, ignore_index=True)  # 可以自动过滤None
+    result_buy = []
+    for i in out_buy:
+        result_buy.append(i)
+    result_buy = pd.concat(result_buy, ignore_index=True)  # 可以自动过滤None
     t1 = timeit.default_timer()
-    print("\n",'multi processing 耗时为：', t1 - t0)  # 耗时为：95.5032736
-    print(result)
+    print("\n",'BUY multi processing 耗时为：', t1 - t0)  # 耗时为：133.3435982
     folder = __mypath__.get_desktop_path() + "\\__动量研究__"
     __mypath__.makedirs(folder, True)
-    result.to_excel(folder+"\\result.xlsx")
+    result_buy.to_excel(folder + "\\result_buy.xlsx")
+    # ---
+    t0 = timeit.default_timer()
+    out_sell = myBTV.multi_processing(func_sell, para, core_num=4)
+    result_sell = []
+    for i in out_sell:
+        result_sell.append(i)
+    result_sell = pd.concat(result_sell, ignore_index=True)  # 可以自动过滤None
+    t1 = timeit.default_timer()
+    print("\n", 'SELL multi processing 耗时为：', t1 - t0)  # 耗时为：133.3435982
+    folder = __mypath__.get_desktop_path() + "\\__动量研究__"
+    __mypath__.makedirs(folder, True)
+    result_buy.to_excel(folder + "\\result_sell.xlsx")
+
+
+
 
 
 

@@ -44,20 +44,18 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
-#%% ###################################
+#%%
+########## 单次测试部分 #################
 import warnings
 warnings.filterwarnings('ignore')
+
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
-
-#%%
-# ---计算信号，仅分析做多信号
 price = eurusd.close   # 设定价格为考虑收盘价
 
 #%%
-########## 单次测试部分 #################
-holding = 2
-k = 105
+holding = 1
+k = 109
 # 获取信号数据
 signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
 # 信号分析
@@ -67,8 +65,14 @@ myBTV.signal_quality_explain()
 
 #%%
 ######### 优化部分 ##############
-# ---计算信号，仅分析做多信号
+import warnings
+warnings.filterwarnings('ignore')
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
 price = eurusd.close   # 设定价格为考虑收盘价
+
+#%%
+# ---计算信号，仅分析做多信号
 # 外部参数
 k_end = 300
 holding_end = 50
