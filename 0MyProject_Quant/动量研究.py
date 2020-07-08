@@ -57,8 +57,8 @@ price = eurusd.close   # 设定价格为考虑收盘价
 
 #%%
 # ---仅做多分析
-holding = 29
-k = 82
+holding = 1
+k = 109
 # 获取信号数据
 signaldata_buy = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
 # 信号分析
@@ -67,8 +67,8 @@ myBTV.signal_quality_explain()
 
 #%%
 # ---仅做空分析
-holding = 29
-k = 82
+holding = 1
+k = 30
 # 获取信号数据
 signaldata_sell = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
 # 信号分析
@@ -77,8 +77,8 @@ myBTV.signal_quality_explain()
 
 #%%
 # ---多空都做分析
-holding = 29
-k = 82
+holding = 1
+k = 109
 # 获取信号数据
 signaldata_all = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
 # 信号分析
