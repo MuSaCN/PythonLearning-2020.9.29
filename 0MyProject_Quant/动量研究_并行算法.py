@@ -115,6 +115,33 @@ def func_sell(para):
     if cumRet > marketRet and cumRet > 0 and sharpe > 0:
         result = result.append(out, ignore_index=True)
     return result
+# ---计算信号，分析做多做空信号
+def func_all(para):
+    k = para[0]
+    holding = para[1]
+    # 打印进度
+    global temp
+    temp += 1
+    print("\r", "{}/{}".format(temp*cpu_core, k_end * holding_end), end="", flush=True)
+    # 退出条件
+    if holding > k: return None
+    # 获取信号数据
+    signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
+    # 信号分析
+    outStrat, outSignal = myBTV.signal_quality(signaldata["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+    # 设置信号统计
+    out = outStrat["TotalTrade"]
+    cumRet = out["cumRet"]
+    sharpe = out["sharpe"]
+    maxDD = out["maxDD"]
+    marketRet = outSignal["市场收益率"]
+    out["k"] = k
+    out["holding"] = holding
+    # ---
+    result = pd.DataFrame()  # 要放到里面
+    if cumRet > marketRet and cumRet > 0 and sharpe > 0:
+        result = result.append(out, ignore_index=True)
+    return result
 
 
 
@@ -148,7 +175,21 @@ if __name__ == '__main__':
     print("\n", 'SELL multi processing 耗时为：', t1 - t0)  # 耗时为：133.3435982
     folder = __mypath__.get_desktop_path() + "\\__动量研究__"
     __mypath__.makedirs(folder, True)
-    result_buy.to_excel(folder + "\\result_sell.xlsx")
+    result_sell.to_excel(folder + "\\result_sell.xlsx")
+    # ---分析多空都做信号
+    t0 = timeit.default_timer()
+    out_all = myBTV.multi_processing(func_all, para, core_num=cpu_core)
+    result_all = []
+    for i in out_all:
+        result_all.append(i)
+    result_all = pd.concat(result_all, ignore_index=True)  # 可以自动过滤None
+    t1 = timeit.default_timer()
+    print("\n", 'ALL multi processing 耗时为：', t1 - t0)  # 耗时为：133.3435982
+    folder = __mypath__.get_desktop_path() + "\\__动量研究__"
+    __mypath__.makedirs(folder, True)
+    result_all.to_excel(folder + "\\result_all.xlsx")
+
+
 
 
 
