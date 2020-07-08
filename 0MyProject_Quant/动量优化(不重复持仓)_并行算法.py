@@ -75,7 +75,7 @@ def func_buy(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_time_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["BuyOnly"]
     cumRet = out["cumRet"]
@@ -103,7 +103,7 @@ def func_sell(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_time_quality(signaldata["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signaldata["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["SellOnly"]
     cumRet = out["cumRet"]
@@ -131,7 +131,7 @@ def func_all(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_time_quality(signaldata["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signaldata["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["TotalTrade"]
     cumRet = out["cumRet"]
