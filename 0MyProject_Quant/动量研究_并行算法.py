@@ -54,7 +54,7 @@ price = eurusd.close   # 设定价格为考虑收盘价
 
 # 外部参数
 k_end = 300
-holding_end = 50
+holding_end = 1  # 设为1就行
 cpu_core = 6
 
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递
