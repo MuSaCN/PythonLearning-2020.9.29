@@ -68,7 +68,7 @@ def func_buy(para):
     # 打印进度
     global temp
     temp += 1
-    print("\r", "{}/{}".format(temp*cpu_core, k_end * holding_end), end="", flush=True)
+    print("\r", "{}/{}".format(temp*cpu_core, k_end*holding_end*lag_trade_end), end="", flush=True)
     # 退出条件
     if holding > k: return None
     # 获取信号数据
@@ -98,7 +98,7 @@ def func_sell(para):
     # 打印进度
     global temp
     temp += 1
-    print("\r", "{}/{}".format(temp*cpu_core, k_end * holding_end), end="", flush=True)
+    print("\r", "{}/{}".format(temp*cpu_core, k_end*holding_end*lag_trade_end), end="", flush=True)
     # 退出条件
     if holding > k: return None
     # 获取信号数据
@@ -126,7 +126,7 @@ def func_all(para):
     # 打印进度
     global temp
     temp += 1
-    print("\r", "{}/{}".format(temp*cpu_core, k_end * holding_end), end="", flush=True)
+    print("\r", "{}/{}".format(temp*cpu_core, k_end*holding_end*lag_trade_end), end="", flush=True)
     # 退出条件
     if holding > k: return None
     # 获取信号数据
