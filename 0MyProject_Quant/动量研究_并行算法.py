@@ -54,7 +54,8 @@ price = eurusd.close   # 设定价格为考虑收盘价
 
 # 外部参数
 k_end = 300
-holding_end = 1  # 设为1就行
+holding_end = 1        # 固定为1就行
+lag_trade_end = 5      # 滞后期数
 cpu_core = 6
 
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递
@@ -63,6 +64,7 @@ temp = 0 # 用来显示进度
 def func_buy(para):
     k = para[0]
     holding = para[1]
+    lag_trade = para[2]
     # 打印进度
     global temp
     temp += 1
@@ -72,7 +74,7 @@ def func_buy(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality(signaldata["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["BuyOnly"]
     winRate = out["winRate"]
@@ -92,6 +94,7 @@ def func_buy(para):
 def func_sell(para):
     k = para[0]
     holding = para[1]
+    lag_trade = para[2]
     # 打印进度
     global temp
     temp += 1
@@ -101,7 +104,7 @@ def func_sell(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality(signaldata["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["SellOnly"]
     cumRet = out["cumRet"]
@@ -119,6 +122,7 @@ def func_sell(para):
 def func_all(para):
     k = para[0]
     holding = para[1]
+    lag_trade = para[2]
     # 打印进度
     global temp
     temp += 1
@@ -128,7 +132,7 @@ def func_all(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=1, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality(signaldata["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     out = outStrat["TotalTrade"]
     cumRet = out["cumRet"]
@@ -148,7 +152,7 @@ def func_all(para):
 # 多进程必须要在这里写
 if __name__ == '__main__':
     # 设定并行参数
-    para = [(k, holding) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1)]
+    para = [(k, holding, lag_trade) for k in range(1, k_end + 1) for holding in range(1, holding_end + 1) for lag_trade in range(1,lag_trade_end + 1)]
     # ---分析做多信号
     import timeit
     t0 = timeit.default_timer()
