@@ -45,16 +45,7 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
-paranames = ["holding","k","lag_trade"]
-folder = __mypath__.get_desktop_path() + "\\__动量研究__"
-opt_out = pd.read_excel(folder + "\\动量_Buy.xlsx")
-# ---
-temp = ""
-for i in paranames:
-    temp = temp + opt_out[i].astype(str) + ","
-opt_out["para"] = temp
-opt_out.index = opt_out["para"]
-opt_out
+
 
 #%%
 ########## 单次测试部分 #################
