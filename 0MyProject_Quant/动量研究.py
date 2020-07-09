@@ -55,14 +55,19 @@ warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 price = eurusd.Close   # 设定价格为考虑收盘价
+price_train = price.loc[:"2018-12-31"]
+price_test = price.loc["2019-01-01":]
 
 #%%
 # ---仅做多分析
-holding = 5
-k = 105
+holding = 1
+k = 109
 lag_trade = 1
-# 获取信号数据
-signaldata_buy = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+# 获取信号数据，训练集
+signaldata_buy = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+# 获取信号数据，测试集
+signaldata_buy = myBTV.stra.momentum(price_test, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+
 # 信号分析
 outStrat, outSignal = myBTV.signal_quality(signaldata_buy["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 # 信号分析，不重复持仓
