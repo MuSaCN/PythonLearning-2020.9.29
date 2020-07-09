@@ -68,8 +68,8 @@ myBTV.signal_quality_explain()
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
-price = eurusd.close   # 设定价格为考虑收盘价
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+price = eurusd.Close   # 设定价格为考虑收盘价
 
 #%%
 # ---计算信号，仅分析做多信号

@@ -49,8 +49,8 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
-price = eurusd.close   # 设定价格为考虑收盘价
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+price = eurusd.Close   # 设定价格为考虑收盘价
 
 
 # 外部参数

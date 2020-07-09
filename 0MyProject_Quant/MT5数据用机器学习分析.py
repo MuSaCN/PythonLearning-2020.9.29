@@ -54,7 +54,7 @@ close = eurusd["close"]
 rate = eurusd["rate"]
 
 #%% ##############################################
-# 以时间向量的方式，获取指定时间之前(包括指定时间)的n个波动率
+# 输入时间向量(时间序列)，获取其时间之前(包括指定时间)的，对应symbol和timeframe的n个收盘价收益率(波动率)(运算方式，效率高)：
 beforevola = myPjMT5.getvolatility_beforetime(eurusd["time"],"EURUSD","TIMEFRAME_H1",count=5, updatetimeindex=False)
 
 data = pd.concat([eurusd, beforevola], axis=1, join="outer")
