@@ -49,15 +49,15 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 price = eurusd.Close   # 设定价格为考虑收盘价
-price_train = price.loc[:"2018-12-31"]
-price_test = price.loc["2019-01-01":]
+price_train = price.loc[:"2014-12-31"]
+price_test = price.loc["2015-01-01":]
 
 # 外部参数
-holding_end = 20         # 可以不同固定为1
-k_end = 300             # 动量向左参数
-lag_trade_end = 5       # 参数不能大
+holding_end = 1         # 可以不同固定为1
+k_end = 350             # 动量向左参数
+lag_trade_end = 1       # 参数不能大
 
 
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递。内部参数有的要依赖于外部。
@@ -249,8 +249,8 @@ if __name__ == '__main__':
     # ---设定并行参数
     para_buyonly = [(k, holding, lag_trade, "BuyOnly") for k in range(1, k_end + 1) for holding in
                     range(1, holding_end + 1) for lag_trade in range(1, lag_trade_end + 1)]
-    para_sellonly = [(k, holding, lag_trade, "SellOnly") for k in range(1, k_end + 1) for holding in
-                     range(1, holding_end + 1) for lag_trade in range(1, lag_trade_end + 1)]
+    para_sellonly = [(k, holding, lag_trade, "SellOnly") for k in range(1, k_end + 1) for holding
+                     in range(1, holding_end + 1) for lag_trade in range(1, lag_trade_end + 1)]
     para_all = [(k, holding, lag_trade, "All") for k in range(1, k_end + 1) for holding in
                 range(1, holding_end + 1) for lag_trade in range(1, lag_trade_end + 1)]
     # ---分析训练集(并行)
