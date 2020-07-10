@@ -45,7 +45,7 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
-
+################# 设置数据，区分训练集和测试集 ########################
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
@@ -54,15 +54,15 @@ price = eurusd.Close   # 设定价格为考虑收盘价
 price_train = price.loc[:"2014-12-31"]
 price_test = price.loc["2015-01-01":]
 
+################# 设置参数，设置范围的最大值 ##########################
 # 外部参数
 holding_end = 1         # 可以不同固定为1
 k_end = 350             # 动量向左参数
 lag_trade_end = 1       # 参数不能大
 
-
+################# 信号函数部分，或多个函数、或多个参数 #####################
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递。内部参数有的要依赖于外部。
 temp = 0 # 用来显示进度
-
 # ---训练集 计算信号
 def signalfunc_train(para):
     k = para[0]
@@ -213,7 +213,7 @@ def signalfunc_NoRepeatHold_test(para):
         result = result.append(out, ignore_index=True)
     return result
 
-
+################# 多进程执行函数 ########################################
 cpu_core = 4
 # ---多进程执行函数，优化结果生成文档。name为文档名
 def run_train(func, para, name):
@@ -243,6 +243,7 @@ def run_test(func, name):
     run_train(func, paralist, name_test)
     # ---合并两个数据
     myBTV.concat_opt_xlsx(trainpath, testpath, paranames)
+
 
 # ---多进程必须要在这里执行
 if __name__ == '__main__':
