@@ -53,15 +53,15 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 price = eurusd.Close   # 设定价格为考虑收盘价
-price_train = price.loc[:"2018-12-31"]
-price_test = price.loc["2019-01-01":]
+price_train = price.loc[:"2014-12-31"]
+price_test = price.loc["2015-01-01":]
 
 #%%
 # ---仅做多分析
 holding = 1
-k = 109
+k = 27
 lag_trade = 1
 # 获取信号数据，训练集
 signaldata_buy = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
@@ -80,9 +80,12 @@ myBTV.signal_quality_explain()
 # ---仅做空分析
 holding = 1
 k = 27
-lag_trade = 5
-# 获取信号数据
-signaldata_sell = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
+lag_trade = 1
+# 获取信号数据 训练集
+signaldata_sell = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
+# 获取信号数据 测试集
+signaldata_sell = myBTV.stra.momentum(price_test, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
+
 # 信号分析
 outStrat, outSignal = myBTV.signal_quality(signaldata_sell["sellsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 # 信号分析，不重复持仓
@@ -94,9 +97,12 @@ myBTV.signal_quality_explain()
 # ---多空都做分析，相同参数
 holding = 1
 k = 27
-lag_trade = 5
-# 获取信号数据
-signaldata_all = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
+lag_trade = 1
+# 获取信号数据 训练集
+signaldata_all = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
+# 获取信号数据 测试集
+signaldata_all = myBTV.stra.momentum(price_test, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
+
 # 信号分析
 outStrat, outSignal = myBTV.signal_quality(signaldata_all["allsignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True)
 # 信号分析，不重复持仓

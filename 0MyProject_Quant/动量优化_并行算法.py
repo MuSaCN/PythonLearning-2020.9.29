@@ -58,7 +58,7 @@ price_test = price.loc["2015-01-01":]
 # 外部参数
 holding_end = 1         # 可以不同固定为1
 k_end = 350             # 动量向左参数
-lag_trade_end = 1       # 参数不能大
+lag_trade_end = 20       # 参数不能大
 
 ################# 信号函数部分，或多个函数、或多个参数 #####################
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递。内部参数有的要依赖于外部。
@@ -224,7 +224,7 @@ def run_train(func, para, name):
     result = []
     for i in out:
         result.append(i)
-    result = pd.concat(result, ignore_index=True)  # 可以自动过滤None
+    result = pd.concat(result, ignore_index=True)  if len(result) != 0 else pd.DataFrame(result)
     t1 = timeit.default_timer()
     print("\n", '{} multi processing 耗时为：'.format(name), t1 - t0)  # 耗时为：670.1083746
     folder = __mypath__.get_desktop_path() + "\\__动量研究__"
