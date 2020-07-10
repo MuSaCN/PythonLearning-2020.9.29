@@ -83,7 +83,7 @@ def signalfunc_train(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata[signalname], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality(signaldata[signalname], price_DataFrame=eurusd_train, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     result = myBTV.filter_strategy(outStrat, outSignal, para, paranames)
     return result
@@ -104,7 +104,7 @@ def signalfunc_test(para):
     # 获取信号数据
     signaldata = myBTV.stra.momentum(price_test, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
     # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata[signalname], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
+    outStrat, outSignal = myBTV.signal_quality(signaldata[signalname], price_DataFrame=eurusd_test, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
     result = myBTV.filter_strategy(outStrat, outSignal, para, paranames)
     return result
