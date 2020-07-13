@@ -52,31 +52,34 @@ filepath = folder + "\\动量_All.xlsx"
 filecontent = pd.read_excel(filepath)
 
 #%%
+# ---画参数图1D
 # k 动量向左参数；holding 必须小于 k
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
-para_fixed = {"k":None, "holding":1, "lag_trade":5}
 # y_name = ["sharpe", "annRet"]
-myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True)
-
-#%%
-# k 动量向左参数；holding 必须小于 k
-para_fixed = {"k":100, "holding":None, "lag_trade":1}
 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
-
-#%%
-para_fixed = {"k":1, "holding":1, "lag_trade":None}
-myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
-
-
 # 训练集 buy  最佳选择 k=100, holding=1, lag_trade=1
 # 训练集 sell 最佳选择 k=100, holding=1, lag_trade=1
 # 训练集 all  最佳选择 k=100, holding=1, lag_trade=1
 
+#%%
+# ---画参数图2D热力图
+# k 动量向左参数；holding 必须小于 k
+para_fixed = {"k":None, "holding":1, "lag_trade":None}
+myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False, annot=False)
+# 热力图缩放
+filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
+y_name = ["sharpe"]
+myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent_new, para_fixed=para_fixed, y_name=y_name, output=False, annot=True)
 
+#%%
+# ---画参数图3D热力图
+# k 动量向左参数；holding 必须小于 k
+para_fixed = {"k":None, "holding":1, "lag_trade":None}
+# myDefault.set_backend_default("pycharm")
+# myDefault.set_backend_default("tkagg")
 
-
-
-
+y_name = ["sharpe", "calmar_ratio", "cumRet"]
+myBTV.plot_para_3D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
 
 
 
