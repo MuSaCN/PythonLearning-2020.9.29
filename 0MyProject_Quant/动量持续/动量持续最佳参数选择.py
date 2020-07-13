@@ -47,18 +47,47 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #%%
 folder = __mypath__.get_desktop_path() + "\\__动量研究__"
 filepath = folder + "\\动量_Buy.xlsx"
+filepath = folder + "\\动量_Sell.xlsx"
+filepath = folder + "\\动量_All.xlsx"
 filecontent = pd.read_excel(filepath)
 
 #%%
 # k 动量向左参数；holding 必须小于 k
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
+para_fixed = {"k":None, "holding":1, "lag_trade":5}
 # y_name = ["sharpe", "annRet"]
-myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
+myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True)
 
+#%%
+# k 动量向左参数；holding 必须小于 k
+para_fixed = {"k":100, "holding":None, "lag_trade":1}
+myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
 
 #%%
 para_fixed = {"k":1, "holding":1, "lag_trade":None}
 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
+
+
+# 训练集 buy  最佳选择 k=100, holding=1, lag_trade=1
+# 训练集 sell 最佳选择 k=100, holding=1, lag_trade=1
+# 训练集 all  最佳选择 k=100, holding=1, lag_trade=1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -62,8 +62,8 @@ price_test = eurusd_test.Close
 #%%
 # ---仅做多分析
 holding = 1
-k = 22
-lag_trade = 3
+k = 100
+lag_trade = 1
 # ---设定为训练集
 price = price_train
 price_DataFrame = eurusd_train
@@ -85,7 +85,7 @@ myBTV.signal_quality_explain()
 #%%
 # ---仅做空分析
 holding = 1
-k = 27
+k = 100
 lag_trade = 1
 # ---设定为训练集
 price = price_train
@@ -106,7 +106,7 @@ myBTV.signal_quality_explain()
 #%%
 # ---多空都做分析，相同参数
 holding = 1
-k = 27
+k = 100
 lag_trade = 1
 # ---设定为训练集
 price = price_train
