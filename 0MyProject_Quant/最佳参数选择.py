@@ -44,15 +44,21 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
-
+#%%
 folder = __mypath__.get_desktop_path() + "\\__动量研究__"
 filepath = folder + "\\动量_Buy.xlsx"
 filecontent = pd.read_excel(filepath)
 
+#%%
+# k 动量向左参数；holding 必须小于 k
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
-y_name = ["sharpe", "annRet"]
-
-
-
-
+# y_name = ["sharpe", "annRet"]
 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
+
+
+#%%
+para_fixed = {"k":1, "holding":1, "lag_trade":None}
+myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
+
+
+
