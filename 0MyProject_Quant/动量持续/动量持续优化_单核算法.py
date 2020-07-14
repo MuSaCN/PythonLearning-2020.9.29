@@ -44,6 +44,10 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 #------------------------------------------------------------
 
+'''
+单核算法本质是显示地循环，已被并行算法取代。
+'''
+
 #%%
 ########## 单次测试部分 #################
 import warnings

@@ -44,6 +44,14 @@ myMT5 = MyMql.MyClass_ConnectMT5(connect=False)  # Python链接MetaTrader5客户
 myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
+
+'''
+# 由于优化结果被保存在硬盘，所以读取后解析参数和策略结果就可以进行分析。
+# 在多个参数的情况下，为了分析需要把一些参数取固定值、另一些参数不取固定值。需要通过字典传递。
+# 在分析最佳参数时，需要进行 单独测试。
+'''
+
+
 #%%
 folder = __mypath__.get_desktop_path() + "\\__动量研究__"
 filepath = folder + "\\动量_Buy.xlsx"
