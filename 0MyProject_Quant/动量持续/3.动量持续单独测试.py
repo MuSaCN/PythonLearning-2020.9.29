@@ -73,7 +73,8 @@ lag_trade = 1
 # ---获取信号数据
 signaldata_buy = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
 # 信号分析
-outStrat, outSignal = myBTV.signal_quality(signal=signaldata_buy["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+# savefig = __mypath__.get_desktop_path()+"\\holding={};k={};lag_trade={}.png".format(holding,k,lag_trade)
+outStrat, outSignal = myBTV.signal_quality(signal=signaldata_buy["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True, train_x0=train_x0, train_x1=train_x1, savefig=None)
 
 # 信号分析，不重复持仓
 outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signaldata_buy["buysignal"], price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=True, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
