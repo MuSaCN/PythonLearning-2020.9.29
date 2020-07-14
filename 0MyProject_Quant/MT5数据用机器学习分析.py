@@ -46,12 +46,13 @@ myPjMT5 = MyProject.MT5_MLLearning() # MT5机器学习项目类
 
 #%% ###################################
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True)
-open = eurusd["open"]
-high = eurusd["high"]
-low = eurusd["low"]
-close = eurusd["close"]
-rate = eurusd["rate"]
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_H4",[2014,1,1,0,0,0],[2017,1,1,0,0,0],index_time=True, col_capitalize=True)
+open = eurusd["Open"]
+high = eurusd["High"]
+low = eurusd["Low"]
+close = eurusd["Close"]
+rate = eurusd["Rate"]
+range = eurusd["Range"]
 
 #%% ##############################################
 # 输入时间向量(时间序列)，获取其时间之前(包括指定时间)的，对应symbol和timeframe的n个收盘价收益率(波动率)(运算方式，效率高)：
@@ -64,26 +65,26 @@ data = pd.concat([eurusd, beforevola], axis=1, join="outer")
 # ---数据解读
 eurusd.dtypes
 myDA.describe(eurusd)
-data = pd.DataFrame({"Open":eurusd["open"], "High":eurusd["high"],
-                     "Low":eurusd["low"], "Close": eurusd["close"]}, index = eurusd["time"])
+data = pd.DataFrame({"Open":eurusd["Open"], "High":eurusd["High"],
+                     "Low":eurusd["Low"], "Close": eurusd["Close"]}, index = eurusd["Time"])
 myDA.indi.candle_ohlc(data[-100:-1])
-#
-# # ---波动率分析
-# myDA.tsa_auto_test(rate1[1:])
-# myDA.tsa_auto_ARIMA(rate1[1:])
-# myDA.tsa_auto_ARCH(rate1[1:])
-#
-# # ---序列自相关系数分析：1期波动与其滞后的相关系数曲线
-# myDA.tsa.plot_selfcorrelation(rate1,count=500)
-#
-# # ---序列惯性分析：1期波动与n期波动的相关系数
-# myDA.tsa.plot_inertia(eurusd["close"],n_start=1,n_end=500,shift=1)
-#
+
+# ---波动率分析
+myDA.tsa_auto_test(range)
+myDA.tsa_auto_ARIMA(range)
+myDA.tsa_auto_ARCH(range)
+
+# ---序列自相关系数分析：1期波动与其滞后的相关系数曲线
+myDA.tsa.plot_selfcorrelation(range,count=100)
+
+# ---序列惯性分析：1期波动与n期波动的相关系数
+myDA.tsa.plot_inertia(eurusd["Close"],n_start=1,n_end=500,shift=1)
+
 # 两天波动的信息包括今天和昨天，所以今天的波动与两天的波动、昨天的波动与两天的波动 相关性都大。
 # (其实无意义，两天波动可以通过运用公式，把一天的波动作为变量来算出。)
-# rate2 = close.pct_change(periods=2)
-# rate.corr(rate2.shift(-1), method="pearson") # 0.7017
-# rate2.corr(rate.shift(1), method="pearson") # 0.7017
+rate2 = close.pct_change(periods=2)
+rate.corr(rate2.shift(-1), method="pearson") # 0.7017
+rate2.corr(rate.shift(1), method="pearson") # 0.7017
 
 #%% ##############################################
 # 获取非共线性的技术指标
