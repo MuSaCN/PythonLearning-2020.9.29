@@ -81,7 +81,7 @@ signal=signaldata["buysignal"]
 
 # ---信号过滤，根据信号的利润，运用其他指标来过滤。
 indicator=rsi
-myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
+myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)",savefig = None)
 
 #%%
 holding = 1
