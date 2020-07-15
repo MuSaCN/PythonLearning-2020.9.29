@@ -177,14 +177,14 @@ if __name__ == '__main__':
     buyfilepath = folder + "\\动量_Buy.xlsx"
     sellfilepath = folder + "\\动量_Sell.xlsx"
     allfilepath = folder + "\\动量_All.xlsx"
-    myBTV.run_train(signalfunc_train, para_buyonly, buyfilepath, cpu_core)
-    myBTV.run_train(signalfunc_train, para_sellonly, sellfilepath, cpu_core)
-    myBTV.run_train(signalfunc_train, para_all, allfilepath, cpu_core)
+    myBTV.run_train(signalfunc_NoRepeatHold_train, para_buyonly, buyfilepath, cpu_core)
+    myBTV.run_train(signalfunc_NoRepeatHold_train, para_sellonly, sellfilepath, cpu_core)
+    myBTV.run_train(signalfunc_NoRepeatHold_train, para_all, allfilepath, cpu_core)
 
     # ---分析测试集(并行)
-    myBTV.run_test(signalfunc_test, buyfilepath, paranames, cpu_core)
-    myBTV.run_test(signalfunc_test, sellfilepath, paranames, cpu_core)
-    myBTV.run_test(signalfunc_test, allfilepath, paranames, cpu_core)
+    myBTV.run_test(signalfunc_NoRepeatHold_test, buyfilepath, paranames, cpu_core)
+    myBTV.run_test(signalfunc_NoRepeatHold_test, sellfilepath, paranames, cpu_core)
+    myBTV.run_test(signalfunc_NoRepeatHold_test, allfilepath, paranames, cpu_core)
 
 
 

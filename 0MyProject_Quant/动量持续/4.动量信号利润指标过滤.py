@@ -46,7 +46,7 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #------------------------------------------------------------
 
 '''
-说明：所用的思想为“求积分(累积和)来进行噪音过滤”。
+说明：从累计利润角度进行过滤。所用的思想为“求积分(累积和)来进行噪音过滤”。
 # 为了让策略有更好的表现，我们希望过滤掉一些不好的信号。那么如何过滤信号才是科学的呢？
 # 比如我们用rsi(60)来过滤，当然也可以用其他的比如rsi(50)。具体哪个可以根据测试。
 # 一个指定参数的策略，每次信号时，我们都可以计算出相应的 rsi(60)。显然每次信号都有一个利润，那么就可以得到两个序列，一个为 rsi(60) 的序列，一个为对应的利润的序列。
@@ -54,8 +54,60 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 # 这样 rsi(60)序列 与 利润累积和序列 就可以画出两者的关系。可以分析出 rsi(60)值 的哪些区间对于累计利润是正的贡献、哪些区间是负的贡献。
 '''
 
+#%% ###################################
+import warnings
+warnings.filterwarnings('ignore')
 
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+eurusd_train = eurusd.loc[:"2014-12-31"]
+eurusd_test = eurusd.loc["2015-01-01":]
+price = eurusd.Close
+price_train = eurusd_train.Close
+price_test = eurusd_test.Close
 
+# 获取非共线性的技术指标
+import talib
+rsi = talib.RSI(price,timeperiod=40)
+
+#%%
+holding = 1
+k = 100
+lag_trade = 1
+
+# ---仅做多分析，获取训练集的信号数据
+signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+signal=signaldata["buysignal"]
+
+# ---信号过滤，根据信号的利润，运用其他指标来过滤。
+indicator=rsi
+myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
+
+#%%
+holding = 1
+k = 100
+lag_trade = 1
+
+# ---仅做空分析，获取训练集的信号数据
+signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
+signal=signaldata["sellsignal"]
+
+# ---信号过滤，根据信号的利润，运用其他指标来过滤。
+indicator=rsi
+myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
+
+#%%
+holding = 1
+k = 100
+lag_trade = 1
+
+# ---做多空分析，获取训练集的信号数据
+signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
+signal=signaldata["allsignal"]
+
+# ---信号过滤，根据信号的利润，运用其他指标来过滤。
+indicator=rsi
+myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
 
 
 
