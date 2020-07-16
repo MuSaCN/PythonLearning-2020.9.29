@@ -54,6 +54,7 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 
 
 #%%
+folder = __mypath__.get_desktop_path() + "\\__动量研究(无过滤)__"
 folder = __mypath__.get_desktop_path() + "\\__动量研究__"
 filepath = folder + "\\动量_Buy.xlsx"
 filepath = folder + "\\动量_Sell.xlsx"
@@ -86,6 +87,7 @@ myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent_new, para_
 para_fixed = {"k":None, "holding":1, "lag_trade":None}
 # myDefault.set_backend_default("pycharm")
 # myDefault.set_backend_default("tkagg")
+
 
 y_name = ["sharpe", "calmar_ratio", "cumRet"]
 myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
