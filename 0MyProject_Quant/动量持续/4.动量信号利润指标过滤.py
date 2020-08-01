@@ -70,7 +70,7 @@ price_test = eurusd_test.Close
 import talib
 rsi = talib.RSI(price,timeperiod=40)
 
-#%%
+#%% 仅做多分析
 holding = 1
 k = 100
 lag_trade = 1
@@ -83,7 +83,7 @@ signal=signaldata["buysignal"]
 indicator=rsi
 myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)",savefig = None)
 
-#%%
+#%% 仅做空分析
 holding = 1
 k = 100
 lag_trade = 1
@@ -96,7 +96,7 @@ signal=signaldata["sellsignal"]
 indicator=rsi
 myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
 
-#%%
+#%% 做多空分析
 holding = 1
 k = 100
 lag_trade = 1
