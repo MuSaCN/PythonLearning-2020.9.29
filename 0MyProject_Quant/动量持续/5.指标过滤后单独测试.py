@@ -56,10 +56,8 @@ price = eurusd.Close
 train_x0 = pd.Timestamp('2000-01-01 00:00:00')
 train_x1 = pd.Timestamp('2014-12-31 00:00:00')
 
-
 # 获取非共线性的技术指标
 import talib
-rsi = talib.RSI(price,timeperiod=40)
 
 #%% 仅做多分析
 holding = 1
@@ -72,9 +70,9 @@ signal=signaldata["buysignal"]
 
 # ---根据指标范围来过滤信号
 signal_filter = signal.copy()
-indicator = rsi
+rsi = talib.RSI(price,timeperiod=60)
 for i in range(len(signal_filter)):
-    if signal_filter[i] !=0 and indicator[i] > 64:
+    if signal_filter[i] !=0 and (rsi[i] > 56 and rsi[i] < 59):
         signal_filter[i] = 0
 
 # ---单独测试
@@ -100,9 +98,9 @@ signal=signaldata["sellsignal"]
 
 # ---根据指标范围来过滤信号
 signal_filter = signal.copy()
-indicator = rsi
+rsi = talib.RSI(price,timeperiod=5)
 for i in range(len(signal_filter)):
-    if signal_filter[i] !=0 and indicator[i] > 46:
+    if signal_filter[i] !=0 and (rsi[i] < 19 or rsi[i] > 55):
         signal_filter[i] = 0
 
 # ---单独测试
@@ -128,9 +126,9 @@ signal=signaldata["allsignal"]
 
 # ---根据指标范围来过滤信号
 signal_filter = signal.copy()
-indicator = rsi
+rsi = talib.RSI(price,timeperiod=6)
 for i in range(len(signal_filter)):
-    if signal_filter[i] !=0 and indicator[i] > 64:
+    if signal_filter[i] !=0 and (rsi[i] < 20 or rsi[i]>60):
         signal_filter[i] = 0
 
 # ---单独测试
