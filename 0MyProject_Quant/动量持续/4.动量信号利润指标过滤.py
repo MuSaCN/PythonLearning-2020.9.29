@@ -60,6 +60,7 @@ warnings.filterwarnings('ignore')
 
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+# 由于信号利润过滤是利用训练集的，所以要区分训练集和测试集
 eurusd_train = eurusd.loc[:"2014-12-31"]
 eurusd_test = eurusd.loc["2015-01-01":]
 price = eurusd.Close

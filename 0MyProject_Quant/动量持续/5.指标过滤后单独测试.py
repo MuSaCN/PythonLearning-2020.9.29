@@ -51,21 +51,97 @@ warnings.filterwarnings('ignore')
 
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
-eurusd_train = eurusd.loc[:"2014-12-31"]
-eurusd_test = eurusd.loc["2015-01-01":]
 price = eurusd.Close
-price_train = eurusd_train.Close
-price_test = eurusd_test.Close
+# 单独测试不需要把数据集区分训练集、测试集，仅画区间就可以了
+train_x0 = pd.Timestamp('2000-01-01 00:00:00')
+train_x1 = pd.Timestamp('2014-12-31 00:00:00')
+
 
 # 获取非共线性的技术指标
 import talib
 rsi = talib.RSI(price,timeperiod=40)
 
-#%%
+#%% 仅做多分析
+holding = 1
+k = 100
+lag_trade = 1
+
+# ---仅做多分析，获取训练集的信号数据
+signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+signal=signaldata["buysignal"]
+
+# ---根据指标范围来过滤信号
+signal_filter = signal.copy()
+indicator = rsi
+for i in range(len(signal_filter)):
+    if signal_filter[i] !=0 and indicator[i] > 64:
+        signal_filter[i] = 0
+
+# ---单独测试
+# 信号分析
+outStrat, outSignal = myBTV.signal_quality(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+outStrat, outSignal = myBTV.signal_quality(signal_filter, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+
+# 信号分析，不重复持仓
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal_filter, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+
+# myBTV.signal_quality_explain()
 
 
+#%% 仅做空分析
+holding = 1
+k = 100
+lag_trade = 1
+
+# ---仅做空分析，获取训练集的信号数据
+signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
+signal=signaldata["sellsignal"]
+
+# ---根据指标范围来过滤信号
+signal_filter = signal.copy()
+indicator = rsi
+for i in range(len(signal_filter)):
+    if signal_filter[i] !=0 and indicator[i] > 46:
+        signal_filter[i] = 0
+
+# ---单独测试
+# 信号分析
+outStrat, outSignal = myBTV.signal_quality(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+outStrat, outSignal = myBTV.signal_quality(signal_filter, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+
+# 信号分析，不重复持仓
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal_filter, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+
+# myBTV.signal_quality_explain()
 
 
+#%% 多空同参数分析
+holding = 1
+k = 100
+lag_trade = 1
 
+# ---多空分析，获取训练集的信号数据
+signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode="All", stra_mode="Continue")
+signal=signaldata["allsignal"]
+
+# ---根据指标范围来过滤信号
+signal_filter = signal.copy()
+indicator = rsi
+for i in range(len(signal_filter)):
+    if signal_filter[i] !=0 and indicator[i] > 64:
+        signal_filter[i] = 0
+
+# ---单独测试
+# 信号分析
+outStrat, outSignal = myBTV.signal_quality(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+outStrat, outSignal = myBTV.signal_quality(signal_filter, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+
+# 信号分析，不重复持仓
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal_filter, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1)
+
+# myBTV.signal_quality_explain()
 
 
