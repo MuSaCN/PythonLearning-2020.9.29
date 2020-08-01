@@ -69,7 +69,8 @@ price_test = eurusd_test.Close
 
 # 获取非共线性的技术指标
 import talib
-rsi = talib.RSI(price,timeperiod=40)
+timeperiod = [5, 60+1] # 指标参数的范围
+rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%% 仅做多分析
 holding = 1
@@ -81,8 +82,11 @@ signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="Bu
 signal=signaldata["buysignal"]
 
 # ---信号过滤，根据信号的利润，运用其他指标来过滤。
-indicator=rsi
-myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)",savefig = None)
+for i in range(timeperiod[0], timeperiod[1]):
+    indicator = rsi[i-timeperiod[0]]
+    savefig = __mypath__.get_desktop_path() + "\\__动量指标过滤(Buy)__\\rsi(%s).png"%i
+    myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = savefig)
+
 
 #%% 仅做空分析
 holding = 1
@@ -93,9 +97,14 @@ lag_trade = 1
 signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="SellOnly", stra_mode="Continue")
 signal=signaldata["sellsignal"]
 
+
 # ---信号过滤，根据信号的利润，运用其他指标来过滤。
-indicator=rsi
-myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
+for i in range(timeperiod[0], timeperiod[1]):
+    indicator = rsi[i-timeperiod[0]]
+    savefig = __mypath__.get_desktop_path() + "\\__动量指标过滤(Sell)__\\rsi(%s).png"%i
+    myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = savefig)
+
+
 
 #%% 做多空分析
 holding = 1
@@ -107,10 +116,10 @@ signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="Al
 signal=signaldata["allsignal"]
 
 # ---信号过滤，根据信号的利润，运用其他指标来过滤。
-indicator=rsi
-myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(40)")
-
-
+for i in range(timeperiod[0], timeperiod[1]):
+    indicator = rsi[i-timeperiod[0]]
+    savefig = __mypath__.get_desktop_path() + "\\__动量指标过滤(All)__\\rsi(%s).png"%i
+    myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = savefig)
 
 
 
