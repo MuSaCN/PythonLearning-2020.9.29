@@ -70,6 +70,8 @@ data = pd.DataFrame({"Open":eurusd["Open"], "High":eurusd["High"],
 myDA.indi.candle_ohlc(data[-100:-1])
 
 # ---波动率分析
+myplt.set_backend("tkagg")
+myplt.set_backend("Pycharm")
 myDA.tsa_auto_test(range)
 myDA.tsa_auto_ARIMA(range)
 myDA.tsa_auto_ARCH(range)
