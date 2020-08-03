@@ -91,7 +91,7 @@ for i in range(timeperiod[0], timeperiod[1]):
 
 #%% 仅做空分析
 holding = 1
-k = 50
+k = 100
 lag_trade = 1
 
 # ---仅做空分析，获取训练集的信号数据
