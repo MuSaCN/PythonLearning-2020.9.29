@@ -72,6 +72,7 @@ import talib
 timeperiod = [5, 10+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
+
 #%% 仅做多分析
 holding = 1
 k = 100
@@ -90,7 +91,7 @@ for i in range(timeperiod[0], timeperiod[1]):
 
 #%% 仅做空分析
 holding = 1
-k = 100
+k = 50
 lag_trade = 1
 
 # ---仅做空分析，获取训练集的信号数据

@@ -54,6 +54,21 @@ close = eurusd["Close"]
 rate = eurusd["Rate"]
 range = eurusd["Range"]
 
+#%%
+prices = close[0:10]
+prices = close[10:20]
+prices.plot()
+plt.show()
+
+myDA.fin.calc_max_up_range(data=prices,datamode="p",return_shift=True)
+
+myDA.fin.calc_max_down_range(data=prices,datamode="p",return_shift=True)
+prices[4] - prices[8]
+
+
+
+
+
 #%% ##############################################
 # 输入时间向量(时间序列)，获取其时间之前(包括指定时间)的，对应symbol和timeframe的n个收盘价收益率(波动率)(运算方式，效率高)：
 beforevola = myPjMT5.getvolatility_beforetime(eurusd["time"],"EURUSD","TIMEFRAME_H1",count=5, updatetimeindex=False)
