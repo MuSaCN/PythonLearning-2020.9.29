@@ -69,7 +69,7 @@ price_test = eurusd_test.Close
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [5, 10+1] # 指标参数的范围
+timeperiod = [5, 5+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 
