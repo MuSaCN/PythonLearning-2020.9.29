@@ -65,35 +65,39 @@ train_x1 = pd.Timestamp('2014-12-31 00:00:00')
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [5, 5+1] # 指标参数的范围
+timeperiod = [5, 6+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
+indi_name = "rsi"
 
-
-#%% 仅做多分析
+#%% 分析
 holding = 1
 k = 100
 lag_trade = 1
+sig_mode, sig_name = "BuyOnly", "buysignal"  # 做多空分析
+sig_mode, sig_name = "SellOnly", "sellsignal"  # 做多空分析
+sig_mode, sig_name = "All", "allsignal"  # 做多空分析
 
-# ---仅做多分析，获取训练集的原始信号数据
-signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
-signal=signaldata["buysignal"]
+#%%
+# ---获取训练集的信号
+signaldata_train = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
+signal_train = signaldata_train[sig_name]
+
+# ---计算整个样本的信号
+signaldata = myBTV.stra.momentum(price, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
+signal = signaldata[sig_name]
+
+# ---过滤前策略
+folder = __mypath__.get_desktop_path() + "\\__动量指标过滤(%s)__"%sig_mode
+savefig = folder + "\\过滤前策略.png"
+outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1, savefig=None)
 
 # ---信号过滤，根据信号的利润，运用其他指标来过滤。
 for i in range(timeperiod[0], timeperiod[1]):
     # 指定指标和图片的保存位置
-    indicator = rsi[i-timeperiod[0]]
-    savefig = __mypath__.get_desktop_path() + "\\__动量指标过滤(Buy)__\\rsi(%s).png"%i
-    # 获取指标针对原始信号的最优区间
-    indicator_start, indicator_end = myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = None)
-    # ---根据指标范围来过滤信号
-    signal_filter = signal.copy()
-    rsi = talib.RSI(price, timeperiod=60)
-    for i in range(len(signal_filter)):
-        if signal_filter[i] != 0 and (rsi[i] > 56 and rsi[i] < 59):
-            signal_filter[i] = 0
-
-
-
+    indicator = rsi[i - timeperiod[0]]
+    savefig = folder + "\\%s(%s).png" % (indi_name,i)
+    # 信号利润过滤及测试
+    myBTV.signal_indicator_filter_and_quality(signal_train=signal_train, signal_all=signal, indicator=indicator, train_x0=train_x0, train_x1=train_x1, price_DataFrame=eurusd, price_Series=price, holding=holding, lag_trade=lag_trade, noRepeatHold=True, indi_name="%s(%s)"%(indi_name, i), savefig=savefig)
 
 
 

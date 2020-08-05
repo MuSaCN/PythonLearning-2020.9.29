@@ -69,7 +69,7 @@ price_test = eurusd_test.Close
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [5, 5+1] # 指标参数的范围
+timeperiod = [5, 6+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 
@@ -86,7 +86,7 @@ signal=signaldata["buysignal"]
 for i in range(timeperiod[0], timeperiod[1]):
     indicator = rsi[i-timeperiod[0]]
     savefig = __mypath__.get_desktop_path() + "\\__动量指标过滤(Buy)__\\rsi(%s).png"%i
-    myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = None)
+    myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = savefig)
 
 
 #%% 仅做空分析
