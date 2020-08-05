@@ -45,6 +45,54 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
+#%% ###################################
+import warnings
+warnings.filterwarnings('ignore')
+
+# 获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+
+# 由于信号利润过滤是利用训练集的，所以要区分训练集和测试集
+eurusd_train = eurusd.loc[:"2014-12-31"]
+eurusd_test = eurusd.loc["2015-01-01":]
+price = eurusd.Close
+price_train = eurusd_train.Close
+price_test = eurusd_test.Close
+
+# 测试不需要把数据集区分训练集、测试集，仅画区间就可以了
+train_x0 = pd.Timestamp('2000-01-01 00:00:00')
+train_x1 = pd.Timestamp('2014-12-31 00:00:00')
+
+# 获取非共线性的技术指标
+import talib
+timeperiod = [5, 5+1] # 指标参数的范围
+rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
+
+
+#%% 仅做多分析
+holding = 1
+k = 100
+lag_trade = 1
+
+# ---仅做多分析，获取训练集的原始信号数据
+signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode="BuyOnly", stra_mode="Continue")
+signal=signaldata["buysignal"]
+
+# ---信号过滤，根据信号的利润，运用其他指标来过滤。
+for i in range(timeperiod[0], timeperiod[1]):
+    # 指定指标和图片的保存位置
+    indicator = rsi[i-timeperiod[0]]
+    savefig = __mypath__.get_desktop_path() + "\\__动量指标过滤(Buy)__\\rsi(%s).png"%i
+    # 获取指标针对原始信号的最优区间
+    indicator_start, indicator_end = myBTV.signal_indicator_filter(signal,indicator=indicator,price_DataFrame=eurusd,holding=holding,lag_trade=lag_trade,noRepeatHold=True,indi_name="rsi(%s)"%i,savefig = None)
+    # ---根据指标范围来过滤信号
+    signal_filter = signal.copy()
+    rsi = talib.RSI(price, timeperiod=60)
+    for i in range(len(signal_filter)):
+        if signal_filter[i] != 0 and (rsi[i] > 56 and rsi[i] < 59):
+            signal_filter[i] = 0
+
+
 
 
 
