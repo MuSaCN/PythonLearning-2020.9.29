@@ -70,38 +70,19 @@ lograte = eurusd.LogRate
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [350, 350+1] # 指标参数的范围
-rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
+timeperiod = [5, 300+1] # 指标参数的范围
+indicator_list = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%%
-# 生成白噪声
-totalstep = 10000
-np.random.seed(420)
-noise_df = pd.DataFrame(np.random.randn(len(rsi[0]), totalstep), index=rsi[0].index)
-
-# 计算 白噪声与指标、收益率与指标 的相关系数
-for i in range(len(rsi)):
-    indicator = rsi[i]
-    # 计算收益率与指标的相关系数，series与series的相关性
-    rate_corr = rate.corr(indicator, method="spearman")
-    # 计算白噪声与指标的相关性，df与series的相关性
-    noise_corr = noise_df.corrwith(indicator, method="spearman")
-    noise_corr.mean()
-    noise_corr.std()
-    noise_corr.hist(bins = int(np.sqrt(len(noise_corr) ) ) )
-    plt.show()
+# 指标1个参数范围合理性测试，仅适合1个参数变化时分析。
+indi_name="rsi"
+folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
+savefig = folder + "\\indi_name.png"
+myBTV.indicator_param1D_range(volatility=rate, indicator_list=indicator_list, indi_name=indi_name, para_range=timeperiod, totalstep = 10000, savefig=savefig)
 
 
 
 
-#%% 不同参数下，指标与收益率的相关系数走势
-rsi_corr = []
-for i in range(len(rsi)):
-    indicator = rsi[i]
-    rate_corr = indicator.corr(rate, method="spearman")
-    rsi_corr.append(rate_corr)
-pd.Series(rsi_corr).plot()
-plt.show()
 
 
 
