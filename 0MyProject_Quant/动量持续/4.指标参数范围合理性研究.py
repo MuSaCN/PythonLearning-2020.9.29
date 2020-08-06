@@ -55,7 +55,24 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 5.不同参数下 Indicator 都有一个概率，这就会形成一个序列。通过序列能判断哪些参数区间有效。
 '''
 
+#%%
 
+#%% ###################################
+import warnings
+warnings.filterwarnings('ignore')
+
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+# 研究指标与价格波动的关系，不需要区分训练集和测试集
+price = eurusd.Close
+rate = eurusd.Rate
+
+# 获取非共线性的技术指标
+import talib
+timeperiod = [5, 6+1] # 指标参数的范围
+rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
+
+#%%
 
 
 
