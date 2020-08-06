@@ -65,24 +65,41 @@ eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,
 # 研究指标与价格波动的关系，不需要区分训练集和测试集
 price = eurusd.Close
 rate = eurusd.Rate
+lograte = eurusd.LogRate
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [5, 5+1] # 指标参数的范围
-rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
+timeperiod = [5, 350+1] # 指标参数的范围
+rsi = [talib.RSI(price,timeperiod=i)-50 for i in range(timeperiod[0], timeperiod[1])]
+
+rsi_corr = []
+for i in range(len(rsi)):
+    indicator = rsi[i]
+    rate_corr = indicator.corr(rate, method="spearman")
+    rsi_corr.append(rate_corr)
+pd.Series(rsi_corr).plot()
+plt.show()
 
 #%%
+# 生成白噪声
+totalstep = 10000
+np.random.seed(420)
+noise_df = pd.DataFrame(np.random.randn(len(rsi[0]), totalstep), index=rsi[0].index)
+
+
+# 计算 白噪声与指标、收益率与指标 的相关系数
 for i in range(len(rsi)):
     indicator = rsi[i]
     rate_corr = indicator.corr(rate, method="spearman")
     # 计算白噪声与指标的相关性
-    np.random.seed(42)
     noise_corr_list = []
-    for i in range(10000):
-        noise = pd.Series(np.random.normal(0,1,len(indicator)), index=indicator.index)
+    for step in range(totalstep):
+        noise = noise_df[step]
         noise_corr = indicator.corr(noise, method="spearman")
         noise_corr_list.append(noise_corr)
     data = pd.Series(noise_corr_list)
+    data.mean()
+    data.std()
     data.hist(bins = int(np.sqrt(len(noise_corr_list) ) ) )
     plt.show()
 
