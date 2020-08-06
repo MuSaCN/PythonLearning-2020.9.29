@@ -55,7 +55,6 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 5.不同参数下 Indicator 都有一个概率，这就会形成一个序列。通过序列能判断哪些参数区间有效。
 '''
 
-#%%
 
 #%% ###################################
 import warnings
@@ -73,6 +72,23 @@ timeperiod = [5, 6+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%%
+for i in range(len(rsi)):
+    indicator = rsi[i]
+    rate_corr = indicator.corr(rate, method="spearman")
+    # 计算白噪声与指标的相关性
+    np.random.seed(42)
+    noise_corr_list = []
+    for i in range(999):
+        noise = pd.Series(np.random.normal(0,1,len(indicator)), index=indicator.index)
+        noise_corr = noise.corr(indicator, method="spearman")
+        noise_corr_list.append(noise_corr)
+    data = pd.Series(noise_corr_list)
+    data.hist()
+    plt.show()
+
+
+
+
 
 
 
