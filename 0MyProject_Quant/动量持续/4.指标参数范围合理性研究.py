@@ -61,14 +61,14 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2010,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 # 研究指标与价格波动的关系，不需要区分训练集和测试集
 price = eurusd.Close
 rate = eurusd.Rate
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [5, 6+1] # 指标参数的范围
+timeperiod = [5, 5+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%%
@@ -78,12 +78,12 @@ for i in range(len(rsi)):
     # 计算白噪声与指标的相关性
     np.random.seed(42)
     noise_corr_list = []
-    for i in range(999):
+    for i in range(10000):
         noise = pd.Series(np.random.normal(0,1,len(indicator)), index=indicator.index)
-        noise_corr = noise.corr(indicator, method="spearman")
+        noise_corr = indicator.corr(noise, method="spearman")
         noise_corr_list.append(noise_corr)
     data = pd.Series(noise_corr_list)
-    data.hist()
+    data.hist(bins = int(np.sqrt(len(noise_corr_list) ) ) )
     plt.show()
 
 
