@@ -68,7 +68,7 @@ train_x1 = pd.Timestamp('2014-12-31 00:00:00')
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [5, 20+1] # 指标参数的范围
+timeperiod = [5, 400+1] # 指标参数的范围
 rsi = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 indi_name = "rsi"
 
@@ -92,15 +92,28 @@ signal = signaldata[sig_name]
 # ---过滤前策略
 folder = __mypath__.get_desktop_path() + "\\__动量指标过滤(%s)__"%sig_mode
 savefig = folder + "\\过滤前策略.png"
-outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1, savefig=None)
+# outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1, savefig=None)
 
-# ---信号过滤，根据信号的利润，运用其他指标来过滤。
-for i in range(timeperiod[0], timeperiod[1]):
-    # 指定指标和图片的保存位置
-    indicator = rsi[i - timeperiod[0]]
-    savefig = folder + "\\%s(%s).png" % (indi_name,i)
+#%%
+# para传递指标的参数
+def run(para):
+    indicator = rsi[para - timeperiod[0]]
+    savefig = folder + "\\%s(%s).png" % (indi_name, para)
     # 信号利润过滤及测试
-    myBTV.signal_indicator_filter_and_quality(signal_train=signal_train, signal_all=signal, indicator=indicator, train_x0=train_x0, train_x1=train_x1, price_DataFrame=eurusd, price_Series=price, holding=holding, lag_trade=lag_trade, noRepeatHold=True, indi_name="%s(%s)"%(indi_name, i), savefig=None)
+    myBTV.signal_indicator_filter_and_quality(signal_train=signal_train, signal_all=signal, indicator=indicator, train_x0=train_x0, train_x1=train_x1, price_DataFrame=eurusd, price_Series=price, holding=holding, lag_trade=lag_trade, noRepeatHold=True, indi_name="%s(%s)" % (indi_name, para), savefig=savefig)
+
+if __name__ == '__main__':
+    multi_para = [i for i in range(timeperiod[0], timeperiod[1])]
+
+    import timeit
+    t0 = timeit.default_timer()
+    myBTV.multi_processing(run, multi_para, core_num=0)
+    t1 = timeit.default_timer()
+    print("\n", 'signal_indicator_filter_and_quality 耗时为：', t1 - t0)
+
+
+
+
 
 
 

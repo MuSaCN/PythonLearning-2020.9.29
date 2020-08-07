@@ -92,12 +92,18 @@ savefig = folder + "\\过滤前策略.png"
 outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signal, price_DataFrame=eurusd, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=True, train_x0=train_x0, train_x1=train_x1, savefig=None)
 
 # ---信号过滤，根据信号的利润，运用其他指标来过滤。
+import timeit
+t0 = timeit.default_timer()
 for i in range(timeperiod[0], timeperiod[1]):
     # 指定指标和图片的保存位置
     indicator = rsi[i - timeperiod[0]]
     savefig = folder + "\\%s(%s).png" % (indi_name,i)
     # 信号利润过滤及测试
     myBTV.signal_indicator_filter_and_quality(signal_train=signal_train, signal_all=signal, indicator=indicator, train_x0=train_x0, train_x1=train_x1, price_DataFrame=eurusd, price_Series=price, holding=holding, lag_trade=lag_trade, noRepeatHold=True, indi_name="%s(%s)"%(indi_name, i), savefig=None)
+
+t1 = timeit.default_timer()
+print("\n", 'signal_indicator_filter_and_quality 耗时为：', t1 - t0)
+
 
 
 
