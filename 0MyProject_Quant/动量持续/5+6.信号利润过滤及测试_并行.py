@@ -45,6 +45,9 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
+
+
+
 #%% ###################################
 import warnings
 warnings.filterwarnings('ignore')
@@ -98,6 +101,9 @@ for i in range(timeperiod[0], timeperiod[1]):
     savefig = folder + "\\%s(%s).png" % (indi_name,i)
     # 信号利润过滤及测试
     myBTV.signal_indicator_filter_and_quality(signal_train=signal_train, signal_all=signal, indicator=indicator, train_x0=train_x0, train_x1=train_x1, price_DataFrame=eurusd, price_Series=price, holding=holding, lag_trade=lag_trade, noRepeatHold=True, indi_name="%s(%s)"%(indi_name, i), savefig=None)
+
+
+
 
 
 
