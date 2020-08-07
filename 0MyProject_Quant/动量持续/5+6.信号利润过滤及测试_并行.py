@@ -97,7 +97,7 @@ savefig = folder + "\\过滤前策略.png"
 #%%
 # para传递指标的参数
 def run(para):
-    myplt.set_backend("agg")
+    myplt.set_backend("agg") # 后台输出图片，不占pycharm内存
     indicator = rsi[para - timeperiod[0]]
     savefig = folder + "\\%s(%s).png" % (indi_name, para)
     # 信号利润过滤及测试
