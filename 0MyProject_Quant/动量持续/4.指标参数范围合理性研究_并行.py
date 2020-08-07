@@ -45,6 +45,7 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
+
 '''
 # 研究思路，类似 Permutation Test 置换检验：
 分析 Indicator 与 Return 是否有关，不能直接用简单的相关系数，需要个基准。
@@ -90,8 +91,6 @@ indi_name="rsi"
 folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
 savefig = folder + "\\indi_name.png"
 prob_series = myBTV.indicator_param1D_range(volatility=rate, indicator_list=indicator_list, indi_name=indi_name, para_range=timeperiod, totalstep = 10000, savefig=savefig)
-
-
 
 
 
