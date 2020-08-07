@@ -45,63 +45,19 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
-'''
-# 研究思路，类似 Permutation Test 置换检验：
-分析 Indicator 与 Return 是否有关，不能直接用简单的相关系数，需要个基准。
-0.今天的 Indicator 要与明天的 Return 匹配。
-1.用 spearman 相关系数。
-2.一次实验：随机生成一组白噪声(可以为正态分布、t分布)，计算 noise 与 Indicator 的相关系数。
-3.重复许多次实验，得到相关系数序列。这个序列可以形成一个分布。能计算出 0.05 位置 和 0.95 位置的值。
-4.计算某一参数 Indicator 和 Return 的相关系数，并且能得出其在上述分布中的概率。
-5.不同参数下 Indicator 都有一个概率，这就会形成一个序列。通过序列能判断哪些参数区间有效。
-注意：白噪声用于模拟收益率，所以这两者只能与 Indicator 比较。
-'''
+# 多核并行返回结果list，是以输入参数的顺序来定的，不改变原参数的顺序。
 
+def func(para):
+    index = para + 1
+    return index
 
-#%% ###################################
-import warnings
-warnings.filterwarnings('ignore')
-
-# ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2015,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
-# 研究指标与价格波动的关系，不需要区分训练集和测试集
-price = eurusd.Close
-rate = eurusd.Rate
-lograte = eurusd.LogRate
-
-# 获取非共线性的技术指标
-import talib
-timeperiod = [5, 12+1] # 指标参数的范围
-indicator_list = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
-
-#%%
-# 向后移动，我们希望今天的特征能与明天的波动匹配，所以shift(-1)，不能是shift(1)
-rate = eurusd.Rate
-rate = rate.shift(-1)
-# 先大致判断下 收益率与指标 相关性范围。若不行，才进一步操作，或并行运算。
-rate_corr_list=[]
-for i in range(len(indicator_list)):
-    indicator = indicator_list[i]
-    rate_corr = rate.corr(indicator)
-    rate_corr_list.append(rate_corr)
-rate_corr_series = pd.Series(rate_corr_list, index=[i for i in range(timeperiod[0], timeperiod[1])])
-rate_corr_series.plot()
-plt.show()
-
-#%%
-# 指标1个参数范围合理性测试，仅适合1个参数变化时分析。
-indi_name="rsi"
-folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
-savefig = folder + "\\%s.png"%indi_name
-
-prob_series = myBTV.indicator_param1D_range(volatility=rate, indicator_list=indicator_list, indi_name=indi_name, para_range=timeperiod, totalstep = 10000, savefig=None)
-
-
-
-
-
-
-
+if __name__ == '__main__':
+    multi_para = [i for i in range(10000)]
+    list = myBTV.multi_processing(func, multi_para, core_num=0)
+    print(list)
+    data = pd.Series(list, index = multi_para)
+    data.plot()
+    plt.show()
 
 
 
