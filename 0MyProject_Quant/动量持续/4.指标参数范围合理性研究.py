@@ -70,11 +70,11 @@ lograte = eurusd.LogRate
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [100, 100+1] # 指标参数的范围
+timeperiod = [5, 30+1] # 指标参数的范围
 indicator_list = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%%
-# 先大致判断下 收益率与指标 相关性范围，若不行，才进一步操作。
+# 先大致判断下 收益率与指标 相关性范围。若不行，才进一步操作，或并行运算。
 rate_corr_list=[]
 for i in range(len(indicator_list)):
     indicator = indicator_list[i]
@@ -88,7 +88,8 @@ plt.show()
 # 指标1个参数范围合理性测试，仅适合1个参数变化时分析。
 indi_name="rsi"
 folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
-savefig = folder + "\\indi_name.png"
+savefig = folder + "\\%s.png"%indi_name
+
 prob_series = myBTV.indicator_param1D_range(volatility=rate, indicator_list=indicator_list, indi_name=indi_name, para_range=timeperiod, totalstep = 10000, savefig=savefig)
 
 

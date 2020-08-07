@@ -71,29 +71,57 @@ lograte = eurusd.LogRate
 
 # 获取非共线性的技术指标
 import talib
-timeperiod = [100, 100+1] # 指标参数的范围
+timeperiod = [5, 30+1] # 指标参数的范围
 indicator_list = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%%
-# 先大致判断下 收益率与指标 相关性范围，若不行，才进一步操作。
-rate_corr_list=[]
-for i in range(len(indicator_list)):
-    indicator = indicator_list[i]
-    rate_corr = rate.corr(indicator)
-    rate_corr_list.append(rate_corr)
-rate_corr_series = pd.Series(rate_corr_list, index=[i for i in range(timeperiod[0], timeperiod[1])])
-rate_corr_series.plot()
-plt.show()
+# 并行运算不需要先大致判断下 收益率与指标 相关性范围。
 
 #%%
 # 指标1个参数范围合理性测试，仅适合1个参数变化时分析。
 indi_name="rsi"
-folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
-savefig = folder + "\\indi_name.png"
-prob_series = myBTV.indicator_param1D_range(volatility=rate, indicator_list=indicator_list, indi_name=indi_name, para_range=timeperiod, totalstep = 10000, savefig=savefig)
+totalstep = 10000
+volatility=rate
+para_range=timeperiod
+# 生成白噪声
+np.random.seed(420)
+noise_df = pd.DataFrame(np.random.randn(len(indicator_list[0]), totalstep), index=indicator_list[0].index)
 
+# 用于多核，计算概率，para传递 指标list 的索引
+def cal_prob(para):
+    index = para
+    indicator = indicator_list[index]
+    # 计算收益率与指标的相关系数，series与series的相关性
+    rate_corr = volatility.corr(indicator, method="spearman")
+    # 计算白噪声与指标的相关性，df与series的相关性(这一步速度慢，需要并行)
+    noise_corr = noise_df.corrwith(indicator, method="spearman")
+    mean = noise_corr.mean()
+    std = noise_corr.std()
+    # 计算出收益率与指标的相关系数，在白噪声相关系数分布中的概率位置
+    prob = np.around(stats.norm.cdf(rate_corr, loc=mean, scale=std), 4)
+    if prob < 0.5:
+        prob = 1 - prob  # 因为是双边分析
+    print("\r", "{}/{} finished !".format(index, len(indicator_list)), end="", flush=True)
+    return prob
 
+#%%
+if __name__ == '__main__':
+    # 并行运算
+    multi_para = [i for i in range(len(indicator_list))]
+    import timeit
+    t0 = timeit.default_timer()
+    prob_list = myBTV.multi_processing(cal_prob, multi_para, core_num=0)
+    t1 = timeit.default_timer()
+    print("\n", 'indicator_param1D_range 耗时为：', t1 - t0)
 
+    # 画图
+    prob_series = pd.Series(prob_list, index=[i for i in range(para_range[0], para_range[1])])
+    prob_series.plot(title="不同参数下 %s 指标的概率分数" % indi_name)
+    # 保存图片
+    folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
+    savefig = folder + "\\%s.png" % indi_name
+    myplt.savefig(fname=savefig)
+    plt.show()
 
 
 
