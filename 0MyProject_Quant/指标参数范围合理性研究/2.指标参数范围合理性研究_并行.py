@@ -74,7 +74,7 @@ rate = eurusd.Rate.shift(-1)
 #%%
 # 获取非共线性的技术指标，输入指标名称及其泛化参数
 indi_name="rsi"
-indi_params = [("Close",i) for i in range(5,20+1)]
+indi_params = [("Close",i) for i in range(5,12+1)]
 
 
 #%%
@@ -86,37 +86,24 @@ total_data = eurusd
 np.random.seed(420)
 noise_df = pd.DataFrame(np.random.randn(len(total_data), totalstep), index=total_data.index)
 
-# 用于多核，计算概率，para传递 指标参数indi_params 的索引
+# 用于多核，计算概率，para 传递指标参数 indi_params 中元素
 def cal_prob(para):
-    index = para
-    # 设定指标
-    indicator = myBTV.indi.get_momentum_indicator(indi_name, total_data[indi_params[index][0]], indi_params[index][1])
-    # 计算收益率与指标的相关系数，series与series的相关性
-    rate_corr = volatility.corr(indicator, method="spearman")
-    # 计算白噪声与指标的相关性，df与series的相关性(这一步速度慢，需要并行)
-    noise_corr = noise_df.corrwith(indicator, method="spearman")
-    mean = noise_corr.mean()
-    std = noise_corr.std()
-    # 计算出收益率与指标的相关系数，在白噪声相关系数分布中的概率位置
-    prob = np.around(stats.norm.cdf(rate_corr, loc=mean, scale=std), 4)
-    if prob < 0.5:
-        prob = 1 - prob  # 因为是双边分析
-    print("\r", "{}/{} finished !".format(index, len(indi_params)), end="", flush=True)
+    prob = myBTV.indicator_param1D_prob(volatility, noise_df, indi_name, total_data[para[0]], para[1])
+    print("\r", "{}/{} finished !".format(para[1] - indi_params[0][1], len(indi_params)), end="", flush=True)
     return prob
 
 #%%
 if __name__ == '__main__':
     # 并行运算
-    multi_para = [i for i in range(len(indi_params))]
+    multi_para = indi_params
     import timeit
     t0 = timeit.default_timer()
     prob_list = myBTV.multi_processing(cal_prob, multi_para, core_num=0)
     t1 = timeit.default_timer()
     print("\n", 'indicator_param1D_range 耗时为：', t1 - t0)
 
-    # 画图
-    prob_series = pd.Series(prob_list,
-                            index=[i for i in range(indi_params[0][1], indi_params[-1][1])])
+    # 画图，这里的index
+    prob_series = pd.Series(prob_list, index=[i[1] for i in indi_params])
     prob_series.plot(title="不同参数下 %s 指标的概率分数" % indi_name)
     # 保存图片
     folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"

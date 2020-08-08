@@ -65,39 +65,56 @@ warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2015,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 # 研究指标与价格波动的关系，不需要区分训练集和测试集
-price = eurusd.Close
-rate = eurusd.Rate
-lograte = eurusd.LogRate
+# 向后移动，我们希望今天的特征能与明天的波动匹配，所以shift(-1)，不能是shift(1)
+rate = eurusd.Rate.shift(-1)
 
-# 获取非共线性的技术指标
-import talib
-timeperiod = [5, 12+1] # 指标参数的范围
-indicator_list = [talib.RSI(price,timeperiod=i) for i in range(timeperiod[0], timeperiod[1])]
 
 #%%
-# 向后移动，我们希望今天的特征能与明天的波动匹配，所以shift(-1)，不能是shift(1)
-rate = eurusd.Rate
-rate = rate.shift(-1)
+# 获取非共线性的技术指标，输入指标名称及其泛化参数
+indi_name="rsi"
+indi_params = [("Close",i) for i in range(5,12+1)]
+
+total_data = eurusd
+totalstep = 10000
+volatility = rate
+
+#%%
 # 先大致判断下 收益率与指标 相关性范围。若不行，才进一步操作，或并行运算。
 rate_corr_list=[]
-for i in range(len(indicator_list)):
-    indicator = indicator_list[i]
+for i_para in indi_params:
+    indicator = myBTV.indi.get_momentum_indicator(indi_name, total_data[i_para[0]], i_para[1])
     rate_corr = rate.corr(indicator)
     rate_corr_list.append(rate_corr)
-rate_corr_series = pd.Series(rate_corr_list, index=[i for i in range(timeperiod[0], timeperiod[1])])
+rate_corr_series = pd.Series(rate_corr_list, index=[i[1] for i in indi_params])
 rate_corr_series.plot()
 plt.show()
 
 #%%
 # 指标1个参数范围合理性测试，仅适合1个参数变化时分析。
-indi_name="rsi"
 folder = __mypath__.get_desktop_path() + "\\__指标参数范围分析__"
 savefig = folder + "\\%s.png"%indi_name
 
-prob_series = myBTV.indicator_param1D_range(volatility=rate, indicator_list=indicator_list, indi_name=indi_name, para_range=timeperiod, totalstep = 10000, savefig=None)
+# 生成白噪声
+np.random.seed(420)
+noise_df = pd.DataFrame(np.random.randn(len(total_data), totalstep), index=total_data.index)
 
+# 计算 收益率与指标、白噪声与指标 的相关系数
+import timeit
+t0 = timeit.default_timer()
 
+prob_list = []
+for i_para in indi_params:
+    prob = myBTV.indicator_param1D_prob(volatility,noise_df,indi_name,total_data[i_para[0]],i_para[1])
+    prob_list.append(prob)
+    print("\r", "{}/{} finished !".format(i_para[1]-indi_params[0][1], len(indi_params)), end="", flush=True)
 
+t1 = timeit.default_timer()
+print("\n", '耗时为：', t1 - t0)
+# 画图
+prob_series = pd.Series(prob_list, index=[i[1] for i in indi_params])
+prob_series.plot(title="不同参数下 %s 指标的概率分数" % indi_name)
+myplt.savefig(fname=None)
+plt.show()
 
 
 
