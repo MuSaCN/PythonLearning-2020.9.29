@@ -31,7 +31,7 @@ myBTV = MyBackTest.MyClass_BackTestVector() # 向量型回测类
 def decorator_maker_with_arguments(decorator_arg1, decorator_arg2):
     def my_decorator(func):
         def wrapped(function_arg1, function_arg2) :
-            print (decorator_arg1, decorator_arg2,function_arg1, function_arg2)
+            print (decorator_arg1, decorator_arg2, function_arg1, function_arg2)
             return func(function_arg1, function_arg2)
         return wrapped
     return my_decorator
