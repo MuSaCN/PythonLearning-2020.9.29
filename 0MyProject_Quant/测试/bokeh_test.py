@@ -48,5 +48,5 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
-myDA.indi.candle_html(eurusd,"EURUSD")
+myDA.indi.candle_html(eurusd,"EURUSD",None)
 
