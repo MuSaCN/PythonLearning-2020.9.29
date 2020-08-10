@@ -82,6 +82,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---只开头执行一次
     def __init__(self):
+        print(self.datas) # 返回list
         self.barscount = 0
         # ---指标输入传入，不输入或者不指定，默认close
         self.sma = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
@@ -141,7 +142,7 @@ myBT.adddata(data0, fromdate=None, todate=None)
 
 #%%
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
-myBT.strategy_run(ABCStrategy,plot=True,iplot=False)
+myBT.strategy_run(ABCStrategy,plot=True,backend="pycharm")
 
 all_analyzer = myBT.get_analysis_all()
 print(len(all_analyzer))
