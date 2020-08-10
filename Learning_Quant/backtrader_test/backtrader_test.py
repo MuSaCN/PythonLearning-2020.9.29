@@ -60,8 +60,10 @@ class ABCStrategy(myBT.bt.Strategy):
         self.barscount = 0
         self.smahandle = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
 
+
         myBT.indi.add_indi_sma(data0, period=15)
-        myBT.indi.add_indi_ema(data0, period=15)
+
+
 
         self.sma = lambda x: self.smahandle[-x]
         # open索引
