@@ -45,7 +45,6 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
-
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 
@@ -60,6 +59,10 @@ class ABCStrategy(myBT.bt.Strategy):
         # print("init", self)
         self.barscount = 0
         self.smahandle = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
+
+        myBT.indi.add_indi_sma(data0, period=15)
+        myBT.indi.add_indi_ema(data0, period=15)
+
         self.sma = lambda x: self.smahandle[-x]
         # open索引
         self.openTemp = self.datas[0].open
