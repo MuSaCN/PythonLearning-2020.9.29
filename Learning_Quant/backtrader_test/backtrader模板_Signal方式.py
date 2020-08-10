@@ -45,19 +45,23 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
-# ---获得数据
-Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
-CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
-CJSecurities = CJSecurities.iloc[:, 1:]
-data0 = CJSecurities
+#%%
+import warnings
+warnings.filterwarnings('ignore')
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
+data0 = eurusd
 
 # ---Signal信号方式构建快速策略
 class MySignal(myBT.bt.Indicator):
     lines = ('signal',) # 设定返回的lines
     params = (('period', 30),)
     def __init__(self):
+        # 这里指定信号的意思就是：> 0 买入 ； < 0 卖出； == 0 没有指令
         self.lines.signal = self.data - myBT.add_indi_sma(self.data, period=self.params.period)
+        print("self.data = ", self.data)
 
+#%%
 # ---基础设置
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
@@ -66,16 +70,21 @@ myBT.addsizer(10)
 myBT.adddata(data0, fromdate=None, todate=None)
 myBT.addanalyzer_all()
 
-if __name__ == '__main__':  # 这句必须要有
-    # ---加入到信号中，解析信号进行交易
-    # LONGSHORT: 买入卖出信号都接受执行
-    # LONG:买入信号执行，卖出信号仅仅将多头头寸平仓，而不反向卖出。
-    # SHORT:卖出信号被执行，而买入信号仅仅将空头头寸平仓，而不方向买入。
-    myBT.signal_run("LONGSHORT",MySignal,plot=False)
-    # ---优化这个方式不可用
-    # myBT.OptRun(MySignal,Para0=range(5,100))
+#%%
+# ---加入到信号中，解析信号进行交易
+# LONGSHORT: 买入卖出信号都接受执行
+# LONG:买入信号执行，卖出信号仅仅将多头头寸平仓，而不反向卖出。
+# SHORT:卖出信号被执行，而买入信号仅仅将空头头寸平仓，而不方向买入。
+myBT.signal_run("LONGSHORT",MySignal,plot=True,backend="pycharm")
+myBT.get_analysis('VWR') # OrderedDict([('vwr', -0.0005492374963732139)])
 
-myBT.get_analysis('VWR')
+#%%
+# ---优化以这个方式不可用
+# if __name__ == '__main__':  # 这句必须要有
+    # myBT.opt_run(MySignal,Para0=range(5,100))
+
+
+
 
 
 
