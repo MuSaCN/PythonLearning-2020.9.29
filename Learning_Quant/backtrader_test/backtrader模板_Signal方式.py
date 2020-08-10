@@ -60,6 +60,8 @@ class MySignal(myBT.bt.Indicator):
         # 这里指定信号的意思就是：> 0 买入 ； < 0 卖出； == 0 没有指令
         self.lines.signal = self.data - myBT.add_indi_sma(self.data, period=self.params.period)
         print("self.data = ", self.data)
+        print("self.data[0] = ", self.data[0])
+
 
 #%%
 # ---基础设置
