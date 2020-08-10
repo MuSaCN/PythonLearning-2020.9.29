@@ -46,47 +46,19 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #------------------------------------------------------------
 
 #%%
-import warnings
-warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
 
-class CustomIndicator(myBT.bt.Indicator):
-    lines = ("MuSa",) # lines是必须的，一个indicator至少要有一个lines，里面是变量名称.
-
-    # ---初始化(必须)，只需要指定计算参数，而数据源、画图会通过继承指定。
-    def __init__(self, minPeriod): # minPeriod相当于参数
-        self.params.minPeriod = minPeriod
-        # 设置指标需要最小的周期
-        self.addminperiod(self.params.minPeriod)
-
-    # ---迭代(必须)
-    def next(self):
-        # ---每次迭代获得的数据序列大小，可以不等于最小周期.
-        # 注意，获得的数据类型类似 list 或numpy的 array.
-        # 获得的数据按时间序列排序，但是索引是根据list，0为时间最后，-1为时间最前。
-        data_serial = self.data.get(size=self.params.minPeriod)
-        # ---每次迭代会计算此
-        self.lines.MuSa[0] = self.calculation(data_serial)
-
-    # ---自定义函数用于计算，这里是计算滞后n期的数据。
-    # 获得的数据按时间序列排序，但是索引是根据list，0为时间最后，-1为时间最前。
-    def calculation(self, data):
-        # print("calculation",type(data)) # 类型类似 list 或numpy的 array.
-        return data[0]
-
 class ABCStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
-    params = (("Para0", 15),("Para1",100),)
+    params = (('Para0', 15),)
 
     # ---只开头执行一次
     def __init__(self):
+        print("init", self)
         self.barscount = 0
-        # ---指标输入传入，不输入或者不指定，默认close
         self.sma = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
-        # 自定义指标
-        self.custom = CustomIndicator(self.datas[0],minPeriod=self.params.Para1,subplot = True)
         # open索引
         self.open = self.datas[0].open
         # high索引
@@ -96,27 +68,17 @@ class ABCStrategy(myBT.bt.Strategy):
         # close索引
         self.close = self.datas[0].close
         # datetime.date索引
-        self.time = self.datas[0].datetime.date
-
-    # ---策略激活的时候被调用，类似__init__，此时len(self) = 0.
-    def start(self):
-        pass
-        # print("start , ",len(self))
-
-    # ---技术指标(需要n天的数据才能产生指标)预载时自动调用.
-    def prenext(self):
-        pass
-        # print("prenext, ", len(self))
+        self.time = self.datas[0].datetime.date # 不可以设置变量为 self.datetime，且要用()索引
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        self.buy(exectype=myBT.bt.Order.StopTrail, trailpercent=0.02)
-        # if not self.position:
-        #     if len(self) == 120:
-        #         self.buy(exectype=myBT.bt.Order.StopTrail, trailamount=25)
-        # else:
-        #     if len(self) >= self.barscount + 5:
-        #         self.sell()
+        print("next: ", len(self), self.time(0))
+        if not self.position:
+            if self.close[0] > self.sma[0]:
+                self.buy()
+        else:
+            if len(self) >= self.barscount + 5:
+                self.sell()
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
@@ -125,42 +87,66 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
-        pass
-        # myBT.tradeStatus(trade, isclosed=False)
-        # myBT.tradeShow(trade)
+        myBT.trade_status(trade, isclosed=False)
 
     # ---策略加载完会触发此语句
     def stop(self):
         print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
 
+class TestStrategy(myBT.bt.Strategy):
+    # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
+    params = (('Para0', 15),)
+
+    # ---只开头执行一次
+    def __init__(self):
+        print("init", len(self))
+        self.barscount = 0
+        self.openTemp = self.datas[0].open  # open索引
+        self.highTemp = self.datas[0].high  # high索引
+        self.lowTemp = self.datas[0].low  # low索引
+        self.closeTemp = self.datas[0].close  # close索引
+        self.timeTemp = self.datas[0].datetime.date  # datetime.date索引
+        print(self.timeTemp(0))
+
+    # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
+    def next(self):
+        print("next: ", len(self), self.timeTemp(0))
+
+    # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
+    def notify_order(self, order):
+        if myBT.order_status_check(order, False) == True:
+            self.barscount = len(self)
+
+    # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
+    def notify_trade(self, trade):
+        myBT.trade_status(trade, isclosed=False)
+
+    # ---策略加载完会触发此语句
+    def stop(self):
+        print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
+
+
+# ---基础设置
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
-myBT.setcommission(0.001)
-myBT.addsizer(1)
+
+myBT.setcommission(0.000)
 myBT.adddata(data0, fromdate=None, todate=None)
 
-#%%
-myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
-myBT.strategy_run(ABCStrategy,plot=True,iplot=False)
-
-all_analyzer = myBT.get_analysis_all()
-print(len(all_analyzer))
-for key in all_analyzer[0]:
-    print("--- ",key," :")
-    print(all_analyzer[0][key])
-
 
 #%%
-# 多核优化时运行
+myBT.addstrategy(ABCStrategy)
+myBT.addstrategy(TestStrategy)
+myBT.run(maxcpus=1 ,plot = True, backend="tkagg")
+
+#%%
+# ---以下是多核优化时的代码，需把上面 addstrategy()、run() 代码注释化。
 if __name__ == '__main__':  # 这句必须要有
-    myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
-    results = myBT.opt_run(ABCStrategy,maxcpus=None,Para0=range(5,10))
+    myBT.optstrategy(ABCStrategy, Para0=range(5, 100))
+    # 多核运算注意原理，plot要设定为不画图
+    myBT.run(maxcpus=None ,plot = False, backend="tkagg")
 
-    all_analyzer = myBT.get_analysis_all()
-    print("len(all_analyzer) = ", len(all_analyzer)) # len(all_analyzer) =  5
 
-    print("\n")
-    for key in all_analyzer[0]:
-        print("--- ",key," :")
-        print(all_analyzer[0][key])
+
+
 
