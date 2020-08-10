@@ -62,7 +62,9 @@ class ABCStrategy(myBT.bt.Strategy):
 
 
         myBT.indi.add_indi_sma(data0, period=15)
-
+        from MyPackage.MyBackTest.BackTestEvent_Indicators import MyClass_BackTest_Indicators
+        a = MyClass_BackTest_Indicators()
+        a.add_indi_sma(data0, period=15)
 
 
         self.sma = lambda x: self.smahandle[-x]
