@@ -50,6 +50,9 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
 
+
+
+
 class ABCStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
     params = (('Para0', 15),)
@@ -72,7 +75,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        print("next: ", len(self), self.time(0))
+        print("next: ", len(self), self.time(0), self.sma[0])
         if not self.position:
             if self.close[0] > self.sma[0]:
                 self.buy()
@@ -136,8 +139,10 @@ myBT.adddata(data0, fromdate=None, todate=None)
 
 #%%
 myBT.addstrategy(ABCStrategy)
-myBT.addstrategy(TestStrategy)
-myBT.run(maxcpus=1 ,plot = True, backend="tkagg")
+# myBT.addstrategy(TestStrategy)
+myBT.run(maxcpus=1 ,plot = True, backend="pycharm")
+# 15 99999.94443999976 99998.82211999976
+
 
 #%%
 # ---以下是多核优化时的代码，需把上面 addstrategy()、run() 代码注释化。
