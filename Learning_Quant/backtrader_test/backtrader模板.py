@@ -46,10 +46,9 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #------------------------------------------------------------
 
 # ---获得数据
-Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
-CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
-CJSecurities = CJSecurities.iloc[:, 1:]
-data0 = CJSecurities
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+
+data0 = eurusd
 
 class CustomIndicator(myBT.bt.Indicator):
     lines = ("MuSa",) # lines是必须的，一个indicator至少要有一个lines，里面是变量名称.
@@ -83,7 +82,7 @@ class ABCStrategy(myBT.bt.Strategy):
     def __init__(self):
         self.barscount = 0
         # ---指标输入传入，不输入或者不指定，默认close
-        self.smahandle = myBT.add_indi_sma(self.datas[0], period=self.params.Para0)
+        self.smahandle = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
         self.sma = lambda x: self.smahandle[-x]
         # 自定义指标
         self.customhandle = CustomIndicator(self.datas[0],minPeriod=self.params.Para1,subplot = True)

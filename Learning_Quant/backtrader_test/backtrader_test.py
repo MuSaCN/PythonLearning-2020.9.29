@@ -45,11 +45,11 @@ myPjMT5 = MyProject.MT5_MLLearning()  # MT5机器学习项目类
 myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示图
 #------------------------------------------------------------
 
-# ---获得数据
-Path = "C:\\Users\\i2011\\OneDrive\\Book_Code&Data\\量化投资以python为工具\\数据及源代码\\033"
-CJSecurities = pd.read_csv(Path + '\\CJSecurities.csv', index_col=1, parse_dates=True)
-CJSecurities = CJSecurities.iloc[:, 1:]
-data0 = CJSecurities
+
+# ---获取数据
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
+
+data0 = eurusd
 
 class ABCStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
@@ -59,7 +59,7 @@ class ABCStrategy(myBT.bt.Strategy):
     def __init__(self):
         # print("init", self)
         self.barscount = 0
-        self.smahandle = myBT.add_indi_sma(self.datas[0], period=self.params.Para0)
+        self.smahandle = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
         self.sma = lambda x: self.smahandle[-x]
         # open索引
         self.openTemp = self.datas[0].open
@@ -108,9 +108,13 @@ myBT.setcash(100000)
 myBT.setcommission(0.001)
 myBT.adddata(data0, fromdate=None, todate=None)
 
-# myBT.addstrategy(ABCStrategy)
-myBT.optstrategy(ABCStrategy,Para0=range(5,100))
+myBT.addstrategy(ABCStrategy)
+# myBT.optstrategy(ABCStrategy,Para0=range(5,100))
 
 if __name__ == '__main__':  # 这句必须要有
-    myBT.run(plot = False)
+    myBT.run(maxcpus=1 ,plot = True)
+
+
+
+
 
