@@ -107,7 +107,6 @@ myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
 results = myBT.run(plot=True,backend="tkagg",style='bar', width=16, height=9)
 result = results[0]
-result.array
 
 
 #%%
