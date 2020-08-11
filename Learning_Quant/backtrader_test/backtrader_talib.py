@@ -46,7 +46,7 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #------------------------------------------------------------
 
 
-
+#%%
 import argparse
 import datetime
 
@@ -171,9 +171,7 @@ def runstrat(args=None):
 
 def parse_args(pargs=None):
 
-    parser = argparse.ArgumentParser(
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
-        description='Sample for sizer')
+    parser = argparse.ArgumentParser(formatter_class=argparse.ArgumentDefaultsHelpFormatter, description='Sample for sizer')
 
     parser.add_argument('--data0', required=False,
                         default='../../datas/yhoo-1996-2015.txt',
@@ -213,7 +211,7 @@ def parse_args(pargs=None):
 
     return parser.parse_args()
 
-
+#%%
 if __name__ == '__main__':
     runstrat()
 
