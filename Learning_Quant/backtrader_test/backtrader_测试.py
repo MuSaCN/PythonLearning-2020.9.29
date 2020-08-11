@@ -52,16 +52,15 @@ data0 = eurusd
 
 
 
-
 class ABCStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
-    params = (('Para0', 15),)
+    params = (('Para0', 250),)
 
     # ---只开头执行一次
     def __init__(self):
         print("init", self)
         self.barscount = 0
-        self.sma = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
+        self.sma = myBT.indi.add_indi_SMA(self.datas[0].close, timeperiod=self.params.Para0, subplot=True)
         # open索引
         self.open = self.datas[0].open
         # high索引
@@ -98,7 +97,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
 class TestStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
-    params = (('Para0', 15),)
+    params = (('Para0', 250),)
 
     # ---只开头执行一次
     def __init__(self):
@@ -140,7 +139,7 @@ myBT.adddata(data0, fromdate=None, todate=None)
 #%%
 myBT.addstrategy(ABCStrategy)
 # myBT.addstrategy(TestStrategy)
-myBT.run(maxcpus=1 ,plot = True, backend="pycharm")
+myBT.run(maxcpus=1 ,plot = True, backend="tkagg")
 # 15 99999.94443999976 99998.82211999976
 
 
