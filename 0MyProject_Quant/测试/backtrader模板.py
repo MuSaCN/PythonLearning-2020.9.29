@@ -85,7 +85,7 @@ class ABCStrategy(myBT.bt.Strategy):
         print(self.datas) # 返回list
         self.barscount = 0
         # ---指标输入传入，不输入或者不指定，默认close
-        self.sma = myBT.indi.add_indi_sma(self.datas[0], period=self.params.Para0)
+        self.sma = myBT.indi.add_indi_SMA(self.datas[0], period=self.params.Para0)
         # 自定义指标
         self.custom = CustomIndicator(self.datas[0],minPeriod=self.params.Para1,subplot = True)
         # open索引
