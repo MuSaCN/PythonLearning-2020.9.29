@@ -75,7 +75,7 @@ class MomentumStrategy(myBT.bt.Strategy):
     def next(self):
         if len(self) > self.params.Para0:
             if not self.position:
-                if self.close[-1] > self.close[-self.params.Para0]:
+                if self.close[0] > self.close[-self.params.Para0]:
                     self.buy()
             else:
                 if len(self) >= self.barscount + 1:
