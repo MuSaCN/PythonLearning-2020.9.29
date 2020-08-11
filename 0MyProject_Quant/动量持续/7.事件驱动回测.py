@@ -52,6 +52,21 @@ warnings.filterwarnings('ignore')
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2015,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
 
+class CashMarket(myBT.bt.analyzers.Analyzer):
+    """
+    Analyzer returning cash and market values
+    """
+    def create_analysis(self):
+        self.rets = {}
+        self.vals = 0.0
+
+    def notify_cashvalue(self, cash, value):
+        self.vals = (cash, value)
+        self.rets[self.strategy.datetime.datetime()] = self.vals
+
+    def get_analysis(self):
+        return self.rets
+
 class MomentumStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
     params = (("Para0", 100),)
