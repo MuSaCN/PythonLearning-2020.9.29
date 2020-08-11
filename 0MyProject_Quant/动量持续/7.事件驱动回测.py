@@ -52,7 +52,6 @@ warnings.filterwarnings('ignore')
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2015,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
 
-
 class MomentumStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
     params = (("Para0", 100),)
@@ -74,12 +73,13 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        if not self.position:
-            if self.close[0] > self.close[-self.params.Para0]:
-                self.buy()
-        else:
-            if len(self) >= self.barscount + 1:
-                self.sell()
+        if len(self) > self.params.Para0:
+            if not self.position:
+                if self.close[-1] > self.close[-self.params.Para0]:
+                    self.buy()
+            else:
+                if len(self) >= self.barscount + 1:
+                    self.sell()
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
@@ -97,7 +97,7 @@ class MomentumStrategy(myBT.bt.Strategy):
         print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
 
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
-myBT.setcash(100000)
+myBT.setcash(5000)
 myBT.setcommission(0.000)
 myBT.addsizer(1)
 myBT.adddata(data0, fromdate=None, todate=None)
@@ -105,7 +105,10 @@ myBT.adddata(data0, fromdate=None, todate=None)
 #%%
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
-myBT.run(plot=True,backend="tkagg")
+results = myBT.run(plot=True,backend="tkagg",style='bar', width=16, height=9)
+result = results[0]
+result.array
+
 
 #%%
 all_analyzer = myBT.get_analysis_all()
@@ -123,18 +126,18 @@ if __name__ == '__main__':  # 这句必须要有
     myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
     myBT.optstrategy(MomentumStrategy, Para0=range(5,300))
     results = myBT.run(maxcpus=None, plot=False)
-
+    print("results = ")
     print(results)
 
 
 
-    all_analyzer = myBT.get_analysis_all()
-    print("len(all_analyzer) = ", len(all_analyzer)) # len(all_analyzer) =  5
-
-    print("\n")
-    for key in all_analyzer[0]:
-        print("--- ",key," :")
-        print(all_analyzer[0][key])
+    # all_analyzer = myBT.get_analysis_all()
+    # print("len(all_analyzer) = ", len(all_analyzer)) # len(all_analyzer) =  5
+    #
+    # print("\n")
+    # for key in all_analyzer[0]:
+    #     print("--- ",key," :")
+    #     print(all_analyzer[0][key])
 
 
 
