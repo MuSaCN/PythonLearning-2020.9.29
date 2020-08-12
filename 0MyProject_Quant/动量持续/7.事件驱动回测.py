@@ -73,17 +73,17 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        if not self.position:
-            if self.close[0] > self.close[-self.params.Para0]:
-                self.buy()
-        else:
-            if len(self) >= self.barscount + 1:
-                self.sell()
+        # 有仓就卖，由于到下一bar的开盘才成交，所以回到next()至少经历1期。
+        if self.position:
+            self.sell()
+        # 仅发出信号，在下一个bar的开盘价成交
+        if self.close[0] > self.close[-self.params.Para0]:
+            self.buy()
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
         if myBT.strat.order_status_check(order, False) == True:
-            self.barscount = len(self)
+            self.barscount = len(self) # 注意这里的 len(self) 比 next() 中的大1。
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
