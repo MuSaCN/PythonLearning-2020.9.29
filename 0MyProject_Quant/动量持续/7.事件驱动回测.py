@@ -106,13 +106,11 @@ myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
 myBT.run(plot=True, backend="pycharm")
 
-cashvalue = myBT.every_case_value(ts_fill=data0.index)
+cash_value = myBT.every_cash_value(ts_fill=data0.index)
 
 myDefault.set_backend_default("pycharm")
-cashvalue["value"].plot()
-plt.show()
-cashvalue["cash"].plot()
-plt.show()
+myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
+
 
 #%%
 all_analyzer = myBT.get_analysis_all()
