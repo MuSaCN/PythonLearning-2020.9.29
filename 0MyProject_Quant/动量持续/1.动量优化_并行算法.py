@@ -68,8 +68,8 @@ price_test = eurusd_test.Close
 # 外部参数
 paranames = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
 k_end = 350             # 动量向左参数
-holding_end = 10         # 可以不同固定为1
-lag_trade_end = 10       # 参数不能大
+holding_end = 1         # 可以不同固定为1
+lag_trade_end = 1       # 参数不能大
 
 ################# 信号函数部分，或多个函数、或多个参数 #####################
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递。内部参数有的要依赖于外部。
@@ -173,7 +173,7 @@ if __name__ == '__main__':
                 range(1, holding_end + 1) for lag_trade in range(1, lag_trade_end + 1)]
 
     # ---分析训练集(并行)
-    folder = __mypath__.get_desktop_path() + "\\__动量研究__"
+    folder = __mypath__.get_desktop_path() + "\\__动量研究(test)__"
     buyfilepath = folder + "\\动量_Buy.xlsx"
     sellfilepath = folder + "\\动量_Sell.xlsx"
     allfilepath = folder + "\\动量_All.xlsx"
