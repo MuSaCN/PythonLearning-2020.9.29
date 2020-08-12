@@ -90,12 +90,12 @@ class ABCStrategy(myBT.bt.Strategy):
     def next(self):
         if not self.position:
             if len(self) == 7:
-                self.buy()
-                print("next: buy ",self.time(0), self.close[0]) # next: buy  2000-01-11 1.0336
-        else:
-            if len(self) >= self.barscount:
                 self.sell()
-                print("next: sell ",self.time(0), self.close[0]) # next: sell  2000-01-13 1.026
+                print("next: sell ",self.time(0), self.close[0]) # next: sell  2000-01-11 1.0336
+        else:
+            if len(self) >= self.barscount: # 想当初持有1期
+                self.buy()
+                print("next: buy ",self.time(0), self.close[0]) # next: buy  2000-01-12 1.0308
 
     # ---策略每笔订单通知函数(订单执行前会多次执行)。已经进入下一个bar，且在下一个next()之前执行。交易单执行成功会在 next() 下一个 bar 的开盘价执行。
     def notify_order(self, order):
@@ -106,37 +106,37 @@ class ABCStrategy(myBT.bt.Strategy):
         notify_order: 订单通知前：len= 8 2000-01-12
         Buy/Sell order submitted to broker / accepted by broker - waiting...
         notify_order: 订单通知前：len= 8 2000-01-12
-        BUY 执行成功，Price: 1.0337, Cost: 1.0337, Commission 0.0000 # 成交交个为 len=8
+        SELL 执行成功，Price: 1.0337, Cost: -1.0337, Commission 0.0000
         '''
         '''
-        notify_order: 订单通知前：len= 10 2000-01-14
+        notify_order: 订单通知前：len= 9 2000-01-13
         Buy/Sell order submitted to broker / accepted by broker - waiting...
-        notify_order: 订单通知前：len= 10 2000-01-14
+        notify_order: 订单通知前：len= 9 2000-01-13
         Buy/Sell order submitted to broker / accepted by broker - waiting...
-        notify_order: 订单通知前：len= 10 2000-01-14
-        SELL 执行成功，Price: 1.0261, Cost: 1.0337, Commission 0.0000
+        notify_order: 订单通知前：len= 9 2000-01-13
+        BUY 执行成功，Price: 1.0309, Cost: -1.0337, Commission 0.0000
         '''
         print("notify_order: 订单通知前：len=", len(self), self.time(0))
         if myBT.strat.order_status_check(order, True) == True:
             self.barscount = len(self)
             # notify_order: 订单通知后：len= 8 2000-01-12
-            # notify_order: 订单通知后：len= 10 2000-01-14
+            # notify_order: 订单通知后：len= 9 2000-01-13
             print("notify_order: 订单通知后：len=", len(self), self.time(0))
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
         # notify_trade: 交易通知前：len= 8 2000-01-12
-        # notify_trade: 交易通知前：len= 10 2000-01-14
+        # notify_trade: 交易通知前：len= 9 2000-01-13
         print("notify_trade: 交易通知前：len=", len(self), self.time(0))
         # 每单交易利润, GROSS = 0.00, NET = 0.00
-        # 每单交易利润, GROSS = -0.0076, NET = -0.0076
+        # 每单交易利润, GROSS = 0.0028, NET = 0.0028
         myBT.strat.trade_status(trade, isclosed=False)
         '''
         ------ trade属性展示 ------
-        # ref: 唯一id = 1
-        # size(int): trade的当前头寸 = 1
+        # ref: 唯一id = 10821
+        # size(int): trade的当前头寸 = -1
         # price(float): trade资产的当前价格 = 1.0337
-        # value(float): trade的当前价值 = 1.0337
+        # value(float): trade的当前价值 = -1.0337
         # commission(float): trade的累计手续费 = 0.0
         # pnl(float): trade的当前pnl = 0.0
         # pnlcomm(float): trade的当前pnl减去手续费 = 0.0
@@ -145,23 +145,24 @@ class ABCStrategy(myBT.bt.Strategy):
         # justopened(bool): 新开头寸 = True
         # dtopen (float): trade open的datetime = 730131.0
         # dtclose (float): trade close的datetime = 0.0
+
         ------ trade属性展示 ------
-        # ref: 唯一id = 1
+        # ref: 唯一id = 10821
         # size(int): trade的当前头寸 = 0
         # price(float): trade资产的当前价格 = 1.0337
         # value(float): trade的当前价值 = 0.0
         # commission(float): trade的累计手续费 = 0.0
-        # pnl(float): trade的当前pnl = -0.007600000000000051
-        # pnlcomm(float): trade的当前pnl减去手续费 = -0.007600000000000051
+        # pnl(float): trade的当前pnl = 0.0028000000000001357
+        # pnlcomm(float): trade的当前pnl减去手续费 = 0.0028000000000001357
         # isclosed(bool): 当前时刻trade头寸是否归零 = True
         # isopen(bool): 新的交易更新了trade = False
         # justopened(bool): 新开头寸 = False
         # dtopen (float): trade open的datetime = 730131.0
-        # dtclose (float): trade close的datetime = 730133.0
+        # dtclose (float): trade close的datetime = 730132.0
         '''
         myBT.strat.trade_show(trade)
         # notify_trade: 交易通知后：len= 8 2000-01-12
-        # notify_trade: 交易通知后：len= 10 2000-01-14
+        # notify_trade: 交易通知后：len= 9 2000-01-13
         print("notify_trade: 交易通知后：len=", len(self), self.time(0))
 
     # ---策略加载完会触发此语句
@@ -185,24 +186,10 @@ myBT.run(maxcpus=1, plot=True, backend="pycharm")
 myDefault.set_backend_default("pycharm")
 myBT.plot_value(data0)
 
-
 all_analyzer = myBT.get_analysis_all()
 print(len(all_analyzer))
 for key in all_analyzer[0]:
     print("--- ",key," :")
     print(all_analyzer[0][key])
 
-#%%
-# 多核优化时运行
-if __name__ == '__main__':  # 这句必须要有
-    myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
-    results = myBT.opt_run(ABCStrategy,maxcpus=None,Para0=range(5,10))
-
-    all_analyzer = myBT.get_analysis_all()
-    print("len(all_analyzer) = ", len(all_analyzer)) # len(all_analyzer) =  5
-
-    print("\n")
-    for key in all_analyzer[0]:
-        print("--- ",key," :")
-        print(all_analyzer[0][key])
 
