@@ -109,11 +109,10 @@ myBT.run(plot=True, backend="pycharm")
 cashvalue = myBT.every_case_value(ts_fill=data0.index)
 
 myDefault.set_backend_default("pycharm")
-cashvalue["cash"].plot()
-plt.show()
 cashvalue["value"].plot()
 plt.show()
-
+cashvalue["cash"].plot()
+plt.show()
 
 #%%
 all_analyzer = myBT.get_analysis_all()
