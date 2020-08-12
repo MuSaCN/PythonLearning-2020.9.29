@@ -49,23 +49,8 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 import warnings
 warnings.filterwarnings('ignore')
 # ---获取数据
-eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2015,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
+eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
-
-class CashMarket(myBT.bt.analyzers.Analyzer):
-    """
-    Analyzer returning cash and market values
-    """
-    def create_analysis(self):
-        self.rets = {}
-        self.vals = 0.0
-
-    def notify_cashvalue(self, cash, value):
-        self.vals = (cash, value)
-        self.rets[self.strategy.datetime.datetime()] = self.vals
-
-    def get_analysis(self):
-        return self.rets
 
 class MomentumStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
@@ -98,14 +83,14 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
-        if myBT.order_status_check(order, False) == True:
+        if myBT.strat.order_status_check(order, False) == True:
             self.barscount = len(self)
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
         pass
-        # myBT.trade_status(trade, isclosed=True)
-        # myBT.trade_show(trade)
+        # myBT.strat.trade_status(trade, isclosed=True)
+        # myBT.strat.trade_show(trade)
 
     # ---策略加载完会触发此语句
     def stop(self):
@@ -120,8 +105,14 @@ myBT.adddata(data0, fromdate=None, todate=None)
 #%%
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
-results = myBT.run(plot=True,backend="tkagg",style='bar', width=16, height=9)
-result = results[0]
+myBT.run(plot=True, backend="pycharm")
+
+cashvalue = myBT.every_case_value(ts_fill=data0.index)
+
+cashvalue["cash"].plot()
+plt.show()
+cashvalue["value"].plot()
+plt.show()
 
 
 #%%
@@ -131,8 +122,6 @@ for key in all_analyzer[0]:
     print("--- ",key," :")
     print(all_analyzer[0][key])
 
-print("--- ", "SharpeRatio", " :")
-print(all_analyzer[0]["SharpeRatio"])
 
 #%%
 # 多核优化时运行
