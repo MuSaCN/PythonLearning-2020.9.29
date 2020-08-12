@@ -73,13 +73,12 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        if len(self) > self.params.Para0:
-            if not self.position:
-                if self.close[0] > self.close[-self.params.Para0]:
-                    self.buy()
-            else:
-                if len(self) >= self.barscount + 1:
-                    self.sell()
+        if not self.position:
+            if self.close[0] > self.close[-self.params.Para0]:
+                self.buy()
+        else:
+            if len(self) >= self.barscount + 1:
+                self.sell()
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
@@ -109,6 +108,7 @@ myBT.run(plot=True, backend="pycharm")
 
 cashvalue = myBT.every_case_value(ts_fill=data0.index)
 
+myDefault.set_backend_default("pycharm")
 cashvalue["cash"].plot()
 plt.show()
 cashvalue["value"].plot()
