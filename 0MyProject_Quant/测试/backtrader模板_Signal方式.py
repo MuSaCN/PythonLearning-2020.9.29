@@ -58,7 +58,7 @@ class MySignal(myBT.bt.Indicator):
     params = (('period', 30),)
     def __init__(self):
         # 这里指定信号的意思就是：> 0 买入 ； < 0 卖出； == 0 没有指令
-        self.lines.signal = self.data - myBT.add_indi_sma(self.data, period=self.params.period)
+        self.lines.signal = self.data - myBT.indi.add_indi_SMA(self.data, period=self.params.period)
         print("self.data = ", self.data) # 返回内存
         print("self.data[0] = ", self.data[0]) # 返回数值
 
@@ -79,6 +79,7 @@ myBT.addanalyzer_all()
 # SHORT:卖出信号被执行，而买入信号仅仅将空头头寸平仓，而不方向买入。
 myBT.signal_run("LONGSHORT",MySignal,plot=True,backend="pycharm")
 myBT.get_analysis('VWR') # OrderedDict([('vwr', -0.0005492374963732139)])
+myBT.every_case_value()
 
 #%%
 # ---优化以这个方式不可用
