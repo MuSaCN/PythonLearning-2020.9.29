@@ -71,10 +71,11 @@ class MomentumStrategy(myBT.bt.Strategy):
         # datetime.date索引，时间必须用()索引，其他用[]
         self.time = self.datas[0].datetime.date
 
+
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        # 有仓就卖，由于到下一bar的开盘才成交，所以回到next()至少经历1期。
-        if self.position:
+        # 有多仓就卖，由于到下一bar的开盘才成交，所以回到next()至少经历1期。
+        if self.getposition().size > 0:
             self.sell()
         # 仅发出信号，在下一个bar的开盘价成交
         if self.close[0] > self.close[-self.params.Para0]:

@@ -88,6 +88,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar，执行完 len(self) 数值+1。交易单发出信号，在下一个bar成交。
     def next(self):
+        self.getposition().size # 获取仓位大小，>0多仓，<0空仓
         if not self.position:
             if len(self) == 7:
                 self.sell()
