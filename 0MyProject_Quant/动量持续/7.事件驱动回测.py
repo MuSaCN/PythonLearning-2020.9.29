@@ -51,7 +51,7 @@ warnings.filterwarnings('ignore')
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
-
+opentime = []
 class MomentumStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
     params = (("Para0", 100),)
@@ -83,7 +83,9 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
+        lastdirect = myBT.strat.order_buy_sell(order)
         if myBT.strat.order_status_check(order, False) == True:
+            opentime.append((self.time(0), lastdirect))
             self.barscount = len(self) # 注意这里的 len(self) 比 next() 中的大1。
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
@@ -106,6 +108,8 @@ myBT.adddata(data0, fromdate=None, todate=None)
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
 myBT.run(plot=True, backend="pycharm")
+
+opentime
 
 cash_value = myBT.every_cash_value(ts_fill=data0.index)
 
