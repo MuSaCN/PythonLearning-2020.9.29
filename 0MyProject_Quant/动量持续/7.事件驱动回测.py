@@ -109,8 +109,28 @@ myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
 myBT.run(plot=True, backend="pycharm")
 
+
+
+
 trader_detail = pd.DataFrame(trader_detail, columns=["time","direct","price"])
-trader_detail.to_excel(__mypath__.get_desktop_path()+"\\TradeDetal.xlsx")
+# trader_detail.to_excel(__mypath__.get_desktop_path()+"\\TradeDetal.xlsx")
+buyprice = trader_detail[trader_detail["direct"] == "Buy"]["price"] + 0.00050
+sellprice = trader_detail[trader_detail["direct"] == "Sell"]["price"]
+mt5price = buyprice.combine_first(sellprice)
+trader_detail["mt5price"] = mt5price
+buyprice.index = sellprice.index
+ret = sellprice - buyprice
+ret = ret.reindex(index=range(ret.index[-1]+1), fill_value=0)
+trader_detail["ret"] = ret
+trader_detail.index = trader_detail["time"]
+ret = trader_detail["ret"]
+
+
+ret.reindex(index=data0.index, method="ffill", fill_value=0)
+trader_detail["ret"].cumsum().plot()
+plt.show()
+
+
 
 cash_value = myBT.every_cash_value(ts_fill=data0.index)
 
