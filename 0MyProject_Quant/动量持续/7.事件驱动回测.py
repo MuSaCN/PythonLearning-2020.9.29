@@ -124,8 +124,10 @@ ret = ret.reindex(index=range(ret.index[-1]+1), fill_value=0)
 trader_detail["ret"] = ret
 trader_detail.index = pd.to_datetime(trader_detail["time"])
 # trader_detail.to_excel(__mypath__.get_desktop_path()+"\\TradeDetal.xlsx")
-
-(trader_detail["ret"]*1000).cumsum().plot()
+retarray =trader_detail["ret"][trader_detail["direct"] == "Sell"]
+retarray = retarray.reindex(index = data0.index, fill_value=0)
+retarray = (retarray*1000).cumsum()
+retarray.plot()
 plt.show()
 
 
