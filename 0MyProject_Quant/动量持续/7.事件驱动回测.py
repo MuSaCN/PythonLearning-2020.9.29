@@ -108,13 +108,19 @@ myBT.adddata(data0, fromdate=None, todate=None)
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
 myBT.run(plot=True, backend="pycharm")
+cash_value = myBT.every_cash_value(ts_fill=data0.index)
 
+myDefault.set_backend_default("pycharm")
+myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
-
+#%% 转成MT5的模式
+trader_detail = []
+myBT.run(plot=True, backend="pycharm")
+spread = 0.00050
 
 trader_detail = pd.DataFrame(trader_detail, columns=["time","direct","price"])
 # trader_detail.to_excel(__mypath__.get_desktop_path()+"\\TradeDetal.xlsx")
-buyprice = trader_detail[trader_detail["direct"] == "Buy"]["price"] + 0.00050
+buyprice = trader_detail[trader_detail["direct"] == "Buy"]["price"] + spread
 sellprice = trader_detail[trader_detail["direct"] == "Sell"]["price"]
 mt5price = buyprice.combine_first(sellprice)
 trader_detail["mt5price"] = mt5price
@@ -129,13 +135,6 @@ retarray = retarray.reindex(index = data0.index, fill_value=0)
 retarray = (retarray*1000).cumsum()
 retarray.plot()
 plt.show()
-
-
-
-cash_value = myBT.every_cash_value(ts_fill=data0.index)
-
-myDefault.set_backend_default("pycharm")
-myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
 
 #%%
