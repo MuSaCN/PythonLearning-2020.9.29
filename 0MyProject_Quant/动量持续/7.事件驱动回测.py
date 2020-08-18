@@ -52,7 +52,6 @@ warnings.filterwarnings('ignore')
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
 
-trader_detail = []
 class MomentumStrategy(myBT.bt.Strategy):
     # ---设定参数，必须写params，以self.params.Para0索引，可用于优化，内部必须要有逗号
     params = (("Para0", 100),)
@@ -85,12 +84,11 @@ class MomentumStrategy(myBT.bt.Strategy):
     def notify_order(self, order):
         lastdirect = myBT.strat.order_buy_sell(order)
         if myBT.strat.order_status_check(order, False) == True:
-            trader_detail.append([self.time(0), lastdirect, order.executed.price])
             self.barscount = len(self) # 注意这里的 len(self) 比 next() 中的大1。
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
-        # myBT.strat.trade_status(trade, isclosed=True)
+        # myBT.strat.trade_status(trade, isclosed=False)
         # myBT.strat.trade_show(trade)
         pass
 
@@ -108,34 +106,13 @@ myBT.adddata(data0, fromdate=None, todate=None)
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
 myBT.run(plot=True, backend="pycharm")
-cash_value = myBT.every_cash_value(ts_fill=data0.index)
 
+# 简介的资金曲线
 myDefault.set_backend_default("pycharm")
 myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
 #%% 转成MT5的模式
-trader_detail = []
-myBT.run(plot=True, backend="pycharm")
-spread = 0.00050
-
-trader_detail = pd.DataFrame(trader_detail, columns=["time","direct","price"])
-# trader_detail.to_excel(__mypath__.get_desktop_path()+"\\TradeDetal.xlsx")
-buyprice = trader_detail[trader_detail["direct"] == "Buy"]["price"] + spread
-sellprice = trader_detail[trader_detail["direct"] == "Sell"]["price"]
-mt5price = buyprice.combine_first(sellprice)
-trader_detail["mt5price"] = mt5price
-buyprice.index = sellprice.index
-ret = sellprice - buyprice
-ret = ret.reindex(index=range(ret.index[-1]+1), fill_value=0)
-trader_detail["ret"] = ret
-trader_detail.index = pd.to_datetime(trader_detail["time"])
-# trader_detail.to_excel(__mypath__.get_desktop_path()+"\\TradeDetal.xlsx")
-retarray =trader_detail["ret"][trader_detail["direct"] == "Sell"]
-retarray = retarray.reindex(index = data0.index, fill_value=0)
-retarray = (retarray*1000).cumsum()
-retarray.plot()
-plt.show()
-
+myBT.plot_mt5_cumNET( data0, pnl_detail=None, mt5_spread=50, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
 #%%
 all_analyzer = myBT.get_analysis_all()
@@ -143,7 +120,6 @@ print(len(all_analyzer))
 for key in all_analyzer[0]:
     print("--- ",key," :")
     print(all_analyzer[0][key])
-
 
 #%%
 # 多核优化时运行
