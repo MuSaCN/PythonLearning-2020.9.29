@@ -114,6 +114,7 @@ myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:
 #%% 转成MT5的模式
 myBT.plot_mt5_cumNET( data0, pnl_detail=None, mt5_spread=50, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
+
 #%%
 all_analyzer = myBT.get_analysis_all()
 print(len(all_analyzer))
