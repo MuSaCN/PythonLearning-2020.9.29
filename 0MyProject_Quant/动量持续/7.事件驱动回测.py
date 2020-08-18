@@ -111,7 +111,8 @@ myBT.run(plot=True, backend="pycharm")
 myDefault.set_backend_default("pycharm")
 myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
-#%% 转成MT5的模式
+#%%
+# 画转成MT5的收益曲线(backtrader固定仓位才有效，且mt5点差大于50才有效)(用于测试策略信号是否相同)(可做点差压力测试)
 myBT.plot_mt5_cumNET( data0, pnl_detail=None, mt5_spread=50, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
 
