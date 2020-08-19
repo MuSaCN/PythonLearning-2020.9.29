@@ -58,7 +58,7 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 import warnings
 warnings.filterwarnings('ignore')
 
-# 外部参数，按顺序保存在 para 的前面
+# 策略，按顺序保存在 para 的前面
 strategy_para_names = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
 k_end = 200             # 动量向左参数
 holding_end = 1         # 持有期参数，可以不同固定为1
