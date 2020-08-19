@@ -51,12 +51,14 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 # 再根据训练集参数优化的结果，计算对应参数下测试集策略结果，把结果保存到硬盘。
 # 整合两个结果到一张表格。
 # 需要注意的是，由于 训练集和测试集 信号计算时依赖的数据集不同，所以要设定两个函数。
+# 由于并行运算的原理，参数分为 策略参数 + 非策略参数
 '''
-
+#%%
 ################# 设置数据，区分训练集和测试集 ########################
 import warnings
 warnings.filterwarnings('ignore')
 
+#%%
 # ---获取数据
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=True)
 eurusd_train = eurusd.loc[:"2014-12-31"]
@@ -64,65 +66,24 @@ eurusd_test = eurusd.loc["2015-01-01":]
 price_train = eurusd_train.Close
 price_test = eurusd_test.Close
 
+#%%
 ################# 设置参数，设置范围的最大值 ##########################
 # 外部参数
-paranames = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
-k_end = 350             # 动量向左参数
-holding_end = 1         # 可以不同固定为1
-lag_trade_end = 1       # 参数不能大
+strategy_para_names = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
+k_end = 10              # 动量向左参数
+holding_end = 2         # 持有期参数，可以不同固定为1
+lag_trade_end = 1       # 信号出现滞后交易参数，参数不能大
 
+#%%
 ################# 信号函数部分，或多个函数、或多个参数 #####################
 # 必须把总结果写成函数，且只能有一个参数，所以参数以列表或元组形式传递。内部参数有的要依赖于外部。
 temp = 0 # 用来显示进度
-# ---训练集 计算信号
-def signalfunc_train(para):
-    k = para[0]
-    holding = para[1]
-    lag_trade = para[2]
-    trade_direct = para[3]  # "BuyOnly","SellOnly","All"
-    # 不同交易方向下，数据字符串索引
-    sig_mode, signalname, tradename = myBTV.get_direct_str_index(trade_direct)
-    # 打印进度
-    global temp
-    temp += 1
-    print("\r", "{}/{}".format(temp * cpu_core, k_end * holding_end * lag_trade_end), end="", flush=True)
-    # 退出条件
-    if holding > k: return None
-    # 获取信号数据
-    signaldata = myBTV.stra.momentum(price_train, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
-    # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata[signalname], price_DataFrame=eurusd_train, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
-    # 设置信号统计
-    result = myBTV.filter_strategy(outStrat, outSignal, para, paranames)
-    return result
-# ---测试集 计算信号
-def signalfunc_test(para):
-    k = para[0]
-    holding = para[1]
-    lag_trade = para[2]
-    trade_direct = para[3]  # "BuyOnly","SellOnly","All"
-    # 不同交易方向下，数据字符串索引
-    sig_mode, signalname, tradename = myBTV.get_direct_str_index(trade_direct)
-    # 打印进度
-    global temp
-    temp += 1
-    print("\r", "{}/{}".format(temp * cpu_core, k_end * holding_end * lag_trade_end), end="", flush=True)
-    # 退出条件
-    if holding > k: return None
-    # 获取信号数据
-    signaldata = myBTV.stra.momentum(price_test, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
-    # 信号分析
-    outStrat, outSignal = myBTV.signal_quality(signaldata[signalname], price_DataFrame=eurusd_test, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
-    # 设置信号统计
-    result = myBTV.filter_strategy(outStrat, outSignal, para, paranames)
-    return result
-
 # ---训练集 计算信号，不重复持仓
 def signalfunc_NoRepeatHold_train(para):
     k = para[0]
     holding = para[1]
     lag_trade = para[2]
-    trade_direct = para[3] # "BuyOnly","SellOnly","All"
+    trade_direct = para[3] # 非策略参数 "BuyOnly","SellOnly","All"
     # 不同交易方向下，数据字符串索引
     sig_mode, signalname, tradename = myBTV.get_direct_str_index(trade_direct)
     # 打印进度
@@ -136,14 +97,14 @@ def signalfunc_NoRepeatHold_train(para):
     # 信号分析
     outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signaldata[signalname], price_DataFrame=eurusd_train, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
-    result = myBTV.filter_strategy(outStrat, outSignal, para, paranames)
+    result = myBTV.filter_strategy(outStrat, outSignal, para, strategy_para_names)
     return result
 # ---测试集 计算信号，不重复持仓
 def signalfunc_NoRepeatHold_test(para):
     k = para[0]
     holding = para[1]
     lag_trade = para[2]
-    trade_direct = para[3] # "BuyOnly","SellOnly","All"
+    trade_direct = para[3] # 非策略参数 "BuyOnly","SellOnly","All"
     # 不同交易方向下，数据字符串索引
     sig_mode, signalname, tradename = myBTV.get_direct_str_index(trade_direct)
     # 打印进度
@@ -157,7 +118,7 @@ def signalfunc_NoRepeatHold_test(para):
     # 信号分析
     outStrat, outSignal = myBTV.signal_quality_NoRepeatHold(signaldata[signalname], price_DataFrame=eurusd_test, holding=holding, lag_trade=lag_trade, plotRet=False, plotStrat=False)
     # 设置信号统计
-    result = myBTV.filter_strategy(outStrat, outSignal, para, paranames)
+    result = myBTV.filter_strategy(outStrat, outSignal, para, strategy_para_names)
     return result
 
 ################# 多进程执行函数 ########################################
@@ -172,19 +133,22 @@ if __name__ == '__main__':
     para_all = [(k, holding, lag_trade, "All") for k in range(1, k_end + 1) for holding in
                 range(1, holding_end + 1) for lag_trade in range(1, lag_trade_end + 1)]
 
-    # ---分析训练集(并行)
+    # ---设置输出目录
     folder = __mypath__.get_desktop_path() + "\\__动量研究(test)__"
     buyfilepath = folder + "\\动量_Buy.xlsx"
     sellfilepath = folder + "\\动量_Sell.xlsx"
     allfilepath = folder + "\\动量_All.xlsx"
+
+    # ---分析训练集(并行)
     myBTV.run_train(signalfunc_NoRepeatHold_train, para_buyonly, buyfilepath, cpu_core)
     myBTV.run_train(signalfunc_NoRepeatHold_train, para_sellonly, sellfilepath, cpu_core)
     myBTV.run_train(signalfunc_NoRepeatHold_train, para_all, allfilepath, cpu_core)
 
     # ---分析测试集(并行)
-    myBTV.run_test(signalfunc_NoRepeatHold_test, buyfilepath, paranames, cpu_core)
-    myBTV.run_test(signalfunc_NoRepeatHold_test, sellfilepath, paranames, cpu_core)
-    myBTV.run_test(signalfunc_NoRepeatHold_test, allfilepath, paranames, cpu_core)
+    myBTV.run_test(signalfunc_NoRepeatHold_test, buyfilepath, strategy_para_names, cpu_core)
+    myBTV.run_test(signalfunc_NoRepeatHold_test, sellfilepath, strategy_para_names, cpu_core)
+    myBTV.run_test(signalfunc_NoRepeatHold_test, allfilepath, strategy_para_names, cpu_core)
+
 
 
 
