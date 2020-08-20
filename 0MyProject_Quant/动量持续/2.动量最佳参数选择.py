@@ -51,9 +51,11 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 # 在多个参数的情况下，为了分析需要把一些参数取固定值、另一些参数不取固定值。需要通过字典传递。
 # 在分析最佳参数时，需要进行 单独测试 来观察图示。
 '''
-myDefault.set_backend_default("agg")
 
 #%% 根据 非策略参数 定位文件 ###########################
+import warnings
+warnings.filterwarnings('ignore')
+
 direct_para = ["BuyOnly","SellOnly","All"]
 symbol_list = ["EURUSD"]
 timeframe_list = ["TIMEFRAME_D1"]
@@ -100,6 +102,9 @@ for symbol in symbol_list:
     for timeframe in timeframe_list:
         for direct in direct_para:
             for para_fixed in para_fixed_list:
+                folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+                filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+                filecontent = pd.read_excel(filepath)
                 y_name = ["sharpe", "calmar_ratio", "cumRet"]
                 myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
 
