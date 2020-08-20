@@ -48,7 +48,7 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 
 myplt.set_backend("agg")  # 后台输出图片，不占pycharm内存
 
-#%% ###################################
+#%% 分析到此部分，基本确定了 某个品种、某个时间框、某个方向 的策略参数，并行主要体现在多个指标上
 import warnings
 warnings.filterwarnings('ignore')
 
