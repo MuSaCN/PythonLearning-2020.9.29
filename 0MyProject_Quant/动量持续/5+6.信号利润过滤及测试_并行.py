@@ -97,7 +97,7 @@ def run(para):
     # ---计算整个样本的信号
     signaldata_all = myBTV.stra.momentum(data_total.Close, k=k, holding=holding, sig_mode=sig_mode, stra_mode="Continue")
     signal_all = signaldata_all[signalname]
-    # ---获取指标
+    # ---(核心，在库中添加)获取指标
     indicator = myBTV.indi.multicore_get_indicator(data_total, indi_name, para)
     # ---信号利润过滤及测试
     # 总目录
