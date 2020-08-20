@@ -60,8 +60,8 @@ warnings.filterwarnings('ignore')
 
 # 策略，按顺序保存在 para 的前面
 strategy_para_names = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
-k_end = 200             # 动量向左参数
-holding_end = 1         # 持有期参数，可以不同固定为1
+k_end = 300             # 动量向左参数
+holding_end = 5         # 持有期参数，可以不同固定为1
 lag_trade_end = 1       # 信号出现滞后交易参数，参数不能大
 
 # 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
@@ -149,7 +149,7 @@ if __name__ == '__main__':
     for symbol in symbol_list:
         for timeframe in timeframe_list:
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
-            folder = __mypath__.get_desktop_path() + "\\_动量研究.{}.{}".format(symbol, timeframe)
+            folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
             # 仅做多、仅做空、多空都做，保存在一个目录下
             for direct in direct_para:
                 # 设定并行参数，只需要指定策略参数的范围即可
