@@ -51,51 +51,57 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 # 在多个参数的情况下，为了分析需要把一些参数取固定值、另一些参数不取固定值。需要通过字典传递。
 # 在分析最佳参数时，需要进行 单独测试 来观察图示。
 '''
+myDefault.set_backend_default("agg")
 
 #%% 根据 非策略参数 定位文件 ###########################
 direct_para = ["BuyOnly","SellOnly","All"]
 symbol_list = ["EURUSD"]
 timeframe_list = ["TIMEFRAME_D1"]
 
-symbol = symbol_list[0]
-timeframe = timeframe_list[0]
-direct = direct_para[0]
-
-folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
-filepath = folder + "\\动量_{}.xlsx".format(direct) # 选择训练集文件
-
-filecontent = pd.read_excel(filepath)
-
 #%% 根据 策略参数 分析 ############################
 # ---画参数图1D
 # k 动量向左参数；holding 必须小于 k
-para_fixed = {"k":None, "holding":1, "lag_trade":1}
-# y_name = ["sharpe", "annRet"]
-myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True)
-# 训练集 buy  最佳选择 k=100, holding=1, lag_trade=1
-# 训练集 sell 最佳选择 k=100, holding=1, lag_trade=1
-# 训练集 all  最佳选择 k=100, holding=1, lag_trade=1
+para_fixed_list = [{"k":None, "holding":1, "lag_trade":1},
+                   {"k":None, "holding":2, "lag_trade":1},
+                   {"k":None, "holding":3, "lag_trade":1},
+                   {"k":None, "holding":4, "lag_trade":1},
+                   {"k":None, "holding":5, "lag_trade":1}]
+for symbol in symbol_list:
+    for timeframe in timeframe_list:
+        for direct in direct_para:
+            for para_fixed in para_fixed_list:
+                folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+                filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+                filecontent = pd.read_excel(filepath)
+                myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True)
 
 #%%
 # ---画参数图2D热力图
 # k 动量向左参数；holding 必须小于 k
-para_fixed = {"k":None, "holding":1, "lag_trade":None}
-myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False, annot=False)
-# 热力图缩放
-filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
-y_name = ["sharpe"]
-myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent_new, para_fixed=para_fixed, y_name=y_name, output=False, annot=True)
+para_fixed_list = [{"k":None, "holding":None, "lag_trade":1}]
+for symbol in symbol_list:
+    for timeframe in timeframe_list:
+        for direct in direct_para:
+            for para_fixed in para_fixed_list:
+                folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+                filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+                filecontent = pd.read_excel(filepath)
+                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True, annot=False)
+                # 热力图缩放
+                # filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
+                # y_name = ["sharpe"]
+                # myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent_new, para_fixed=para_fixed, y_name=y_name, output=False, annot=True)
 
 #%%
 # ---画参数图3D热力图
 # k 动量向左参数；holding 必须小于 k
-para_fixed = {"k":None, "holding":1, "lag_trade":None}
-# myDefault.set_backend_default("pycharm")
-# myDefault.set_backend_default("tkagg")
-
-
-y_name = ["sharpe", "calmar_ratio", "cumRet"]
-myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
+para_fixed_list = [{"k":None, "holding":None, "lag_trade":1}]
+for symbol in symbol_list:
+    for timeframe in timeframe_list:
+        for direct in direct_para:
+            for para_fixed in para_fixed_list:
+                y_name = ["sharpe", "calmar_ratio", "cumRet"]
+                myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
 
 
 
