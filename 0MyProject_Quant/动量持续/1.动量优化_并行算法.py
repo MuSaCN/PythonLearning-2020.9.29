@@ -60,9 +60,9 @@ warnings.filterwarnings('ignore')
 
 # 策略，按顺序保存在 para 的前面
 strategy_para_names = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
-k_end = 300             # 动量向左参数
-holding_end = 5         # 持有期参数，可以不同固定为1
-lag_trade_end = 1       # 信号出现滞后交易参数，参数不能大
+k_end = 400             # 动量向左参数
+holding_end = 10         # 持有期参数，可以不同固定为1
+lag_trade_end = 5       # 信号出现滞后交易参数，参数不能大
 
 # 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
 direct_para = ["BuyOnly","SellOnly","All"]
