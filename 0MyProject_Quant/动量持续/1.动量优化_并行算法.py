@@ -1,4 +1,7 @@
 # Author:Zhang Yuan
+import warnings
+warnings.filterwarnings('ignore')
+#
 from MyPackage import *
 import numpy as np
 import pandas as pd
@@ -55,28 +58,11 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 '''
 
 #%% ################# 设置参数，设置范围的最大值 ##########################
-import warnings
-warnings.filterwarnings('ignore')
-
-# 策略，按顺序保存在 para 的前面
+# 策略参数(需写在这里)，按顺序保存在 para 的前面
 strategy_para_names = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
-k_end = 400             # 动量向左参数
-holding_end = 10         # 持有期参数，可以不同固定为1
-lag_trade_end = 5       # 信号出现滞后交易参数，参数不能大
-
-# 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
-direct_para = ["BuyOnly","SellOnly","All"]
-
-# symbol、timeframe 参数设置在 -2、-1 的位置
-symbol_list = ["EURUSD"]
-timeframe_list = ["TIMEFRAME_D1"]
-
-# 设置时间范围，不同时间框架加载的时间范围不同，返回 date_from, date_to
-def get_date_range(timeframe=str):
-    if timeframe == "TIMEFRAME_D1":
-        date_from = [2000,1,1,0,0,0]
-        date_to = [2020,1,1,0,0,0]
-    return date_from, date_to
+k_end = 200             # 动量向左参数
+holding_end = 1         # 持有期参数，可以不同固定为1
+lag_trade_end = 1       # 信号出现滞后交易参数，参数不能大
 
 #%% ################# 信号函数部分，或多个函数、或多个参数 #####################
 temp = 0  # 用来显示进度，必须放在这里
@@ -97,7 +83,7 @@ def signalfunc_NoRepeatHold_train(para):
     symbol = para[-2]
     timeframe = para[-1]
     # 获取数据
-    date_from, date_to = get_date_range(timeframe)
+    date_from, date_to = myPjMT5.get_date_range(timeframe) # 不同时间框架加载的时间范围不同
     data_total = myPjMT5.getsymboldata(symbol, timeframe, date_from, date_to, index_time=True, col_capitalize=True)
     data_train, data_test = myPjMT5.get_train_test(data_total, train_scale=0.8)
     # 不同交易方向下，数据字符串索引
@@ -127,7 +113,7 @@ def signalfunc_NoRepeatHold_test(para):
     symbol = para[-2]
     timeframe = para[-1]
     # 获取数据
-    date_from, date_to = get_date_range(timeframe)
+    date_from, date_to = myPjMT5.get_date_range(timeframe) # 不同时间框架加载的时间范围不同
     data_total = myPjMT5.getsymboldata(symbol, timeframe, date_from, date_to, index_time=True, col_capitalize=True)
     data_train, data_test = myPjMT5.get_train_test(data_total, train_scale=0.8)
     # 不同交易方向下，数据字符串索引
@@ -146,6 +132,17 @@ def signalfunc_NoRepeatHold_test(para):
 cpu_core = 7
 # ---多进程必须要在这里执行
 if __name__ == '__main__':
+    # ---非策略参数：
+    # 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
+    direct_para = ["BuyOnly", "SellOnly", "All"]
+    # symbol、timeframe 参数设置在 -2、-1 的位置
+    symbol_list = myPjMT5.get_all_symbol_name().tolist()
+    timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
+                      "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1",
+                      "TIMEFRAME_M30","TIMEFRAME_M20","TIMEFRAME_M15","TIMEFRAME_M12",
+                      "TIMEFRAME_M10","TIMEFRAME_M6","TIMEFRAME_M5","TIMEFRAME_M4",
+                      "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
+    # ---开始并行运算
     for symbol in symbol_list:
         for timeframe in timeframe_list:
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
