@@ -136,12 +136,12 @@ if __name__ == '__main__':
     # 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
     direct_para = ["BuyOnly", "SellOnly", "All"]
     # symbol、timeframe 参数设置在 -2、-1 的位置
-    symbol_list = myPjMT5.get_all_symbol_name().tolist()
+    symbol_list = myPjMT5.get_all_symbol_name().tolist() # 62
     timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
                       "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1",
                       "TIMEFRAME_M30","TIMEFRAME_M20","TIMEFRAME_M15","TIMEFRAME_M12",
                       "TIMEFRAME_M10","TIMEFRAME_M6","TIMEFRAME_M5","TIMEFRAME_M4",
-                      "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
+                      "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"] # 19
     # ---开始并行运算
     for symbol in symbol_list:
         for timeframe in timeframe_list:
