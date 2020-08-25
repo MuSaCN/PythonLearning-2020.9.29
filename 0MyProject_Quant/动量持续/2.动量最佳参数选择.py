@@ -56,40 +56,41 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 import warnings
 warnings.filterwarnings('ignore')
 
+
 direct_para = ["BuyOnly","SellOnly","All"]
 symbol_list = ["EURUSD"]
-timeframe_list = ["TIMEFRAME_D1"]
+timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
+                  "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1"]
 
 #%% 根据 策略参数 分析 ############################
 # ---画参数图1D
+myDefault.set_backend_default("agg")
 # k 动量向左参数；holding 必须小于 k
-para_fixed_list = [{"k":None, "holding":1, "lag_trade":1},
-                   {"k":None, "holding":2, "lag_trade":1},
-                   {"k":None, "holding":3, "lag_trade":1},
-                   {"k":None, "holding":4, "lag_trade":1},
-                   {"k":None, "holding":5, "lag_trade":1}]
-# para_fixed_list = [{"k":100, "holding":None, "lag_trade":1}]
+para_fixed_list = [{"k":None, "holding":i, "lag_trade":1} for i in range(1,10+1)]
+y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
     for timeframe in timeframe_list:
         for direct in direct_para:
+            folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+            filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+            filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
-                filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
-                filecontent = pd.read_excel(filepath)
-                myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True)
+                myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
 
 #%%
-# ---画参数图2D热力图
+# ---画参数图2D热力图，不能用agg形式画图
+myDefault.set_backend_default("pycharm")
 # k 动量向左参数；holding 必须小于 k
-para_fixed_list = [{"k":None, "holding":None, "lag_trade":1}]
+para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,5+1)]
+y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
     for timeframe in timeframe_list:
         for direct in direct_para:
+            folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+            filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+            filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
-                filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
-                filecontent = pd.read_excel(filepath)
-                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=True, annot=False)
+                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, annot=False)
                 # 热力图缩放
                 # filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
                 # y_name = ["sharpe"]
@@ -97,16 +98,17 @@ for symbol in symbol_list:
 
 #%%
 # ---画参数图3D热力图
+myDefault.set_backend_default("agg")
 # k 动量向左参数；holding 必须小于 k
-para_fixed_list = [{"k":None, "holding":None, "lag_trade":1}]
+para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,5+1)]
+y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
     for timeframe in timeframe_list:
         for direct in direct_para:
+            folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+            filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+            filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
-                filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
-                filecontent = pd.read_excel(filepath)
-                y_name = ["sharpe", "calmar_ratio", "cumRet"]
                 myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
 
 

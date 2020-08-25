@@ -67,14 +67,17 @@ timeframe_list = ["TIMEFRAME_D1"]
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
 direct = direct_para[0]
+
 para_fixed = {"k":100, "holding":None, "lag_trade":1}
+para_fixed = {"k":None, "holding":1, "lag_trade":1}
+para_fixed = {"k":[50,150], "holding":1, "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
 filecontent = pd.read_excel(filepath)
 
 y_name = ["sharpe", "calmar_ratio", "cumRet"]
-myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=None, output=False)
+myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
 
 #%%
 # ---画参数图2D热力图
@@ -82,7 +85,10 @@ myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_f
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
 direct = direct_para[0]
+
 para_fixed = {"k":None, "holding":None, "lag_trade":1}
+para_fixed = {"k":[50,150], "holding":None, "lag_trade":1}
+para_fixed = {"k":[50,150], "holding":[1,5], "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
@@ -90,10 +96,7 @@ filecontent = pd.read_excel(filepath)
 
 y_name = ["sharpe", "calmar_ratio", "cumRet"]
 myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False, annot=False)
-# 热力图缩放
-# filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
-# y_name = ["sharpe"]
-# myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent_new, para_fixed=para_fixed, y_name=y_name, output=False, annot=True)
+
 
 #%%
 # ---画参数图3D热力图
@@ -101,7 +104,10 @@ myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixe
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
 direct = direct_para[0]
+
 para_fixed = {"k":None, "holding":None, "lag_trade":1}
+para_fixed = {"k":[50,150], "holding":None, "lag_trade":1}
+para_fixed = {"k":[50,150], "holding":[1,5], "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
