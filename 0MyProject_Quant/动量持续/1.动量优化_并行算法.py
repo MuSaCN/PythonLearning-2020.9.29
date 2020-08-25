@@ -134,7 +134,8 @@ cpu_core = 11
 if __name__ == '__main__':
     # ---非策略参数：
     # 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
-    direct_para = ["BuyOnly", "SellOnly", "All"]
+    # direct_para = ["BuyOnly", "SellOnly", "All"]
+    direct_para = ["BuyOnly", "SellOnly"]
     # symbol、timeframe 参数设置在 -2、-1 的位置
     symbol_list = myPjMT5.get_all_symbol_name().tolist()
     timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
