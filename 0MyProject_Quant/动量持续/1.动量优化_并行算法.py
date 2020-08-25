@@ -60,9 +60,9 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 #%% ################# 设置参数，设置范围的最大值 ##########################
 # 策略参数(需写在这里)，按顺序保存在 para 的前面
 strategy_para_names = ["k", "holding", "lag_trade"]  # 顺序不能搞错了，要与信号函数中一致
-k_end = 400 # 400             # 动量向左参数
-holding_end = 10 # 10         # 持有期参数，可以不同固定为1
-lag_trade_end = 5 # 5         # 信号出现滞后交易参数，参数不能大
+k_end = 400             # 动量向左参数
+holding_end = 10         # 持有期参数，可以不同固定为1
+lag_trade_end = 5       # 信号出现滞后交易参数，参数不能大
 
 #%% ################# 信号函数部分，或多个函数、或多个参数 #####################
 temp = 0  # 用来显示进度，必须放在这里
@@ -136,14 +136,19 @@ if __name__ == '__main__':
     # 方向参数："BuyOnly" "SellOnly" "All"，保存在 para 的 -3 位置
     direct_para = ["BuyOnly", "SellOnly", "All"]
     # symbol、timeframe 参数设置在 -2、-1 的位置
-    symbol_list = myPjMT5.get_all_symbol_name().tolist() # 62
+    symbol_list = myPjMT5.get_all_symbol_name().tolist()
     timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
                       "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1",
                       "TIMEFRAME_M30","TIMEFRAME_M20","TIMEFRAME_M15","TIMEFRAME_M12",
                       "TIMEFRAME_M10","TIMEFRAME_M6","TIMEFRAME_M5","TIMEFRAME_M4",
-                      "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"] # 19
+                      "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
     # ---开始并行运算
     for symbol in symbol_list:
+        # ---
+        if symbol == "EURUSD":
+            timeframe_list = ["TIMEFRAME_M30", "TIMEFRAME_M20", "TIMEFRAME_M15", "TIMEFRAME_M12",
+                              "TIMEFRAME_M10", "TIMEFRAME_M6", "TIMEFRAME_M5", "TIMEFRAME_M4",
+                              "TIMEFRAME_M3", "TIMEFRAME_M2", "TIMEFRAME_M1"]
         for timeframe in timeframe_list:
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
@@ -155,7 +160,7 @@ if __name__ == '__main__':
                 # 分析训练集(并行)，会把参数优化结果生成文档。
                 myBTV.run_train(signalfunc_NoRepeatHold_train, para_muilt, filepath, cpu_core)
                 # 分析测试集(并行)，会内部解析训练集文档中的参数。
-                myBTV.run_test(signalfunc_NoRepeatHold_test, filepath, strategy_para_names, [direct,symbol,timeframe],cpu_core)
+                # myBTV.run_test(signalfunc_NoRepeatHold_test, filepath, strategy_para_names, [direct,symbol,timeframe],cpu_core)
 
 
 
