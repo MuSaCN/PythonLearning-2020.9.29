@@ -68,7 +68,7 @@ symbol = symbol_list[0]
 timeframe = timeframe_list[0]
 direct = direct_para[0]
 
-para_fixed = {"k":100, "holding":None, "lag_trade":1}
+para_fixed = {"k":100, "holding":1, "lag_trade":None}
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
 para_fixed = {"k":[50,150], "holding":1, "lag_trade":1}
 
@@ -81,6 +81,7 @@ myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_f
 
 #%%
 # ---画参数图2D热力图
+myDefault.set_backend_default("pycharm")
 # k 动量向左参数；holding 必须小于 k
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
@@ -89,6 +90,7 @@ direct = direct_para[0]
 para_fixed = {"k":None, "holding":None, "lag_trade":1}
 para_fixed = {"k":[50,150], "holding":None, "lag_trade":1}
 para_fixed = {"k":[50,150], "holding":[1,5], "lag_trade":1}
+para_fixed = {"k":[18,50], "holding":1, "lag_trade":None}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
@@ -100,6 +102,7 @@ myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixe
 
 #%%
 # ---画参数图3D热力图
+myDefault.set_backend_default("tkagg")
 # k 动量向左参数；holding 必须小于 k
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
@@ -108,6 +111,7 @@ direct = direct_para[0]
 para_fixed = {"k":None, "holding":None, "lag_trade":1}
 para_fixed = {"k":[50,150], "holding":None, "lag_trade":1}
 para_fixed = {"k":[50,150], "holding":[1,5], "lag_trade":1}
+para_fixed = {"k":None, "holding":1, "lag_trade":None}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
