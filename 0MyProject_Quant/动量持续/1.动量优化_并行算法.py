@@ -143,13 +143,10 @@ if __name__ == '__main__':
                       "TIMEFRAME_M10","TIMEFRAME_M6","TIMEFRAME_M5","TIMEFRAME_M4",
                       "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
     # ---开始并行运算
-    for symbol in symbol_list:
-        # ---
-        if symbol == "EURUSD":
-            timeframe_list = ["TIMEFRAME_M30", "TIMEFRAME_M20", "TIMEFRAME_M15", "TIMEFRAME_M12",
-                              "TIMEFRAME_M10", "TIMEFRAME_M6", "TIMEFRAME_M5", "TIMEFRAME_M4",
-                              "TIMEFRAME_M3", "TIMEFRAME_M2", "TIMEFRAME_M1"]
-        for timeframe in timeframe_list:
+    for timeframe in timeframe_list:
+        for symbol in symbol_list:
+            if symbol == "EURUSD" and timeframe in ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6","TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1"]:
+                continue
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
             # 仅做多、仅做空、多空都做，保存在一个目录下
