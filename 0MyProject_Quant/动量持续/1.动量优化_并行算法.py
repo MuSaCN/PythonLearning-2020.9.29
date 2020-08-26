@@ -138,18 +138,15 @@ if __name__ == '__main__':
     direct_para = ["BuyOnly", "SellOnly"]
     # symbol、timeframe 参数设置在 -2、-1 的位置
     symbol_list = myPjMT5.get_all_symbol_name().tolist()
-    # timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
-    #                   "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1",
-    #                   "TIMEFRAME_M30","TIMEFRAME_M20","TIMEFRAME_M15","TIMEFRAME_M12",
-    #                   "TIMEFRAME_M10","TIMEFRAME_M6","TIMEFRAME_M5","TIMEFRAME_M4",
-    #                   "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
-    timeframe_list = ["TIMEFRAME_H12", "TIMEFRAME_H8", "TIMEFRAME_H6",
-                      "TIMEFRAME_H4", "TIMEFRAME_H3", "TIMEFRAME_H2", "TIMEFRAME_H1",
-                      "TIMEFRAME_M30", "TIMEFRAME_M20", "TIMEFRAME_M15", "TIMEFRAME_M12",
-                      "TIMEFRAME_M10", "TIMEFRAME_M6", "TIMEFRAME_M5", "TIMEFRAME_M4",
-                      "TIMEFRAME_M3", "TIMEFRAME_M2", "TIMEFRAME_M1"]
+    timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
+                      "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1",
+                      "TIMEFRAME_M30","TIMEFRAME_M20","TIMEFRAME_M15","TIMEFRAME_M12",
+                      "TIMEFRAME_M10","TIMEFRAME_M6","TIMEFRAME_M5","TIMEFRAME_M4",
+                      "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
     # ---开始并行运算
     for timeframe in timeframe_list:
+        if timeframe == "TIMEFRAME_D1":
+            continue
         finish_symbol = []
         for symbol in symbol_list:
             if symbol == "EURUSD" and timeframe in ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6","TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1"]:
