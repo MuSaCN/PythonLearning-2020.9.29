@@ -144,7 +144,7 @@ if __name__ == '__main__':
                       "TIMEFRAME_M3","TIMEFRAME_M2","TIMEFRAME_M1"]
     # ---开始并行运算
     for timeframe in timeframe_list:
-        if timeframe == "TIMEFRAME_D1":
+        if timeframe in ["TIMEFRAME_D1", "TIMEFRAME_H12"]:
             continue
         finish_symbol = []
         for symbol in symbol_list:
