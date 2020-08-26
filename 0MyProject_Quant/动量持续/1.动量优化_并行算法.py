@@ -163,7 +163,7 @@ if __name__ == '__main__':
                 # 分析测试集(并行)，会内部解析训练集文档中的参数。
                 # myBTV.run_test(signalfunc_NoRepeatHold_test, filepath, strategy_para_names, [direct,symbol,timeframe],cpu_core)
             finish_symbol.append(symbol)
-        print("finished:", timeframe, symbol)
+        print("finished:", timeframe, finish_symbol)
 
 
 
