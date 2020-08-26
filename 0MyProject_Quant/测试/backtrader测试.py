@@ -47,6 +47,8 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 
 #%%
 # ---获取数据
+import warnings
+warnings.filterwarnings('ignore')
 eurusd = myPjMT5.getsymboldata("EURUSD","TIMEFRAME_D1",[2000,1,1,0,0,0],[2020,1,1,0,0,0],index_time=True, col_capitalize=False)
 data0 = eurusd
 
@@ -58,7 +60,7 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---只开头执行一次
     def __init__(self):
-        print("init", self)
+        # print("init", self)
         self.barscount = 0
         self.sma = myBT.indi.add_indi_SMA(self.datas[0].close, timeperiod=self.params.Para0, subplot=True)
         # open索引
@@ -74,22 +76,31 @@ class ABCStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        print("next: ", len(self), self.time(0), self.sma[0])
-        if not self.position:
-            if self.close[0] > self.sma[0]:
-                self.buy()
-        else:
-            if len(self) >= self.barscount + 5:
-                self.sell()
+        # print("next: ", len(self), self.time(0), self.sma[0])
+        # if not self.position:
+        #     if self.close[0] > self.sma[0]:
+        #         self.buy()
+        # else:
+        #     if len(self) >= self.barscount + 5:
+        #         self.sell()
+        if self.getposition().size > 0 and self.close[0] < self.close[-self.params.Para0]:
+            self.sell()
+            self.barscount = 0
+        # 仅发出信号，在下一个bar的开盘价成交
+        if self.barscount == 0 and self.close[0] > self.close[-self.params.Para0]:
+            self.buy()
+            self.barscount = len(self)
 
     # ---策略每笔订单通知函数。已经进入下一个bar，且在next()之前执行
     def notify_order(self, order):
-        if myBT.strat.order_status_check(order, False) == True:
-            self.barscount = len(self)
+        # if myBT.strat.order_status_check(order, False) == True:
+        #     self.barscount = len(self)
+        pass
 
     # ---策略每笔交易通知函数。已经进入下一个bar，且在notify_order()之后，next()之前执行。
     def notify_trade(self, trade):
-        myBT.strat.trade_status(trade, isclosed=False)
+        # myBT.strat.trade_status(trade, isclosed=False)
+        pass
 
     # ---策略加载完会触发此语句
     def stop(self):
@@ -131,24 +142,26 @@ class TestStrategy(myBT.bt.Strategy):
 # ---基础设置
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(100000)
-
 myBT.setcommission(0.000)
 myBT.adddata(data0, fromdate=None, todate=None)
 
 
 #%%
-myBT.addstrategy(ABCStrategy)
+# myBT.addstrategy(ABCStrategy)
 # myBT.addstrategy(TestStrategy)
-myBT.run(maxcpus=1 ,plot = True, backend="tkagg")
+# myBT.run(maxcpus=1 ,plot = True, backend="tkagg")
 # 15 99999.94443999976 99998.82211999976
-myBT.every_case_value()
+# myBT.every_cash_value()
 
 #%%
 # ---以下是多核优化时的代码，需把上面 addstrategy()、run() 代码注释化。
 if __name__ == '__main__':  # 这句必须要有
-    myBT.optstrategy(ABCStrategy, Para0=range(5, 100))
+    myBT.optstrategy(ABCStrategy, Para0=range(10, 200))
     # 多核运算注意原理，plot要设定为不画图
-    myBT.run(maxcpus=None ,plot = False, backend="tkagg")
+    results = myBT.run(maxcpus=None, plot=False)
+    print("results = ")
+    print(results)
+
 
 
 

@@ -58,7 +58,7 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---只开头执行一次
     def __init__(self):
-        print(self.datas) # 返回list
+        # print(self.datas) # 返回list
         self.barscount = 0
         # open索引
         self.open = self.datas[0].open
@@ -73,11 +73,14 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---每一个Bar迭代执行一次。next()执行完就进入下一个bar
     def next(self):
-        # 有多仓就卖，由于到下一bar的开盘才成交，所以回到next()至少经历1期。
+        # ---有多仓就卖，由于到下一bar的开盘才成交，所以回到next()至少经历1期。
         # if self.getposition().size > 0:
         #     self.sell()
-        # 表示有多仓时，且持有了指定根K线，且在 barscount 被赋值时
-        if self.getposition().size > 0 and len(self) >= self.barscount + 5 and self.barscount != 0:
+        # ---表示有多仓时，且持有了指定根K线，且在 barscount 被赋值时
+        # if self.getposition().size > 0 and len(self) >= self.barscount + 5 and self.barscount != 0:
+        #     self.sell()
+        #     self.barscount = 0
+        if self.getposition().size > 0 and self.close[0] < self.close[-self.params.Para0]:
             self.sell()
             self.barscount = 0
         # 仅发出信号，在下一个bar的开盘价成交
@@ -100,7 +103,7 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---策略加载完会触发此语句
     def stop(self):
-        print("stop(): ", self.params.Para0 , self.broker.getvalue(), self.broker.get_cash())
+        print("stop(): ", self.params.Para0, self.broker.getvalue(), self.broker.get_cash())
 
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(5000)
@@ -119,7 +122,7 @@ myBT.plot_value(data0, cash_value=None, train_x0=pd.Timestamp('2000-01-01 00:00:
 
 #%%
 # 画转成MT5的收益曲线(backtrader固定仓位才有效，且mt5点差大于50才有效)(用于测试策略信号是否相同)(可做点差压力测试)
-myBT.plot_mt5_cumNET( data0, pnl_detail=None, mt5_spread=50, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
+myBT.plot_mt5_cumNET(data0, pnl_detail=None, mt5_spread=50, train_x0=pd.Timestamp('2000-01-01 00:00:00'), train_x1=pd.Timestamp('2014-12-31 00:00:00'))
 
 
 #%%
@@ -132,6 +135,7 @@ for key in all_analyzer[0]:
 #%%
 # 多核优化时运行
 if __name__ == '__main__':  # 这句必须要有
+
     myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
     myBT.optstrategy(MomentumStrategy, Para0=range(5,300))
     results = myBT.run(maxcpus=None, plot=False)
