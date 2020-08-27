@@ -103,7 +103,7 @@ class MomentumStrategy(myBT.bt.Strategy):
 
     # ---策略加载完会触发此语句
     def stop(self):
-        print("stop(): ", self.params.Para0, self.broker.getvalue(), self.broker.get_cash())
+        print("stop(): ", self.params.Para0, self.broker.get_cash(), self.broker.getvalue())
 
 myBT = MyBackTest.MyClass_BackTestEvent()  # 回测类
 myBT.setcash(5000)
@@ -114,7 +114,8 @@ myBT.adddata(data0, fromdate=None, todate=None)
 #%%
 myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
 myBT.addstrategy(MomentumStrategy)
-myBT.run(plot=True, backend="pycharm")
+result = myBT.run(plot=True, backend="pycharm")
+result[0].analyzers.CashValue.vals
 
 # 简介的资金曲线
 myDefault.set_backend_default("pycharm")
@@ -135,13 +136,24 @@ for key in all_analyzer[0]:
 #%%
 # 多核优化时运行
 if __name__ == '__main__':  # 这句必须要有
-
+    # ---
     myBT.addanalyzer_all()  #(多核时能用，但有的analyzer不支持多核)
-    myBT.optstrategy(MomentumStrategy, Para0=range(5,300))
+    myBT.optstrategy(MomentumStrategy, Para0=range(20,150))
     results = myBT.run(maxcpus=None, plot=False)
-    print("results = ")
-    print(results)
+    # ---优化结果
+    paras = [x[0].params.Para0 for x in results]
+    cashs = [x[0].analyzers.CashValue.vals[0] for x in results]
+    values = [x[0].analyzers.CashValue.vals[1] for x in results]
+    df = pd.DataFrame({"para":paras,"cash":cashs,"value":values})
+    df = df.sort_values("value",ascending=False)
+    print(df)
 
+    # strats = [x[0] for x in results]  # flatten the result
+    # for i, strat in enumerate(strats):
+    #     para = strat.params.Para0
+    #     cash = strat.analyzers.CashValue.vals[0]
+    #     value = strat.analyzers.CashValue.vals[1]
+    #     print(para, "CashValue: ", cash, value)
 
 
     # all_analyzer = myBT.get_analysis_all()
