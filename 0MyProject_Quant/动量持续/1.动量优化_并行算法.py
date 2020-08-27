@@ -150,7 +150,7 @@ if __name__ == '__main__':
         for symbol in symbol_list:
             if symbol == "EURUSD" and timeframe in ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6","TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1"]:
                 continue
-            if timeframe == "TIMEFRAME_H6" and symbol in ['GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD', 'AUDUSD', 'AUDNZD', 'AUDCAD']:
+            if timeframe == "TIMEFRAME_H6" and symbol in ['EURUSD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD', 'AUDUSD', 'AUDNZD', 'AUDCAD', 'AUDCHF', 'AUDJPY','CHFJPY', 'EURGBP', 'EURAUD', 'EURCHF', 'EURJPY', 'EURNZD', 'EURCAD', 'GBPCHF', 'GBPJPY', 'CADCHF', 'CADJPY', 'EURTRY', 'GBPNZD', 'USDDKK', 'USDHKD', 'USDNOK', 'USDSEK', 'USDSGD', 'USDTRY', 'GBPAUD', 'GBPCAD', 'NZDJPY', 'NZDUSD']:
                 finish_symbol.append(symbol)
                 continue
 
