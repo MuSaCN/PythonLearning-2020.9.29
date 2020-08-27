@@ -153,7 +153,6 @@ if __name__ == '__main__':
             if timeframe == "TIMEFRAME_H6" and symbol in ['EURUSD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD', 'AUDUSD', 'AUDNZD', 'AUDCAD', 'AUDCHF', 'AUDJPY','CHFJPY', 'EURGBP', 'EURAUD', 'EURCHF', 'EURJPY', 'EURNZD', 'EURCAD', 'GBPCHF', 'GBPJPY', 'CADCHF', 'CADJPY', 'EURTRY', 'GBPNZD', 'USDDKK', 'USDHKD', 'USDNOK', 'USDSEK', 'USDSGD', 'USDTRY', 'GBPAUD', 'GBPCAD', 'NZDJPY', 'NZDUSD']:
                 finish_symbol.append(symbol)
                 continue
-
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
             # 仅做多、仅做空、多空都做，保存在一个目录下
