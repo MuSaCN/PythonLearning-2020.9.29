@@ -145,7 +145,7 @@ if __name__ == '__main__':
     # ---开始并行运算
     import time
     for timeframe in timeframe_list:
-        if timeframe in ["TIMEFRAME_D1", "TIMEFRAME_H12","TIMEFRAME_H8", "TIMEFRAME_H6","TIMEFRAME_H4"]:
+        if timeframe in ["TIMEFRAME_D1", "TIMEFRAME_H12","TIMEFRAME_H8", "TIMEFRAME_H6","TIMEFRAME_H4","TIMEFRAME_H3"]:
             continue
         finish_symbol = []
         for symbol in symbol_list:
