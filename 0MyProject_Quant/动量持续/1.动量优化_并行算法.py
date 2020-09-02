@@ -165,7 +165,7 @@ if __name__ == '__main__':
                 # myBTV.run_test(signalfunc_NoRepeatHold_test, filepath, strategy_para_names, [direct,symbol,timeframe],cpu_core)
             finish_symbol.append(symbol)
             print("finished:", timeframe, finish_symbol)
-            time.sleep(1)
+
 
 
 
