@@ -145,11 +145,14 @@ if __name__ == '__main__':
     # ---开始并行运算
     import time
     for timeframe in timeframe_list:
-        if timeframe in ["TIMEFRAME_D1", "TIMEFRAME_H12","TIMEFRAME_H8", "TIMEFRAME_H6","TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2"]:
+        if timeframe in ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
+                      "TIMEFRAME_H4","TIMEFRAME_H3","TIMEFRAME_H2","TIMEFRAME_H1",
+                      "TIMEFRAME_M30","TIMEFRAME_M20","TIMEFRAME_M15","TIMEFRAME_M12",
+                      "TIMEFRAME_M10"]:
             continue
         finish_symbol = []
         for symbol in symbol_list:
-            if timeframe ==  "TIMEFRAME_H1" and symbol in ['EURUSD', 'GBPUSD', 'USDCHF', 'USDJPY', 'USDCAD', 'AUDUSD', 'AUDNZD', 'AUDCAD', 'AUDCHF', 'AUDJPY', 'CHFJPY', 'EURGBP', 'EURAUD', 'EURCHF', 'EURJPY', 'EURNZD', 'EURCAD']:
+            if timeframe ==  "TIMEFRAME_M6" and symbol in ['EURUSD', 'GBPUSD']:
                 finish_symbol.append(symbol)
                 continue
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
