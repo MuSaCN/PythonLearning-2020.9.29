@@ -71,29 +71,29 @@ timeframe_list = ["TIMEFRAME_D1","TIMEFRAME_H12","TIMEFRAME_H8","TIMEFRAME_H6",
 
 #%% 根据 策略参数 分析 ############################
 # ---画参数图1D
-myDefault.set_backend_default("agg")
-# k 动量向左参数；holding 必须小于 k
-para_fixed_list = [{"k":None, "holding":i, "lag_trade":1} for i in range(1,10+1)]
-y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
-finish_symbol = []
-for symbol in symbol_list:
-    for timeframe in timeframe_list:
-        for direct in direct_para:
-            folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
-            filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
-            filecontent = pd.read_excel(filepath)
-            for para_fixed in para_fixed_list:
-                myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, batch=True)
-                plt.clf()
-                plt.close()
-        print(symbol, timeframe, "OK")
-    finish_symbol.append(symbol)
-    print("参数图1D finished:", finish_symbol)
+# myDefault.set_backend_default("agg")
+# # k 动量向左参数；holding 必须小于 k
+# para_fixed_list = [{"k":None, "holding":i, "lag_trade":1} for i in range(1,10+1)]
+# y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
+# finish_symbol = []
+# for symbol in symbol_list:
+#     for timeframe in timeframe_list:
+#         for direct in direct_para:
+#             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
+#             filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
+#             filecontent = pd.read_excel(filepath)
+#             for para_fixed in para_fixed_list:
+#                 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, batch=True)
+#                 plt.clf()
+#                 plt.close()
+#         print(symbol, timeframe, "OK")
+#     finish_symbol.append(symbol)
+#     print("参数图1D finished:", finish_symbol)
 
 
 #%%
-# ---画参数图2D热力图，不能用agg形式画图
-myDefault.set_backend_default("pycharm")
+# ---画参数图2D热力图，batch=True时才能用agg形式画图，否则要用pycharm形式.
+myDefault.set_backend_default("agg")
 # k 动量向左参数；holding 必须小于 k
 para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
@@ -105,7 +105,7 @@ for symbol in symbol_list:
             filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, annot=False, output=True, batch=True)
+                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, annot=False, output=True, batch=True) # 若batch=False，要设置画图模式为pycharm.
                 plt.clf()
                 plt.close()
         print(symbol, timeframe, "OK")
