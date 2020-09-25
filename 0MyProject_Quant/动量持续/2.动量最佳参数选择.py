@@ -83,7 +83,7 @@ for symbol in symbol_list:
 # ---画参数图2D热力图，不能用agg形式画图
 myDefault.set_backend_default("pycharm")
 # k 动量向左参数；holding 必须小于 k
-para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,5+1)]
+para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
     for timeframe in timeframe_list:
@@ -102,7 +102,7 @@ for symbol in symbol_list:
 # ---画参数图3D热力图
 myDefault.set_backend_default("agg")
 # k 动量向左参数；holding 必须小于 k
-para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,5+1)]
+para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
     for timeframe in timeframe_list:
