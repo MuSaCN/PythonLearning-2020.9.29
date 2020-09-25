@@ -75,8 +75,8 @@ myDefault.set_backend_default("agg")
 # k 动量向左参数；holding 必须小于 k
 para_fixed_list = [{"k":None, "holding":i, "lag_trade":1} for i in range(1,10+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
+finish_symbol = []
 for symbol in symbol_list:
-    finish_symbol = []
     for timeframe in timeframe_list:
         for direct in direct_para:
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
@@ -97,8 +97,8 @@ myDefault.set_backend_default("pycharm")
 # k 动量向左参数；holding 必须小于 k
 para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
+finish_symbol = []
 for symbol in symbol_list:
-    finish_symbol = []
     for timeframe in timeframe_list:
         for direct in direct_para:
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
@@ -119,8 +119,8 @@ myDefault.set_backend_default("agg")
 # k 动量向左参数；holding 必须小于 k
 para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
+finish_symbol = []
 for symbol in symbol_list:
-    finish_symbol = []
     for timeframe in timeframe_list:
         for direct in direct_para:
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
