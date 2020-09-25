@@ -83,6 +83,7 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
+                plt.close()
     finish_symbol.append(symbol)
     print("参数图1D finished:", finish_symbol)
 
@@ -101,6 +102,7 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, annot=False)
+                plt.close()
     finish_symbol.append(symbol)
     print("参数图2D热力图 finished:", finish_symbol)
 
@@ -120,6 +122,7 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
+                plt.close()
     finish_symbol.append(symbol)
     print("参数图3D热力图 finished:", finish_symbol)
 
