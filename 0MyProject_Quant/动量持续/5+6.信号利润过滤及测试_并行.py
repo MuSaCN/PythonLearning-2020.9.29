@@ -52,7 +52,7 @@ myplt.set_backend("agg")  # 后台输出图片，不占pycharm内存
 import warnings
 warnings.filterwarnings('ignore')
 
-# 策略参数，根据前面分析后选择固定值。
+# 策略参数，根据前面分析后设置固定值。
 strategy_para = [[100,1,1], [100,1,1], [100,1,1]] # 值对应["k", "holding", "lag_trade"]，且索引对应 direct_para
 
 # 技术指标名称，参数设置在 -4 的位置，具体的参数指定，在 if __name__ == '__main__': 中
