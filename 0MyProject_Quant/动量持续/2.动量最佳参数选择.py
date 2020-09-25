@@ -75,6 +75,7 @@ myDefault.set_backend_default("agg")
 para_fixed_list = [{"k":None, "holding":i, "lag_trade":1} for i in range(1,10+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
+    finish_symbol = []
     for timeframe in timeframe_list:
         for direct in direct_para:
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
@@ -82,7 +83,8 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
-        print(symbol, timeframe, "参数图1D finished.")
+    finish_symbol.append(symbol)
+    print("参数图1D finished:", finish_symbol)
 
 #%%
 # ---画参数图2D热力图，不能用agg形式画图
@@ -91,6 +93,7 @@ myDefault.set_backend_default("pycharm")
 para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
+    finish_symbol = []
     for timeframe in timeframe_list:
         for direct in direct_para:
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
@@ -98,11 +101,9 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, annot=False)
-        print(symbol, timeframe, "参数图2D热力图 finished.")
-                # 热力图缩放
-                # filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
-                # y_name = ["sharpe"]
-                # myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent_new, para_fixed=para_fixed, y_name=y_name, output=False, annot=True)
+    finish_symbol.append(symbol)
+    print("参数图2D热力图 finished:", finish_symbol)
+
 
 #%%
 # ---画参数图3D热力图
@@ -111,6 +112,7 @@ myDefault.set_backend_default("agg")
 para_fixed_list = [{"k":None, "holding":None, "lag_trade":i} for i in range(1,1+1)]
 y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 for symbol in symbol_list:
+    finish_symbol = []
     for timeframe in timeframe_list:
         for direct in direct_para:
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
@@ -118,7 +120,8 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
-        print(symbol, timeframe, "参数图3D热力图 finished.")
+    finish_symbol.append(symbol)
+    print("参数图3D热力图 finished:", finish_symbol)
 
 
 
