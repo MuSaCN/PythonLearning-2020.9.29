@@ -89,6 +89,7 @@ for symbol in symbol_list:
     finish_symbol.append(symbol)
     print("参数图1D finished:", finish_symbol)
 
+
 #%%
 # ---画参数图2D热力图，不能用agg形式画图
 myDefault.set_backend_default("pycharm")
