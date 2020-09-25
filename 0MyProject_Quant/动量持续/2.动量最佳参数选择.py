@@ -82,7 +82,8 @@ for symbol in symbol_list:
             filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
+                myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, batch=True)
+                plt.clf()
                 plt.close()
         print(symbol, timeframe, "OK")
     finish_symbol.append(symbol)
@@ -102,7 +103,8 @@ for symbol in symbol_list:
             filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, annot=False)
+                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, annot=False, output=True, batch=True)
+                plt.clf()
                 plt.close()
         print(symbol, timeframe, "OK")
     finish_symbol.append(symbol)
@@ -123,7 +125,8 @@ for symbol in symbol_list:
             filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
+                myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, batch=True)
+                plt.clf()
                 plt.close()
         print(symbol, timeframe, "OK")
     finish_symbol.append(symbol)
