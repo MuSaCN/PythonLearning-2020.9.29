@@ -82,6 +82,7 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
+        print(symbol, timeframe, "参数图1D finished.")
 
 #%%
 # ---画参数图2D热力图，不能用agg形式画图
@@ -97,6 +98,7 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, annot=False)
+        print(symbol, timeframe, "参数图2D热力图 finished.")
                 # 热力图缩放
                 # filecontent_new = filecontent[(filecontent["k"] < 31) & (filecontent["lag_trade"] < 5)]
                 # y_name = ["sharpe"]
@@ -116,6 +118,7 @@ for symbol in symbol_list:
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
                 myBTV.plot_para_3D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True)
+        print(symbol, timeframe, "参数图3D热力图 finished.")
 
 
 
