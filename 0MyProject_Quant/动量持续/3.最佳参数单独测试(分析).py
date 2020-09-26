@@ -58,7 +58,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 direct_para = ["BuyOnly","SellOnly","All"]
-symbol_list = ["AUDJPY"]
+symbol_list = ["AUDCAD"]
 timeframe_list = ["TIMEFRAME_D1"]
 
 
@@ -72,7 +72,7 @@ direct = direct_para[0]  # 0-"BuyOnly", 1-"SellOnly"
 para_fixed = {"k":100, "holding":1, "lag_trade":None}
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
 para_fixed = {"k":42, "holding":[1,10], "lag_trade":1}
-para_fixed = {"k":[350,360], "holding":1, "lag_trade":1}
+para_fixed = {"k":[0,50], "holding":1, "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
