@@ -1,8 +1,6 @@
 分析结果记录
 参数选择：
-AUDCAD; TIMEFRAME_D1; BuyOnly()
-
-
+AUDJPY; TIMEFRAME_H1; BuyOnly()
 
 
 指标过滤：

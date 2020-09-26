@@ -58,8 +58,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 direct_para = ["BuyOnly","SellOnly","All"]
-symbol_list = ["AUDCAD"]
-timeframe_list = ["TIMEFRAME_D1"]
+symbol_list = ["AUDJPY"]
+timeframe_list = ["TIMEFRAME_H1"]
 
 
 #%% 根据 策略参数 分析 ############################
