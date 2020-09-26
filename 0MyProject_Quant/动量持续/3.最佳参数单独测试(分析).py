@@ -52,12 +52,13 @@ myDefault.set_backend_default("Pycharm")  # Pycharm下需要plt.show()才显示�
 # 在分析最佳参数时，需要进行 单独测试 来观察图示。
 '''
 
+
 #%% 根据 非策略参数 定位文件 ###########################
 import warnings
 warnings.filterwarnings('ignore')
 
 direct_para = ["BuyOnly","SellOnly","All"]
-symbol_list = ["EURUSD"]
+symbol_list = ["AUDCAD"]
 timeframe_list = ["TIMEFRAME_D1"]
 
 
@@ -70,13 +71,15 @@ direct = direct_para[0]
 
 para_fixed = {"k":100, "holding":1, "lag_trade":None}
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
-para_fixed = {"k":[50,150], "holding":1, "lag_trade":1}
+para_fixed = {"k":[25,30], "holding":1, "lag_trade":1}
+para_fixed = {"k":29, "holding":[1,10], "lag_trade":1}
+
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
 filecontent = pd.read_excel(filepath)
 
-y_name = ["sharpe", "calmar_ratio", "cumRet"]
+y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
 
 #%%
