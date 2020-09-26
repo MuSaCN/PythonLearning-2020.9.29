@@ -105,7 +105,7 @@ for symbol in symbol_list:
             filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
             filecontent = pd.read_excel(filepath)
             for para_fixed in para_fixed_list:
-                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, annot=False, output=True, batch=True) # 若batch=False，要设置画图模式为pycharm.
+                myBTV.plot_para_2D_heatmap(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=True, annot=False, batch=True) # 若batch=False，要设置画图模式为pycharm.
                 plt.clf()
                 plt.close()
         print(symbol, timeframe, "OK")
