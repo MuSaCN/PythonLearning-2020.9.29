@@ -59,7 +59,7 @@ warnings.filterwarnings('ignore')
 
 direct_para = ["BuyOnly","SellOnly","All"]
 symbol_list = ["AUDJPY"]
-timeframe_list = ["TIMEFRAME_H1"]
+timeframe_list = ["TIMEFRAME_H2"]
 
 
 #%% 根据 策略参数 分析 ############################
@@ -72,14 +72,17 @@ direct = direct_para[1]  # 0-"BuyOnly", 1-"SellOnly", 2-"All"
 para_fixed = {"k":100, "holding":1, "lag_trade":None}
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
 para_fixed = {"k":42, "holding":[1,10], "lag_trade":1}
-para_fixed = {"k":[220,230], "holding":1, "lag_trade":1}
+para_fixed = {"k":[25,75], "holding":1, "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
 filecontent = pd.read_excel(filepath)
 
-y_name = ["sharpe"]
+y_name = ["sharpe", "calmar_ratio", "cumRet"]
 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
+
+
+
 
 #%%
 # ---画参数图2D热力图

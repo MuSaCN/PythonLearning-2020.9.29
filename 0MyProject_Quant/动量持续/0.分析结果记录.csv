@@ -1,6 +1,7 @@
 分析结果记录
 参数选择(k,holding,lag_trade)：
 AUDJPY; TIMEFRAME_H1; BuyOnly(226,1,1); SellOnly(226,1,1)
+AUDJPY; TIMEFRAME_H2; BuyOnly(49,1,1); SellOnly(49,1,1)
 
 
 
