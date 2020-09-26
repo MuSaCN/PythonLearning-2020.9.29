@@ -59,7 +59,7 @@ warnings.filterwarnings('ignore')
 
 direct_para = ["BuyOnly","SellOnly","All"]
 symbol_list = ["AUDCAD"]
-timeframe_list = ["TIMEFRAME_D1"]
+timeframe_list = ["TIMEFRAME_H12"]
 
 
 #%% 根据 策略参数 分析 ############################
@@ -67,13 +67,12 @@ timeframe_list = ["TIMEFRAME_D1"]
 # k 动量向左参数；holding 必须小于 k
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
-direct = direct_para[0]
+direct = direct_para[0]  # 0-"BuyOnly", 1-"SellOnly"
 
 para_fixed = {"k":100, "holding":1, "lag_trade":None}
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
-para_fixed = {"k":[25,30], "holding":1, "lag_trade":1}
-para_fixed = {"k":29, "holding":[1,10], "lag_trade":1}
-
+para_fixed = {"k":42, "holding":[1,10], "lag_trade":1}
+para_fixed = {"k":[175,225], "holding":1, "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
