@@ -67,18 +67,18 @@ timeframe_list = ["TIMEFRAME_H1"]
 # k 动量向左参数；holding 必须小于 k
 symbol = symbol_list[0]
 timeframe = timeframe_list[0]
-direct = direct_para[0]  # 0-"BuyOnly", 1-"SellOnly"
+direct = direct_para[1]  # 0-"BuyOnly", 1-"SellOnly", 2-"All"
 
 para_fixed = {"k":100, "holding":1, "lag_trade":None}
 para_fixed = {"k":None, "holding":1, "lag_trade":1}
 para_fixed = {"k":42, "holding":[1,10], "lag_trade":1}
-para_fixed = {"k":[0,50], "holding":1, "lag_trade":1}
+para_fixed = {"k":[220,230], "holding":1, "lag_trade":1}
 
 folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
 filepath = folder + "\\动量_{}.xlsx".format(direct)  # 选择训练集文件
 filecontent = pd.read_excel(filepath)
 
-y_name = ["sharpe", "calmar_ratio", "cumRet", "maxDD"]
+y_name = ["sharpe"]
 myBTV.plot_para_1D(filepath=filepath, filecontent=filecontent, para_fixed=para_fixed, y_name=y_name, output=False)
 
 #%%

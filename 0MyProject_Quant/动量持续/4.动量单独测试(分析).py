@@ -58,7 +58,7 @@ warnings.filterwarnings('ignore')
 
 # ---获取数据
 symbol = "AUDJPY"
-timeframe = "TIMEFRAME_D1"
+timeframe = "TIMEFRAME_H1"
 
 date_from, date_to = myPjMT5.get_date_range(timeframe)
 data_total = myPjMT5.getsymboldata(symbol,timeframe,date_from,date_to,index_time=True, col_capitalize=True)
@@ -71,7 +71,7 @@ train_x1 = data_train.index[-1]
 
 #%%
 # ---仅做多分析
-k_range = [k for k in range(354, 354+1)]
+k_range = [k for k in range(226, 226+1)]
 holding_range = [holding for holding in range(1, 1+1)]
 lag_trade_range = [lag_trade for lag_trade in range(1, 1+1)]
 
@@ -92,8 +92,8 @@ myBTV.signal_quality_explain()
 
 #%%
 # ---仅做空分析
-k_range = [k for k in range(22, 22+1)]
-holding_range = [holding for holding in range(1, 10+1)]
+k_range = [k for k in range(226, 226+1)]
+holding_range = [holding for holding in range(1, 1+1)]
 lag_trade_range = [lag_trade for lag_trade in range(1, 1+1)]
 
 # ---策略结果分析
