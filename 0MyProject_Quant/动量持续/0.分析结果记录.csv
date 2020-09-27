@@ -1,12 +1,14 @@
-分析结果记录
-参数选择(k,holding,lag_trade)，仅多与仅空参数不同，有的甚至没有：
+分析结果记录。参数选择(k,holding,lag_trade)，仅多与仅空参数不同，有的甚至没有：
 AUDCAD; TIMEFRAME_H12; BuyOnly(194,1,1); ;
 AUDJPY; TIMEFRAME_D1; BuyOnly(359,1,1); ;
 AUDJPY; TIMEFRAME_H1; BuyOnly(226,1,1); SellOnly(226,1,1);
 AUDJPY; TIMEFRAME_H2; BuyOnly(49,1,1); SellOnly(49,1,1);
 AUDJPY; TIMEFRAME_H3; BuyOnly(162,1,1); ;
+AUDJPY; TIMEFRAME_H4; BuyOnly(121,1,1); ;
+AUDJPY; TIMEFRAME_H6; BuyOnly(80,1,1); ;
+AUDJPY; TIMEFRAME_M10; ; SellOnly(268,1,1);
 
-------分析到 AUDJPY; TIMEFRAME_H4
+
 
 指标过滤：
 
