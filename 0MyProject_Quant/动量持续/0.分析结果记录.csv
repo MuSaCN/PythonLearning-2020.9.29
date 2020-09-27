@@ -12,8 +12,17 @@ AUDJPY; TIMEFRAME_M15; ; SellOnly(204,1,1);
 AUDNZD; TIMEFRAME_D1; BuyOnly(56,1,1); SellOnly(56,1,1);
 AUDNZD; TIMEFRAME_H1; ; SellOnly(314,1,1);
 AUDNZD; TIMEFRAME_H12; BuyOnly(115,1,1); SellOnly(115,1,1);
+AUDUSD; TIMEFRAME_D1; BuyOnly(112,1,1); SellOnly(112,1,1);
+AUDUSD; TIMEFRAME_H4; BuyOnly(260,1,1); SellOnly(260,1,1);
 
---- AUDUSD; TIMEFRAME_D1;
+
+
+
+
+
+
+
+
 
 指标过滤：
 
