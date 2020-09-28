@@ -151,9 +151,9 @@ if __name__ == '__main__':
             continue
         finish_symbol = []
         for symbol in symbol_list:
-            if timeframe ==  "TIMEFRAME_M5" and symbol in ['EURUSD', 'GBPUSD', 'USDCHF']:
-                finish_symbol.append(symbol)
-                continue
+            # if timeframe ==  "TIMEFRAME_M5" and symbol in ['EURUSD', 'GBPUSD', 'USDCHF']:
+            #     finish_symbol.append(symbol)
+            #     continue
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
             folder = __mypath__.get_desktop_path() + "\\_动量研究\\{}.{}".format(symbol, timeframe)
             # 仅做多、仅做空、多空都做，保存在一个目录下
