@@ -151,7 +151,7 @@ if __name__ == '__main__':
             continue
         finish_symbol = []
         for symbol in symbol_list:
-            if timeframe ==  "TIMEFRAME_M6" and symbol in ['EURUSD', 'GBPUSD']:
+            if timeframe ==  "TIMEFRAME_M5" and symbol in ['EURUSD', 'GBPUSD', 'USDCHF']:
                 finish_symbol.append(symbol)
                 continue
             # 设置输出目录：one symbol + one timeframe + three direct --> one folder
